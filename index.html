@@ -710,13 +710,8 @@ body::after {
 //  KONFIGURASI
 // ══════════════════════════════════════════════
 const CFG = {
-  // Isi URL Apps Script Anda di sini setelah deploy (lihat PANDUAN-APPS-SCRIPT.txt)
-  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxs7D2bGJU9kCYLpwEk-iRHrzCtXkiJQmNXGu8URmL9IbIAeX-TdJy7hFO83gHQ_Ims/exec',
-
-  feeds: [
-    'https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=50',
-  ],
-
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbybY32nXiUKVh3zwytuB264rxJ4OM5Ewx6lKMfDDxicPCNlz39yYmEJyEtvsoPcKCJU/exec',   
+  feeds: ['https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=50'],
   refreshMs: 5 * 60 * 1000,
 };
 
@@ -848,82 +843,34 @@ function ago(ds){
 // ══════════════════════════════════════════════
 // FETCH FEED — VERSI DIPERBAIKI
 // ══════════════════════════════════════════════
-async function tryFetch(url, timeout = 15000) {
+async function tryFetch(url, timeout = 18000) {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  
-  try {
-    const r = await fetch(url, { 
-      signal: controller.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; LelemukuMonitor/1.0)" }
-    });
-    clearTimeout(id);
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r;
-  } catch (e) {
-    clearTimeout(id);
-    throw e;
-  }
+  setTimeout(() => controller.abort(), timeout);
+  const r = await fetch(url, { signal: controller.signal });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r;
 }
 
+// FETCH FEED — VERSI MINIMALIS & KUAT
 async function fetchFeed(feedUrl) {
-  console.log('%cMencoba mengambil feed...', 'color:orange', feedUrl);
+  console.log('🔄 Mencoba fetch feed...');
 
-  // 1. APPS SCRIPT — PRIORITAS UTAMA (Paling Stabil)
+  // 1. APPS SCRIPT (utama)
   if (CFG.appsScriptUrl) {
     try {
-      const proxyUrl = `${CFG.appsScriptUrl}?url=${encodeURIComponent(feedUrl)}`;
-      const r = await tryFetch(proxyUrl, 20000);
+      const r = await tryFetch(`${CFG.appsScriptUrl}?url=${encodeURIComponent(feedUrl)}`, 20000);
       const j = await r.json();
-      
-      if (j.content && j.content.length > 500) {
-        console.log('%c✅ BERHASIL via Apps Script', 'color:lime;font-weight:bold');
-        return { text: j.content, src: 'Apps Script' };
+      if (j.content && j.content.length > 1000) {
+        console.log('✅ BERHASIL via Apps Script');
+        return {text: j.content, src: 'Apps Script'};
       }
     } catch (e) {
-      console.warn('Apps Script gagal:', e.message);
+      console.warn('Apps Script timeout/gagal:', e.message);
     }
   }
 
-  // 2. rss2json (dengan cache buster)
-  try {
-    const rssUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=50&t=${Date.now()}`;
-    const r = await tryFetch(rssUrl, 12000);
-    const j = await r.json();
-    
-    if (j.status === 'ok' && j.items?.length > 0) {
-      console.log('%c✅ BERHASIL via rss2json', 'color:lime;font-weight:bold');
-      return { text: JSON.stringify(j), src: 'rss2json', isJson: true };
-    }
-  } catch (e) {
-    console.warn('rss2json gagal:', e.message);
-  }
-
-  // 3. allorigins raw
-  try {
-    const r = await tryFetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`, 15000);
-    const t = await r.text();
-    if (t.includes('<rss') || t.includes('<feed') || t.includes('<entry>')) {
-      console.log('%c✅ BERHASIL via allorigins/raw', 'color:lime');
-      return { text: t, src: 'allorigins/raw' };
-    }
-  } catch (e) {
-    console.warn('allorigins raw gagal:', e.message);
-  }
-
-  // 4. corsproxy.io (cadangan terakhir)
-  try {
-    const r = await tryFetch(`https://corsproxy.io/?${encodeURIComponent(feedUrl)}`, 12000);
-    const t = await r.text();
-    if (t.includes('<rss') || t.includes('<feed')) {
-      console.log('%c✅ BERHASIL via corsproxy', 'color:lime');
-      return { text: t, src: 'corsproxy' };
-    }
-  } catch (e) {
-    console.warn('corsproxy gagal:', e.message);
-  }
-
-  throw new Error('Semua proxy gagal');
+  // Kalau Apps Script gagal, langsung fallback ke data cadangan
+  throw new Error('Semua metode gagal');
 }
 // ══════════════════════════════════════════════
 //  PARSE
