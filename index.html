@@ -4,86 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lelemuku Monitor — Peta Berita Indonesia</title>
-<meta name="description" content="Pantau berita terkini dari seluruh Indonesia secara real-time di peta interaktif Lelemuku Monitor">
-<meta property="og:title" content="Lelemuku Monitor — Peta Berita Indonesia">
-<meta property="og:description" content="Berita terkini dari Lelemuku.com divisualisasikan secara real-time pada peta Indonesia">
-<meta property="og:url" content="https://monitor.lelemuku.com">
+<meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
+<link rel="icon" type="image/x-icon" href="https://www.lelemuku.com/favicon.ico">
 
-<!-- Leaflet.js - Peta interaktif (gratis, open source) -->
+<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
 <!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg-dark: #0a0e1a;
-  --bg-card: #111827;
-  --bg-card2: #1a2236;
-  --border: rgba(255,255,255,0.08);
-  --border-bright: rgba(255,255,255,0.15);
-  --text-primary: #f0f4ff;
-  --text-secondary: #8b9ab8;
-  --text-muted: #4a5a78;
-  --accent-gold: #f5c842;
-  --accent-blue: #3b82f6;
-  --accent-green: #22c55e;
-  --accent-red: #ef4444;
-  --accent-orange: #f97316;
-  --font-head: 'Sora', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --bg: #06090f;
+  --surface: #0d1117;
+  --surface2: #161b24;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #f0b429;
+  --accent2: #e09921;
+  --text: #c9d1d9;
+  --text2: #8b949e;
+  --text3: #3d4a5c;
+  --red: #f85149;
+  --yellow: #e3b341;
+  --green: #3fb950;
+  --blue: #58a6ff;
+  --orange: #f0883e;
+  --purple: #bc8cff;
+  --white: #f0f6fc;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-head: 'Rajdhani', sans-serif;
+  --font-body: 'Barlow Condensed', sans-serif;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-body {
-  background: var(--bg-dark);
-  color: var(--text-primary);
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--font-body);
-  height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* ===== HEADER ===== */
+/* ══ HEADER ══ */
 #header {
-  height: 56px;
-  background: linear-gradient(90deg, #0d1526 0%, #0f172a 100%);
-  border-bottom: 1px solid var(--border);
+  height: 50px;
+  background: rgba(6,9,15,0.98);
+  border-bottom: 1px solid var(--border2);
   display: flex;
   align-items: center;
-  padding: 0 20px;
-  gap: 16px;
-  z-index: 1000;
   flex-shrink: 0;
+  z-index: 1000;
+  gap: 0;
 }
 
-#logo {
+#logo-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 0 18px;
+  border-right: 1px solid var(--border);
+  height: 100%;
   text-decoration: none;
 }
 
-#logo-icon {
-  width: 34px;
-  height: 34px;
-  background: linear-gradient(135deg, #f5c842, #f97316);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
-  color: #0a0e1a;
-  font-family: var(--font-head);
-  flex-shrink: 0;
+#logo-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--surface2);
 }
 
-#logo-text {
+#logo-text-wrap {
   display: flex;
   flex-direction: column;
   line-height: 1.1;
@@ -91,245 +86,589 @@ body {
 
 #logo-name {
   font-family: var(--font-head);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 0.02em;
+  color: var(--accent);
+  letter-spacing: 0.5px;
 }
 
-#logo-sub {
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
+#logo-tagline {
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-#header-divider {
-  width: 1px;
-  height: 28px;
-  background: var(--border);
-}
-
-#live-indicator {
+#live-pill {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  color: var(--accent-green);
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 1px;
 }
 
-#live-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--accent-green);
+.live-ring {
+  width: 8px; height: 8px;
   border-radius: 50%;
-  animation: pulse-live 2s infinite;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: ring-pulse 1.8s ease infinite;
 }
 
-@keyframes pulse-live {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+@keyframes ring-pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.7); opacity: 0.4; }
 }
 
-#header-stats {
+#header-middle {
   display: flex;
-  gap: 16px;
-  margin-left: auto;
   align-items: center;
+  gap: 2px;
+  padding: 0 10px;
 }
 
-.stat-pill {
+.hdr-tab {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.hdr-tab:hover { color: var(--text2); }
+.hdr-tab.active {
+  color: var(--accent);
+  border-color: rgba(240,180,41,0.25);
+  background: rgba(240,180,41,0.06);
+}
+
+#header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+}
+
+.hdr-stat {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 11px;
-  color: var(--text-secondary);
+  padding: 0 14px;
+  border-left: 1px solid var(--border);
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  white-space: nowrap;
 }
 
-.stat-pill strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
+.hdr-stat strong { color: var(--text2); }
 
 #btn-refresh {
-  background: rgba(59,130,246,0.15);
-  border: 1px solid rgba(59,130,246,0.3);
-  border-radius: 6px;
-  color: var(--accent-blue);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 12px;
+  height: 100%;
+  padding: 0 16px;
+  border-left: 1px solid var(--border);
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: var(--font-body);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-#btn-refresh:hover {
-  background: rgba(59,130,246,0.25);
+#btn-refresh:hover { color: var(--accent); background: rgba(240,180,41,0.05); }
+#btn-refresh.loading { animation: spin 1s linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#clock {
+  padding: 0 14px;
+  border-left: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  white-space: nowrap;
+  min-width: 150px;
 }
 
-/* ===== MAIN LAYOUT ===== */
+/* ══ MAIN LAYOUT ══ */
 #main {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
-/* ===== MAP ===== */
-#map-container {
+/* ══ SIDEBAR ══ */
+#sidebar {
+  width: 210px;
+  background: rgba(6,9,15,0.97);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 500;
+}
+
+.sb-section {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.sb-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sb-item.active { color: var(--accent); }
+.sb-item .dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+.sb-item .count { margin-left:auto; font-size:9px; color:var(--text3); }
+
+.sb-title {
+  padding: 8px 16px 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+/* Status block */
+#status-block {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.status-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.status-bar-wrap {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.status-bar-seg {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface2);
+}
+
+/* Legend */
+#legend {
+  padding: 12px 16px;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+
+.leg-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 5px 0;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.leg-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ══ MAP ══ */
+#map-wrap {
   flex: 1;
   position: relative;
+  min-width: 0;
 }
 
 #map {
   width: 100%;
   height: 100%;
-}
-
-/* Leaflet overrides */
-.leaflet-container {
-  background: #060c1a !important;
-  font-family: var(--font-body);
+  background: #060b14;
 }
 
 .leaflet-control-zoom {
-  border: 1px solid var(--border) !important;
-  border-radius: 8px !important;
+  border: 1px solid var(--border2) !important;
+  border-radius: 6px !important;
   overflow: hidden;
+  box-shadow: none !important;
 }
 
 .leaflet-control-zoom a {
-  background: var(--bg-card) !important;
-  color: var(--text-secondary) !important;
+  background: var(--surface) !important;
+  color: var(--text2) !important;
   border-bottom: 1px solid var(--border) !important;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  font-size: 16px !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: var(--bg-card2) !important;
-  color: var(--text-primary) !important;
+  background: var(--surface2) !important;
+  color: var(--accent) !important;
 }
 
 .leaflet-control-attribution {
-  background: rgba(10,14,26,0.8) !important;
-  color: var(--text-muted) !important;
+  background: rgba(6,9,15,0.85) !important;
+  color: var(--text3) !important;
   font-size: 9px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px 0 0 0 !important;
 }
 
-.leaflet-control-attribution a {
-  color: var(--text-muted) !important;
-}
+.leaflet-control-attribution a { color: var(--text3) !important; }
 
-/* ===== CUSTOM MARKERS ===== */
-.news-marker {
-  position: relative;
-  cursor: pointer;
-}
-
-.marker-ring {
+/* ══ MAP OVERLAY ELEMENTS ══ */
+#map-overlay-tl {
   position: absolute;
-  border-radius: 50%;
-  animation: ring-pulse 2.5s ease-out infinite;
-  pointer-events: none;
+  top: 12px; left: 12px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-@keyframes ring-pulse {
-  0% { transform: scale(0.8); opacity: 0.8; }
-  70% { transform: scale(2.5); opacity: 0; }
-  100% { transform: scale(2.5); opacity: 0; }
-}
-
-.marker-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.5);
-  position: relative;
-  z-index: 2;
-  cursor: pointer;
-  transition: transform 0.2s;
+.map-chip {
+  background: rgba(6,9,15,0.88);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text2);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
+  gap: 6px;
+}
+
+#coord-chip {
+  position: absolute;
+  bottom: 44px;
+  left: 12px;
+  z-index: 900;
+}
+
+/* ══ LOADING ══ */
+#loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(6,9,15,0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  font-size: 7px;
-  font-weight: 700;
+  z-index: 2000;
+  gap: 14px;
+  transition: opacity 0.4s;
 }
 
-.marker-dot:hover {
-  transform: scale(1.4);
+#loading.hidden { opacity:0; pointer-events:none; }
+
+.ld-spinner {
+  width: 36px; height: 36px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
 }
 
-.marker-dot.urgent { background: var(--accent-red); box-shadow: 0 0 10px rgba(239,68,68,0.6); }
-.marker-dot.regular { background: var(--accent-gold); box-shadow: 0 0 10px rgba(245,200,66,0.6); }
-.marker-dot.info { background: var(--accent-green); box-shadow: 0 0 10px rgba(34,197,94,0.6); }
-.marker-dot.breaking { background: var(--accent-orange); box-shadow: 0 0 10px rgba(249,115,22,0.6); }
+.ld-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-/* ===== POPUP ===== */
+/* ══ TOAST ══ */
+#toast-zone {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+  min-width: 280px;
+}
+
+.toast {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 12px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  animation: toast-in 0.25s ease;
+  pointer-events: auto;
+}
+
+@keyframes toast-in { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.toast.out { animation: toast-out 0.3s ease forwards; }
+@keyframes toast-out { to{opacity:0;transform:translateY(-8px)} }
+
+.toast.error { border-left: 3px solid var(--red); }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.info { border-left: 3px solid var(--blue); }
+.toast.warn { border-left: 3px solid var(--yellow); }
+
+/* ══ NEWS WIRE PANEL ══ */
+#wire-panel {
+  width: 300px;
+  background: rgba(6,9,15,0.97);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+#wire-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#wire-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.wire-filter-row {
+  display: flex;
+  gap: 4px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.wf-btn {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.wf-btn:hover { color: var(--text2); border-color: var(--border2); }
+.wf-btn.on-all { background: rgba(240,180,41,0.12); border-color: rgba(240,180,41,0.3); color: var(--accent); }
+.wf-btn.on-breaking { background: rgba(248,81,73,0.12); border-color: rgba(248,81,73,0.3); color: var(--red); }
+.wf-btn.on-urgent { background: rgba(227,179,65,0.12); border-color: rgba(227,179,65,0.3); color: var(--yellow); }
+.wf-btn.on-info { background: rgba(63,185,80,0.12); border-color: rgba(63,185,80,0.3); color: var(--green); }
+
+#wire-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+#wire-list::-webkit-scrollbar { width: 3px; }
+#wire-list::-webkit-scrollbar-track { background: transparent; }
+#wire-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.wire-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.wire-item:hover { background: rgba(255,255,255,0.03); }
+.wire-item.active { background: rgba(240,180,41,0.06); border-left: 2px solid var(--accent); }
+
+.wi-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px; }
+
+.wi-body { flex:1;min-width:0; }
+
+.wi-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wi-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+.wi-loc {
+  background: rgba(255,255,255,0.05);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+}
+
+/* ══ POPUP ══ */
 .leaflet-popup-content-wrapper {
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border-bright) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border2) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.7) !important;
   padding: 0 !important;
 }
 
-.leaflet-popup-tip-container { display: none; }
+.leaflet-popup-tip { background: var(--surface) !important; }
+.leaflet-popup-content { margin: 0 !important; width: 290px !important; }
 
-.leaflet-popup-content {
-  margin: 0 !important;
-  width: 300px !important;
+.leaflet-popup-close-button {
+  color: var(--text3) !important;
+  font-size: 18px !important;
+  top: 8px !important;
+  right: 10px !important;
 }
 
-.popup-inner {
-  padding: 16px;
+.popup-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+  display: block;
+  filter: brightness(0.85);
 }
 
-.popup-category {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+.popup-no-img {
+  width: 100%;
+  height: 60px;
+  background: var(--surface2);
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.popup-body { padding: 13px 14px 14px; }
+
+.popup-cat-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 3px;
   display: inline-block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.cat-urgent { background: rgba(239,68,68,0.2); color: #fca5a5; }
-.cat-regular { background: rgba(245,200,66,0.2); color: #fde68a; }
-.cat-info { background: rgba(34,197,94,0.2); color: #86efac; }
-.cat-breaking { background: rgba(249,115,22,0.2); color: #fdba74; }
+.badge-breaking { background: rgba(248,81,73,0.18); color: #ff7b72; }
+.badge-urgent   { background: rgba(227,179,65,0.18); color: #e3b341; }
+.badge-info     { background: rgba(63,185,80,0.18);  color: #56d364; }
+.badge-regular  { background: rgba(88,166,255,0.15); color: #79c0ff; }
 
 .popup-title {
   font-family: var(--font-head);
   font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.4;
-  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.35;
+  margin-bottom: 6px;
 }
 
 .popup-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  margin-bottom: 9px;
 }
-
-.popup-meta-dot { color: var(--border-bright); }
 
 .popup-excerpt {
   font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 14px;
+  color: var(--text2);
+  line-height: 1.55;
+  margin-bottom: 11px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -339,923 +678,761 @@ body {
 .popup-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(59,130,246,0.15);
-  border: 1px solid rgba(59,130,246,0.3);
-  border-radius: 6px;
-  color: #93c5fd;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 6px 12px;
+  gap: 5px;
+  background: rgba(240,180,41,0.12);
+  border: 1px solid rgba(240,180,41,0.25);
+  border-radius: 5px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 5px 10px;
   text-decoration: none;
   transition: all 0.2s;
 }
 
 .popup-link:hover {
-  background: rgba(59,130,246,0.25);
-  color: #bfdbfe;
+  background: rgba(240,180,41,0.2);
+  color: #fff;
 }
 
-.popup-image {
-  width: 100%;
-  height: 130px;
-  object-fit: cover;
-  border-radius: 8px 8px 0 0;
-  display: block;
-}
-
-.popup-image-fallback {
-  width: 100%;
-  height: 80px;
-  background: linear-gradient(135deg, #1a2236, #0d1526);
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-}
-
-/* ===== SIDEBAR ===== */
-#sidebar {
-  width: 320px;
-  background: var(--bg-card);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-#sidebar-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-#sidebar-title {
-  font-family: var(--font-head);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-#filter-row {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-  transition: all 0.2s;
-  letter-spacing: 0.03em;
-}
-
-.filter-btn:hover { background: rgba(255,255,255,0.05); }
-.filter-btn.active-all { background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.4); color: #93c5fd; }
-.filter-btn.active-breaking { background: rgba(249,115,22,0.2); border-color: rgba(249,115,22,0.4); color: #fdba74; }
-.filter-btn.active-urgent { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
-.filter-btn.active-regular { background: rgba(245,200,66,0.2); border-color: rgba(245,200,66,0.4); color: #fde68a; }
-.filter-btn.active-info { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); color: #86efac; }
-
-#news-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
-}
-
-#news-list::-webkit-scrollbar { width: 4px; }
-#news-list::-webkit-scrollbar-track { background: transparent; }
-#news-list::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
-
-.news-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  cursor: pointer;
-  transition: background 0.15s;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.news-item:hover { background: rgba(255,255,255,0.04); }
-.news-item.active { background: rgba(59,130,246,0.08); border-left: 2px solid var(--accent-blue); }
-
-.news-item-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-top: 3px;
-  flex-shrink: 0;
-}
-
-.news-item-content { flex: 1; min-width: 0; }
-
-.news-item-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.4;
-  margin-bottom: 4px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.news-item-meta {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.news-location-tag {
-  background: rgba(255,255,255,0.06);
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 9px;
-  letter-spacing: 0.03em;
-}
-
-/* ===== LEGEND ===== */
-#legend {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  background: var(--bg-dark);
-  flex-shrink: 0;
-}
-
-#legend-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-#legend-items {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  color: var(--text-secondary);
-}
-
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* ===== BOTTOM TICKER ===== */
+/* ══ TICKER ══ */
 #ticker {
-  height: 34px;
-  background: rgba(5,10,20,0.9);
+  height: 30px;
+  background: rgba(6,9,15,0.98);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   overflow: hidden;
   flex-shrink: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
-#ticker-label {
-  padding: 0 12px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-gold);
-  border-right: 1px solid var(--border);
-  white-space: nowrap;
-  flex-shrink: 0;
-  height: 100%;
+#ticker-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  padding: 0 12px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-#ticker-scroll {
+#ticker-wrap {
   flex: 1;
   overflow: hidden;
   height: 100%;
   position: relative;
 }
 
-#ticker-inner {
+#ticker-track {
   display: flex;
   align-items: center;
-  gap: 0;
   white-space: nowrap;
-  animation: scroll-left 60s linear infinite;
   height: 100%;
   position: absolute;
+  animation: ticker-move 80s linear infinite;
 }
 
-@keyframes scroll-left {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+#ticker-track:hover { animation-play-state: paused; cursor: pointer; }
 
-#ticker-inner:hover { animation-play-state: paused; }
+@keyframes ticker-move {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 
 .ticker-item {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 24px;
+  gap: 7px;
+  padding: 0 20px;
   font-size: 11px;
-  color: var(--text-secondary);
+  color: var(--text2);
   border-right: 1px solid var(--border);
   height: 100%;
-  cursor: pointer;
   transition: color 0.2s;
 }
 
-.ticker-item:hover { color: var(--text-primary); }
+.ticker-item:hover { color: var(--white); }
+.ticker-dot { width:5px;height:5px;border-radius:50%;flex-shrink:0; }
 
-.ticker-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ===== MAP OVERLAYS ===== */
-#map-loading {
-  position: absolute;
+/* ══ SCANLINE ══ */
+body::after {
+  content: '';
+  position: fixed;
   inset: 0;
-  background: rgba(10,14,26,0.85);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  gap: 16px;
-  transition: opacity 0.5s;
-}
-
-#map-loading.hidden { opacity: 0; pointer-events: none; }
-
-.loader-ring {
-  width: 44px;
-  height: 44px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent-gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loader-text {
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-family: var(--font-head);
-}
-
-#toast-container {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.025) 3px,
+    rgba(0,0,0,0.025) 4px
+  );
   pointer-events: none;
+  z-index: 9999;
 }
 
-.toast {
-  background: var(--bg-card2);
-  border: 1px solid var(--border-bright);
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 12px;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 260px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  animation: toast-in 0.3s ease;
-  pointer-events: auto;
-}
-
-@keyframes toast-in {
-  from { opacity: 0; transform: translateY(-12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.toast.fade-out { animation: toast-out 0.4s ease forwards; }
-
-@keyframes toast-out {
-  to { opacity: 0; transform: translateY(-12px); }
-}
-
-/* ===== STATUS BAR ===== */
-#statusbar {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  z-index: 500;
-  background: rgba(10,14,26,0.85);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 10px;
-  color: var(--text-muted);
-  backdrop-filter: blur(8px);
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  #sidebar { display: none; }
-  #logo-sub { display: none; }
-  #header-stats .stat-pill:not(:first-child) { display: none; }
-}
-
-/* ===== ERROR STATE ===== */
-#error-banner {
+/* ══ ERROR BANNER ══ */
+#error-bar {
   display: none;
   position: absolute;
-  top: 16px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(239,68,68,0.15);
-  border: 1px solid rgba(239,68,68,0.3);
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 12px;
-  color: #fca5a5;
-  z-index: 2000;
+  z-index: 2500;
+  background: rgba(248,81,73,0.12);
+  border: 1px solid rgba(248,81,73,0.3);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 11px;
+  color: #ff7b72;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
   text-align: center;
+  white-space: nowrap;
 }
+
+#error-bar a { color: inherit; text-decoration: underline; }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo" href="https://lelemuku.com" target="_blank">
-    <div id="logo-icon">L</div>
-    <div id="logo-text">
+  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
+    <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
+      onerror="this.style.background='#f0b429';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='L'">
+    <div id="logo-text-wrap">
       <span id="logo-name">Lelemuku Monitor</span>
-      <span id="logo-sub">Peta Berita Indonesia</span>
+      <span id="logo-tagline">Peta Berita Indonesia</span>
     </div>
   </a>
-  <div id="header-divider"></div>
-  <div id="live-indicator">
-    <div id="live-dot"></div>
-    <span>LIVE</span>
+
+  <div id="live-pill">
+    <div class="live-ring"></div>
+    LIVE
   </div>
-  <div id="header-stats">
-    <div class="stat-pill">📰 <strong id="stat-total">0</strong> berita</div>
-    <div class="stat-pill">🔄 Update: <strong id="stat-time">—</strong></div>
-    <button id="btn-refresh" onclick="loadFeed()">⟳ Perbarui</button>
+
+  <div id="header-middle">
+    <div class="hdr-tab active" onclick="setTab(this)">PETA</div>
+    <div class="hdr-tab" onclick="window.open('https://www.lelemuku.com','_blank')">WIRE</div>
+    <div class="hdr-tab" onclick="window.open('https://www.lelemuku.com/tentang','_blank')">TENTANG</div>
+  </div>
+
+  <div id="header-right">
+    <div class="hdr-stat">📰 <strong id="stat-count">0</strong>&nbsp;berita</div>
+    <div class="hdr-stat">📍 <strong id="stat-mapped">0</strong>&nbsp;dipetakan</div>
+    <button id="btn-refresh" onclick="loadData()">↻ PERBARUI</button>
+    <div id="clock">-- / -- / ---- --:--:--</div>
   </div>
 </div>
 
-<!-- MAIN AREA -->
+<!-- MAIN -->
 <div id="main">
 
+  <!-- SIDEBAR LEFT -->
+  <div id="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Filter Kategori</div>
+      <div class="sb-item active" id="cat-all" onclick="filterCat('all',this)">
+        <div class="dot" style="background:var(--accent)"></div>
+        Semua Berita
+        <span class="count" id="cnt-all">0</span>
+      </div>
+      <div class="sb-item" id="cat-breaking" onclick="filterCat('breaking',this)">
+        <div class="dot" style="background:var(--red)"></div>
+        Breaking News
+        <span class="count" id="cnt-breaking">0</span>
+      </div>
+      <div class="sb-item" id="cat-urgent" onclick="filterCat('urgent',this)">
+        <div class="dot" style="background:var(--yellow)"></div>
+        Berita Penting
+        <span class="count" id="cnt-urgent">0</span>
+      </div>
+      <div class="sb-item" id="cat-info" onclick="filterCat('info',this)">
+        <div class="dot" style="background:var(--green)"></div>
+        Info & Lokal
+        <span class="count" id="cnt-info">0</span>
+      </div>
+      <div class="sb-item" id="cat-regular" onclick="filterCat('regular',this)">
+        <div class="dot" style="background:var(--blue)"></div>
+        Umum
+        <span class="count" id="cnt-regular">0</span>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">Wilayah Cepat</div>
+      <div class="sb-item" onclick="flyTo(-2.5916,140.6690,8)">📍 Papua</div>
+      <div class="sb-item" onclick="flyTo(-3.6954,128.1814,8)">📍 Maluku</div>
+      <div class="sb-item" onclick="flyTo(1.5709,127.8088,8)">📍 Maluku Utara</div>
+      <div class="sb-item" onclick="flyTo(-8.6574,121.0794,7)">📍 NTT</div>
+      <div class="sb-item" onclick="flyTo(-6.2088,106.8456,9)">📍 Jakarta</div>
+      <div class="sb-item" onclick="flyTo(-2.5,118.5,5)">🗺️ Seluruh Indonesia</div>
+    </div>
+
+    <!-- Status -->
+    <div id="status-block">
+      <div class="status-label">Status Feed</div>
+      <div class="status-row" style="margin-top:6px">
+        <span id="feed-status-text" style="font-family:var(--font-mono);font-size:9px;color:var(--text3)">Belum dimuat</span>
+        <span id="feed-status-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3)"></span>
+      </div>
+      <div class="status-bar-wrap" id="feed-progress">
+        <div class="status-bar-seg"></div>
+        <div class="status-bar-seg"></div>
+        <div class="status-bar-seg"></div>
+        <div class="status-bar-seg"></div>
+        <div class="status-bar-seg"></div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <div class="leg-title">Keterangan Marker</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--red);box-shadow:0 0 5px var(--red)"></div>Breaking / Bencana</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--yellow);box-shadow:0 0 5px var(--yellow)"></div>Berita Penting</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green);box-shadow:0 0 5px var(--green)"></div>Info & Lokal</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--blue);box-shadow:0 0 5px var(--blue)"></div>Berita Umum</div>
+    </div>
+  </div>
+
   <!-- MAP -->
-  <div id="map-container">
+  <div id="map-wrap">
     <div id="map"></div>
 
-    <!-- Loading overlay -->
-    <div id="map-loading">
-      <div class="loader-ring"></div>
-      <div class="loader-text">Memuat data berita...</div>
+    <!-- Top-left overlays -->
+    <div id="map-overlay-tl">
+      <div class="map-chip" id="update-chip">🕐 Belum diperbarui</div>
     </div>
 
-    <!-- Toast container -->
-    <div id="toast-container"></div>
+    <!-- Coord chip -->
+    <div class="map-chip" id="coord-chip">📡 Koordinat: —</div>
 
-    <!-- Error banner -->
-    <div id="error-banner">
-      ⚠ Gagal memuat feed RSS. Menampilkan data contoh. <a href="https://www.lelemuku.com" target="_blank" style="color:#fca5a5">Kunjungi Lelemuku.com →</a>
+    <!-- Loading -->
+    <div id="loading">
+      <div class="ld-spinner"></div>
+      <div class="ld-text">Memuat berita...</div>
     </div>
 
-    <!-- Status bar -->
-    <div id="statusbar" id="statusbar">
-      Koordinat: <span id="coord-display">—</span>
-    </div>
+    <!-- Error bar -->
+    <div id="error-bar"></div>
+
+    <!-- Toast zone -->
+    <div id="toast-zone"></div>
   </div>
 
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <div id="sidebar-header">
-      <div id="sidebar-title">Berita Terkini</div>
-      <div id="filter-row">
-        <button class="filter-btn active-all" data-filter="all" onclick="setFilter('all', this)">Semua</button>
-        <button class="filter-btn" data-filter="breaking" onclick="setFilter('breaking', this)">🔴 Breaking</button>
-        <button class="filter-btn" data-filter="urgent" onclick="setFilter('urgent', this)">🟡 Penting</button>
-        <button class="filter-btn" data-filter="info" onclick="setFilter('info', this)">🟢 Info</button>
-      </div>
+  <!-- WIRE PANEL RIGHT -->
+  <div id="wire-panel">
+    <div id="wire-header">
+      <span id="wire-title">⬡ Wire Berita</span>
     </div>
-
-    <div id="news-list">
-      <!-- Populated by JS -->
+    <div class="wire-filter-row">
+      <button class="wf-btn on-all" data-f="all" onclick="wireFilter('all',this)">Semua</button>
+      <button class="wf-btn" data-f="breaking" onclick="wireFilter('breaking',this)">🔴 Breaking</button>
+      <button class="wf-btn" data-f="urgent" onclick="wireFilter('urgent',this)">🟡 Penting</button>
+      <button class="wf-btn" data-f="info" onclick="wireFilter('info',this)">🟢 Info</button>
     </div>
-
-    <div id="legend">
-      <div id="legend-title">Keterangan</div>
-      <div id="legend-items">
-        <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div> Breaking</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Penting</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f5c842"></div> Umum</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> Info</div>
+    <div id="wire-list">
+      <div style="padding:30px 16px;text-align:center;color:var(--text3);font-size:11px;font-family:var(--font-mono)">
+        Memuat berita...
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- BOTTOM TICKER -->
+<!-- TICKER -->
 <div id="ticker">
-  <div id="ticker-label">
-    <span style="width:6px;height:6px;background:#f5c842;border-radius:50%;animation:pulse-live 2s infinite;display:inline-block"></span>
+  <div id="ticker-badge">
+    <div class="live-ring"></div>
     LELEMUKU.COM
   </div>
-  <div id="ticker-scroll">
-    <div id="ticker-inner">
-      <!-- Populated by JS -->
-    </div>
+  <div id="ticker-wrap">
+    <div id="ticker-track"></div>
   </div>
 </div>
 
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
 <script>
-// ================================================================
-// KONFIGURASI - Sesuaikan sesuai kebutuhan
-// ================================================================
-const CONFIG = {
-  // Feed RSS Lelemuku.com via CORS proxy gratis
-  feedUrl: 'https://lelemuku-proxy.albertbatlayeri.workers.dev/',
-  
-  // CORS proxies gratis (akan dicoba berurutan)
+// ════════════════════════════════════════════════════════════════
+//  KONFIGURASI - UBAH SESUAI KEBUTUHAN ANDA
+// ════════════════════════════════════════════════════════════════
+const CFG = {
+  // ─── OPSI A: Google Apps Script Proxy (DIREKOMENDASIKAN) ───
+  // Isi URL dari Apps Script Anda setelah deploy (lihat panduan)
+  appsScriptUrl: '',   // Contoh: 'https://script.google.com/macros/s/AKfy.../exec'
+
+  // ─── OPSI B: CORS Proxy publik (cadangan) ───
   corsProxies: [
     'https://api.allorigins.win/get?url=',
     'https://corsproxy.io/?',
-    'https://cors-anywhere-demo.vercel.app/',
   ],
-  
-  // Interval auto-refresh (milidetik) - 5 menit
-  refreshInterval: 5 * 60 * 1000,
-  
-  // Jumlah berita per halaman pada ticker
-  maxTicker: 20,
+
+  // Feed RSS Lelemuku.com (Blogger)
+  feedUrl: 'https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=50',
+
+  // Auto-refresh setiap 5 menit
+  refreshMs: 5 * 60 * 1000,
 };
 
-// ================================================================
-// DATABASE LOKASI - Kata kunci & koordinat wilayah Indonesia
-// ================================================================
-const LOCATION_DB = {
-  // Pulau Sumatera
-  'aceh': [-4.6951, 96.7494, 'Aceh'],
-  'banda aceh': [5.5483, 95.3238, 'Banda Aceh'],
-  'medan': [3.5952, 98.6722, 'Medan'],
-  'sumatera utara': [2.1154, 99.5451, 'Sumatera Utara'],
-  'sumut': [2.1154, 99.5451, 'Sumatera Utara'],
-  'padang': [-0.9492, 100.3543, 'Padang'],
-  'sumatera barat': [-0.7399, 100.8000, 'Sumatera Barat'],
-  'sumbar': [-0.7399, 100.8000, 'Sumatera Barat'],
-  'pekanbaru': [0.5071, 101.4478, 'Pekanbaru'],
-  'riau': [0.2933, 101.7068, 'Riau'],
-  'kepri': [3.9456, 108.1428, 'Kepulauan Riau'],
-  'batam': [1.0456, 104.0305, 'Batam'],
-  'jambi': [-1.4852, 102.4381, 'Jambi'],
-  'palembang': [-2.9761, 104.7754, 'Palembang'],
-  'sumatera selatan': [-3.3194, 104.9144, 'Sumatera Selatan'],
-  'sumsel': [-3.3194, 104.9144, 'Sumatera Selatan'],
-  'bengkulu': [-3.5778, 102.3464, 'Bengkulu'],
-  'lampung': [-4.5585, 105.4068, 'Lampung'],
-  'bandar lampung': [-5.4295, 105.2620, 'Bandar Lampung'],
-  'bangka belitung': [-2.7410, 106.4406, 'Bangka Belitung'],
-  'bangka': [-2.7410, 106.4406, 'Bangka'],
-  'belitung': [-2.7410, 107.6386, 'Belitung'],
-
-  // Pulau Jawa
-  'jakarta': [-6.2088, 106.8456, 'Jakarta'],
-  'dki': [-6.2088, 106.8456, 'DKI Jakarta'],
-  'jawa barat': [-6.9147, 107.6098, 'Jawa Barat'],
-  'jabar': [-6.9147, 107.6098, 'Jawa Barat'],
-  'bandung': [-6.9175, 107.6191, 'Bandung'],
-  'bogor': [-6.5971, 106.8060, 'Bogor'],
-  'depok': [-6.4025, 106.7942, 'Depok'],
-  'tangerang': [-6.1781, 106.6300, 'Tangerang'],
-  'bekasi': [-6.2349, 107.0004, 'Bekasi'],
-  'cirebon': [-6.7320, 108.5523, 'Cirebon'],
-  'jawa tengah': [-7.1501, 110.1403, 'Jawa Tengah'],
-  'jateng': [-7.1501, 110.1403, 'Jawa Tengah'],
-  'semarang': [-6.9932, 110.4203, 'Semarang'],
-  'solo': [-7.5755, 110.8243, 'Surakarta'],
-  'surakarta': [-7.5755, 110.8243, 'Surakarta'],
-  'yogyakarta': [-7.7971, 110.3688, 'Yogyakarta'],
-  'jogja': [-7.7971, 110.3688, 'Yogyakarta'],
-  'diy': [-7.7971, 110.3688, 'Yogyakarta'],
-  'jawa timur': [-7.5361, 112.2384, 'Jawa Timur'],
-  'jatim': [-7.5361, 112.2384, 'Jawa Timur'],
-  'surabaya': [-7.2504, 112.7688, 'Surabaya'],
-  'malang': [-7.9797, 112.6304, 'Malang'],
-  'kediri': [-7.8165, 112.0112, 'Kediri'],
-  'madiun': [-7.6298, 111.5239, 'Madiun'],
-  'banten': [-6.1184, 106.1503, 'Banten'],
-  'serang': [-6.1201, 106.1503, 'Serang'],
-
-  // Bali & Nusa Tenggara
-  'bali': [-8.4095, 115.1889, 'Bali'],
-  'denpasar': [-8.6705, 115.2126, 'Denpasar'],
-  'nusa tenggara barat': [-8.6529, 117.3616, 'NTB'],
-  'ntb': [-8.6529, 117.3616, 'NTB'],
-  'mataram': [-8.5833, 116.1167, 'Mataram'],
-  'lombok': [-8.6529, 116.3240, 'Lombok'],
-  'nusa tenggara timur': [-8.6574, 121.0794, 'NTT'],
-  'ntt': [-8.6574, 121.0794, 'NTT'],
-  'kupang': [-10.1772, 123.6070, 'Kupang'],
-  'flores': [-8.6386, 121.5938, 'Flores'],
-  'sumba': [-9.6625, 120.2642, 'Sumba'],
-  'timor': [-9.8707, 124.0875, 'Timor'],
-  'ende': [-8.8483, 121.6625, 'Ende'],
-  'maumere': [-8.6226, 122.2148, 'Maumere'],
-  'labuan bajo': [-8.4952, 119.8860, 'Labuan Bajo'],
-  'lembata': [-8.3670, 123.4854, 'Lembata'],
-  'alor': [-8.2553, 124.4965, 'Alor'],
-
-  // Kalimantan
-  'kalimantan barat': [0.1292, 111.4660, 'Kalimantan Barat'],
-  'kalbar': [0.1292, 111.4660, 'Kalimantan Barat'],
-  'pontianak': [-0.0263, 109.3425, 'Pontianak'],
-  'kalimantan tengah': [-1.6815, 113.3824, 'Kalimantan Tengah'],
-  'kalteng': [-1.6815, 113.3824, 'Kalimantan Tengah'],
-  'palangkaraya': [-2.2161, 113.9135, 'Palangka Raya'],
-  'kalimantan selatan': [-3.0926, 115.2838, 'Kalimantan Selatan'],
-  'kalsel': [-3.0926, 115.2838, 'Kalimantan Selatan'],
-  'banjarmasin': [-3.3194, 114.5908, 'Banjarmasin'],
-  'kalimantan timur': [1.6406, 116.4194, 'Kalimantan Timur'],
-  'kaltim': [1.6406, 116.4194, 'Kalimantan Timur'],
-  'samarinda': [-0.5022, 117.1536, 'Samarinda'],
-  'balikpapan': [-1.2379, 116.8529, 'Balikpapan'],
-  'kalimantan utara': [3.0731, 116.0413, 'Kalimantan Utara'],
-  'kaltara': [3.0731, 116.0413, 'Kalimantan Utara'],
-  'tarakan': [3.2987, 117.5773, 'Tarakan'],
-
-  // Sulawesi
-  'sulawesi utara': [0.6246, 123.9750, 'Sulawesi Utara'],
-  'sulut': [0.6246, 123.9750, 'Sulawesi Utara'],
-  'manado': [1.4748, 124.8421, 'Manado'],
-  'sulawesi tengah': [-1.4300, 121.4456, 'Sulawesi Tengah'],
-  'sulteng': [-1.4300, 121.4456, 'Sulawesi Tengah'],
-  'palu': [-0.8917, 119.8707, 'Palu'],
-  'sulawesi selatan': [-3.6687, 119.9740, 'Sulawesi Selatan'],
-  'sulsel': [-3.6687, 119.9740, 'Sulawesi Selatan'],
-  'makassar': [-5.1477, 119.4327, 'Makassar'],
-  'gowa': [-5.2667, 119.5833, 'Gowa'],
-  'sulawesi tenggara': [-4.1479, 122.1746, 'Sulawesi Tenggara'],
-  'sultra': [-4.1479, 122.1746, 'Sulawesi Tenggara'],
-  'kendari': [-3.9985, 122.5129, 'Kendari'],
-  'gorontalo': [0.5435, 123.0568, 'Gorontalo'],
-  'sulawesi barat': [-2.8441, 119.2321, 'Sulawesi Barat'],
-  'sulbar': [-2.8441, 119.2321, 'Sulawesi Barat'],
-  'mamuju': [-2.6750, 118.8867, 'Mamuju'],
+// ════════════════════════════════════════════════════════════════
+//  DATABASE LOKASI INDONESIA (keyword → [lat, lng, nama])
+// ════════════════════════════════════════════════════════════════
+const LOC = {
+  // Papua & Papua Barat
+  'jayapura'       : [-2.5916, 140.6690, 'Jayapura'],
+  'sentani'        : [-2.5893, 140.5182, 'Sentani'],
+  'abepura'        : [-2.6500, 140.6300, 'Abepura'],
+  'merauke'        : [-8.4942, 140.4017, 'Merauke'],
+  'timika'         : [-4.5302, 136.8906, 'Timika'],
+  'nabire'         : [-3.3617, 135.4895, 'Nabire'],
+  'wamena'         : [-4.0902, 138.9539, 'Wamena'],
+  'biak'           : [-1.1744, 136.0862, 'Biak'],
+  'sorong'         : [-0.8762, 131.2512, 'Sorong'],
+  'manokwari'      : [-0.8615, 134.0622, 'Manokwari'],
+  'fakfak'         : [-2.9286, 132.2990, 'Fakfak'],
+  'kaimana'        : [-3.6458, 133.7441, 'Kaimana'],
+  'bintuni'        : [-2.1077, 133.5220, 'Bintuni'],
+  'raja ampat'     : [-0.2335, 130.5218, 'Raja Ampat'],
+  'asmat'          : [-5.8905, 139.5031, 'Asmat'],
+  'mappi'          : [-6.1392, 140.3706, 'Mappi'],
+  'yahukimo'       : [-4.5419, 139.1131, 'Yahukimo'],
+  'puncak jaya'    : [-3.8895, 137.1622, 'Puncak Jaya'],
+  'dogiyai'        : [-3.9700, 136.0600, 'Dogiyai'],
+  'intan jaya'     : [-3.7800, 136.7600, 'Intan Jaya'],
+  'paniai'         : [-3.9850, 136.3800, 'Paniai'],
+  'tolikara'       : [-3.5505, 139.0059, 'Tolikara'],
+  'lanny jaya'     : [-3.9831, 138.4997, 'Lanny Jaya'],
+  'pegunungan'     : [-4.0000, 138.8000, 'Papua Pegunungan'],
+  'yowari'         : [-2.6000, 140.7000, 'Yowari'],
+  'sorong selatan' : [-1.8628, 131.9988, 'Sorong Selatan'],
+  'teluk wondama'  : [-2.5334, 134.3278, 'Teluk Wondama'],
+  'maybrat'        : [-1.4053, 132.3064, 'Maybrat'],
+  'tambrauw'       : [-0.5000, 132.0000, 'Tambrauw'],
+  'keerom'         : [-2.7300, 140.9000, 'Keerom'],
+  'sarmi'          : [-1.8700, 138.7500, 'Sarmi'],
+  'waropen'        : [-2.9100, 136.4000, 'Waropen'],
+  'yapen'          : [-1.7897, 136.2260, 'Yapen'],
+  'mamberamo'      : [-3.1500, 138.0000, 'Mamberamo'],
+  'pbd'            : [-1.3361, 133.1747, 'Papua Barat Daya'],
+  'papsel'         : [-6.5000, 140.0000, 'Papua Selatan'],
+  'papteng'        : [-3.5000, 136.5000, 'Papua Tengah'],
+  'pagun'          : [-4.2000, 138.5000, 'Papua Pegunungan'],
 
   // Maluku
-  'maluku': [-3.2385, 130.1452, 'Maluku'],
-  'ambon': [-3.6954, 128.1814, 'Ambon'],
-  'maluku utara': [1.5709, 127.8088, 'Maluku Utara'],
-  'malut': [1.5709, 127.8088, 'Maluku Utara'],
-  'ternate': [0.7791, 127.3802, 'Ternate'],
-  'tidore': [0.7077, 127.4180, 'Tidore'],
-  'sofifi': [0.7460, 127.5609, 'Sofifi'],
-  'seram': [-3.0898, 129.4817, 'Pulau Seram'],
-  'buru': [-3.3965, 126.5890, 'Pulau Buru'],
-  'tual': [-5.6608, 132.7511, 'Tual'],
-  'kei': [-5.6108, 132.7511, 'Kepulauan Kei'],
-  'morotai': [2.2880, 128.3740, 'Morotai'],
-  'halmahera': [0.9081, 127.8994, 'Halmahera'],
+  'ambon'          : [-3.6954, 128.1814, 'Ambon'],
+  'maluku tengah'  : [-3.2385, 128.8000, 'Maluku Tengah'],
+  'seram'          : [-3.0898, 129.4817, 'Pulau Seram'],
+  'buru'           : [-3.3965, 126.5890, 'Pulau Buru'],
+  'tual'           : [-5.6608, 132.7511, 'Tual'],
+  'kei'            : [-5.6108, 132.7511, 'Kep. Kei'],
+  'aru'            : [-6.1700, 134.5000, 'Kep. Aru'],
+  'banda'          : [-4.5228, 129.9000, 'Banda'],
+  'haruku'         : [-3.5800, 128.4300, 'Haruku'],
+  'saparua'        : [-3.5700, 128.6500, 'Saparua'],
+  'lease'          : [-3.6000, 128.7000, 'Kep. Lease'],
 
-  // Papua
-  'papua': [-4.2699, 138.0804, 'Papua'],
-  'jayapura': [-2.5916, 140.6690, 'Jayapura'],
-  'papua barat': [-1.3361, 133.1747, 'Papua Barat'],
-  'manokwari': [-0.8615, 134.0622, 'Manokwari'],
-  'sorong': [-0.8762, 131.2512, 'Sorong'],
-  'merauke': [-8.4942, 140.4017, 'Merauke'],
-  'biak': [-1.1744, 136.0862, 'Biak'],
-  'timika': [-4.5302, 136.8906, 'Timika'],
-  'nabire': [-3.3617, 135.4895, 'Nabire'],
-  'wamena': [-4.0902, 138.9539, 'Wamena'],
-  'fakfak': [-2.9286, 132.2990, 'Fakfak'],
-  'kaimana': [-3.6458, 133.7441, 'Kaimana'],
-  'bintuni': [-2.1077, 133.5220, 'Bintuni'],
-  'pegunungan': [-4.2699, 138.0804, 'Pegunungan Papua'],
-  'asmat': [-5.8905, 139.5031, 'Asmat'],
-  'mappi': [-6.1392, 140.3706, 'Mappi'],
-  'yahukimo': [-4.5419, 139.1131, 'Yahukimo'],
-  'lanny jaya': [-3.9831, 138.4997, 'Lanny Jaya'],
-  'tolikara': [-3.5505, 139.0059, 'Tolikara'],
-  'puncak': [-3.8895, 137.1622, 'Puncak'],
-  'pegaf': [-1.5000, 133.0000, 'Pegunungan Arfak'],
-  'mansel': [-0.3330, 134.0622, 'Mansel'],
-  'teluk wondama': [-2.5334, 134.3278, 'Teluk Wondama'],
-  'teluk bintuni': [-2.1077, 133.5220, 'Teluk Bintuni'],
-  'maybrat': [-1.4053, 132.3064, 'Maybrat'],
-  'tambrauw': [-0.5000, 132.0000, 'Tambrauw'],
-  'raja ampat': [-0.2335, 130.5218, 'Raja Ampat'],
-  'sorong selatan': [-1.8628, 131.9988, 'Sorong Selatan'],
+  // Maluku Utara
+  'ternate'        : [0.7791, 127.3802, 'Ternate'],
+  'tidore'         : [0.7077, 127.4180, 'Tidore'],
+  'sofifi'         : [0.7460, 127.5609, 'Sofifi'],
+  'halmahera'      : [0.9081, 127.8994, 'Halmahera'],
+  'morotai'        : [2.2880, 128.3740, 'Morotai'],
+  'sanana'         : [-2.0533, 125.9789, 'Sanana'],
+  'bacan'          : [-0.6308, 127.5318, 'Bacan'],
+  'tobelo'         : [1.7228, 128.0047, 'Tobelo'],
 
-  // Kota-kota lain
-  'indonesia': [-2.5489, 118.0149, 'Indonesia'],
-  'nasional': [-2.5489, 118.0149, 'Indonesia'],
+  // Sulawesi
+  'makassar'       : [-5.1477, 119.4327, 'Makassar'],
+  'gowa'           : [-5.2667, 119.5833, 'Gowa'],
+  'palu'           : [-0.8917, 119.8707, 'Palu'],
+  'manado'         : [1.4748, 124.8421, 'Manado'],
+  'kendari'        : [-3.9985, 122.5129, 'Kendari'],
+  'gorontalo'      : [0.5435, 123.0568, 'Gorontalo'],
+  'mamuju'         : [-2.6750, 118.8867, 'Mamuju'],
+  'donggala'       : [-0.6764, 119.7514, 'Donggala'],
+  'kolaka'         : [-4.0506, 121.5751, 'Kolaka'],
+  'bau-bau'        : [-5.4715, 122.6118, 'Bau-Bau'],
+  'buton'          : [-5.1300, 122.6000, 'Buton'],
+  'pare-pare'      : [-4.0135, 119.6317, 'Pare-Pare'],
+  'toraja'         : [-3.0000, 119.8600, 'Toraja'],
+
+  // NTT & NTB
+  'kupang'         : [-10.1772, 123.6070, 'Kupang'],
+  'flores'         : [-8.6386, 121.5938, 'Flores'],
+  'ende'           : [-8.8483, 121.6625, 'Ende'],
+  'maumere'        : [-8.6226, 122.2148, 'Maumere'],
+  'labuan bajo'    : [-8.4952, 119.8860, 'Labuan Bajo'],
+  'lembata'        : [-8.3670, 123.4854, 'Lembata'],
+  'alor'           : [-8.2553, 124.4965, 'Alor'],
+  'sumba'          : [-9.6625, 120.2642, 'Sumba'],
+  'sabu'           : [-10.4800, 121.8400, 'Sabu'],
+  'rote'           : [-10.7200, 123.0000, 'Rote Ndao'],
+  'timor'          : [-9.8707, 124.0875, 'Timor'],
+  'mataram'        : [-8.5833, 116.1167, 'Mataram'],
+  'lombok'         : [-8.6529, 116.3240, 'Lombok'],
+  'sumbawa'        : [-8.7900, 117.9600, 'Sumbawa'],
+  'bima'           : [-8.4600, 118.7200, 'Bima'],
+
+  // Kalimantan
+  'pontianak'      : [-0.0263, 109.3425, 'Pontianak'],
+  'palangkaraya'   : [-2.2161, 113.9135, 'Palangka Raya'],
+  'banjarmasin'    : [-3.3194, 114.5908, 'Banjarmasin'],
+  'samarinda'      : [-0.5022, 117.1536, 'Samarinda'],
+  'balikpapan'     : [-1.2379, 116.8529, 'Balikpapan'],
+  'tarakan'        : [3.2987, 117.5773, 'Tarakan'],
+  'bontang'        : [0.1331, 117.4946, 'Bontang'],
+  'singkawang'     : [0.9010, 108.9800, 'Singkawang'],
+  'nusantara'      : [-0.8200, 116.7200, 'IKN Nusantara'],
+  'ikn'            : [-0.8200, 116.7200, 'IKN Nusantara'],
+
+  // Sumatera
+  'medan'          : [3.5952, 98.6722, 'Medan'],
+  'banda aceh'     : [5.5483, 95.3238, 'Banda Aceh'],
+  'padang'         : [-0.9492, 100.3543, 'Padang'],
+  'pekanbaru'      : [0.5071, 101.4478, 'Pekanbaru'],
+  'batam'          : [1.0456, 104.0305, 'Batam'],
+  'jambi'          : [-1.4852, 102.4381, 'Jambi'],
+  'palembang'      : [-2.9761, 104.7754, 'Palembang'],
+  'bengkulu'       : [-3.5778, 102.3464, 'Bengkulu'],
+  'bandar lampung' : [-5.4295, 105.2620, 'Bandar Lampung'],
+  'pangkalpinang'  : [-2.1296, 106.1161, 'Pangkalpinang'],
+
+  // Jawa
+  'jakarta'        : [-6.2088, 106.8456, 'Jakarta'],
+  'bandung'        : [-6.9175, 107.6191, 'Bandung'],
+  'surabaya'       : [-7.2504, 112.7688, 'Surabaya'],
+  'yogyakarta'     : [-7.7971, 110.3688, 'Yogyakarta'],
+  'jogja'          : [-7.7971, 110.3688, 'Yogyakarta'],
+  'semarang'       : [-6.9932, 110.4203, 'Semarang'],
+  'malang'         : [-7.9797, 112.6304, 'Malang'],
+  'solo'           : [-7.5755, 110.8243, 'Solo'],
+  'bogor'          : [-6.5971, 106.8060, 'Bogor'],
+  'serang'         : [-6.1201, 106.1503, 'Serang'],
+
+  // Bali
+  'bali'           : [-8.4095, 115.1889, 'Bali'],
+  'denpasar'       : [-8.6705, 115.2126, 'Denpasar'],
+
+  // Default nasional
+  'indonesia'      : [-2.5489, 118.0149, 'Indonesia'],
+  'nasional'       : [-2.5489, 118.0149, 'Nasional'],
+  'jakarta'        : [-6.2088, 106.8456, 'Jakarta'],
 };
 
-// ================================================================
-// KATEGORI BERITA
-// ================================================================
-const CATEGORY_RULES = [
-  { type: 'breaking', color: '#f97316', keywords: ['breaking', 'terkini', 'gempa', 'banjir', 'tsunami', 'longsor', 'kebakaran', 'kecelakaan', 'darurat', 'bencana', 'ledakan', 'demo', 'bentrok', 'konflik', 'meninggal', 'korban', 'penembakan'] },
-  { type: 'urgent', color: '#ef4444', keywords: ['penting', 'mendesak', 'waspada', 'siaga', 'mati lampu', 'gangguan', 'penangkapan', 'kriminal', 'korupsi', 'sidang', 'vonis', 'penetapan', 'hukum'] },
-  { type: 'info', color: '#22c55e', keywords: ['wisata', 'budaya', 'festival', 'pameran', 'pelantikan', 'peresmian', 'kunjungan', 'program', 'bantuan', 'beasiswa', 'investasi', 'ekonomi', 'bisnis', 'sport', 'olahraga', 'juara', 'prestasi'] },
+// ════════════════════════════════════════════════════════════════
+//  KEYWORD KATEGORI
+// ════════════════════════════════════════════════════════════════
+const CATS = [
+  { id:'breaking', color:'#f85149', glowColor:'rgba(248,81,73,0.5)',
+    kw:['gempa','tsunami','banjir','longsor','kebakaran','bencana','ledakan','demo','bentrok','korban','meninggal','evakuasi','penembakan','breaking','terkini','darurat','mendesak','konflik'] },
+  { id:'urgent',   color:'#e3b341', glowColor:'rgba(227,179,65,0.5)',
+    kw:['korupsi','sidang','vonis','penangkapan','hukum','kriminal','kasus','ditangkap','mati lampu','gangguan','polisi','tersangka','penggeledahan','penyelidikan','penahanan'] },
+  { id:'info',     color:'#3fb950', glowColor:'rgba(63,185,80,0.5)',
+    kw:['festival','budaya','wisata','peresmian','pelantikan','bantuan','beasiswa','prestasi','juara','program','pengembangan','peningkatan','investasi','ekonomi','bisnis','proyek'] },
+  { id:'regular',  color:'#58a6ff', glowColor:'rgba(88,166,255,0.5)',
+    kw:[] },
 ];
 
-// ================================================================
-// STATE APLIKASI
-// ================================================================
-let map = null;
-let markers = [];
-let newsItems = [];
-let activeFilter = 'all';
-let activeMarkerId = null;
+// ════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════
+let mapObj = null;
+let allNews = [];
+let mapMarkers = [];
+let activeCat = 'all';
+let wireActiveCat = 'all';
+let activeId = null;
 let refreshTimer = null;
 
-// ================================================================
-// INISIALISASI PETA
-// ================================================================
+// ════════════════════════════════════════════════════════════════
+//  PETA
+// ════════════════════════════════════════════════════════════════
 function initMap() {
-  map = L.map('map', {
+  mapObj = L.map('map', {
     center: [-2.5, 118.5],
     zoom: 5,
     zoomControl: true,
-    preferCanvas: true,
-    minZoom: 4,
-    maxZoom: 12,
+    minZoom: 4, maxZoom: 14,
   });
 
-  // Dark tile layer (gratis, tidak butuh API key)
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a> | Data: <a href="https://lelemuku.com">Lelemuku.com</a>',
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> | <a href="https://www.lelemuku.com">Lelemuku.com</a>',
     subdomains: 'abcd',
     maxZoom: 20,
-  }).addTo(map);
+  }).addTo(mapObj);
 
-  // Track mouse coordinates
-  map.on('mousemove', (e) => {
-    document.getElementById('coord-display').textContent =
-      `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+  mapObj.on('mousemove', e => {
+    document.getElementById('coord-chip').textContent =
+      `📡 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
   });
-
-  // Fit bounds ke Indonesia
-  map.fitBounds([[-11.5, 94.5], [6.5, 141.5]]);
 }
 
-// ================================================================
-// PARSING FEED RSS
-// ================================================================
-function categorizeNews(title, content) {
-  const text = (title + ' ' + content).toLowerCase();
-  for (const cat of CATEGORY_RULES) {
-    if (cat.keywords.some(kw => text.includes(kw))) {
-      return cat;
-    }
-  }
-  return { type: 'regular', color: '#f5c842', keywords: [] };
+function flyTo(lat, lng, zoom) {
+  mapObj.flyTo([lat, lng], zoom, { duration: 1.2 });
 }
 
-function detectLocation(title, content) {
-  const text = (title + ' ' + content).toLowerCase();
-  
-  // Sort by keyword length (longer = more specific)
-  const sorted = Object.entries(LOCATION_DB).sort((a, b) => b[0].length - a[0].length);
-  
-  for (const [keyword, data] of sorted) {
-    if (text.includes(keyword)) {
-      // Add small random jitter to avoid all markers at exactly the same location
-      const jitter = () => (Math.random() - 0.5) * 0.3;
-      return {
-        lat: data[0] + jitter(),
-        lng: data[1] + jitter(),
-        name: data[2],
-      };
+// ════════════════════════════════════════════════════════════════
+//  HELPER: DETEKSI LOKASI & KATEGORI
+// ════════════════════════════════════════════════════════════════
+function detectCat(title, desc) {
+  const t = (title + ' ' + desc).toLowerCase();
+  for (const c of CATS) {
+    if (c.kw.some(k => t.includes(k))) return c;
+  }
+  return CATS[CATS.length - 1];
+}
+
+function detectLoc(title, desc) {
+  const t = (title + ' ' + desc).toLowerCase();
+  // Sort by key length descending (more specific first)
+  const keys = Object.keys(LOC).sort((a,b) => b.length - a.length);
+  for (const k of keys) {
+    if (t.includes(k)) {
+      const d = LOC[k];
+      const jitter = () => (Math.random() - 0.5) * 0.25;
+      return { lat: d[0] + jitter(), lng: d[1] + jitter(), name: d[2] };
     }
   }
-  
-  // Default: random location on Indonesian territory for unmatched items
   return null;
 }
 
-function stripHtml(html) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || '';
+function stripTags(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  return (d.textContent || d.innerText || '').trim();
 }
 
-function extractImage(html) {
-  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-  return match ? match[1] : null;
+function getImage(html) {
+  const m = html && html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return m ? m[1] : null;
 }
 
-function timeAgo(dateStr) {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - date) / 1000);
-  if (diff < 60) return `${diff}d lalu`;
-  if (diff < 3600) return `${Math.floor(diff/60)}m lalu`;
+function timeAgo(ds) {
+  if (!ds) return '—';
+  const diff = (Date.now() - new Date(ds).getTime()) / 1000;
+  if (diff < 60)    return `${Math.round(diff)}d lalu`;
+  if (diff < 3600)  return `${Math.floor(diff/60)}m lalu`;
   if (diff < 86400) return `${Math.floor(diff/3600)}j lalu`;
-  return `${Math.floor(diff/86400)}h lalu`;
+  return `${Math.floor(diff/86400)}hr lalu`;
 }
 
-async function fetchFeedWithProxy(proxyUrl, feedUrl) {
-  const url = proxyUrl + encodeURIComponent(feedUrl);
-  const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const data = await response.json();
-  // allorigins format
-  if (data.contents) return data.contents;
-  // corsproxy format
-  return data;
-}
+// ════════════════════════════════════════════════════════════════
+//  FETCH FEED RSS (dengan multiple metode)
+// ════════════════════════════════════════════════════════════════
+async function fetchXml() {
+  const feed = CFG.feedUrl;
 
-async function loadFeed() {
-  showLoading(true);
-  clearMarkers();
-
-  let xmlText = null;
-  let usedProxy = null;
-
-  // Coba setiap proxy
-  for (const proxy of CONFIG.corsProxies) {
+  // METODE 1: Apps Script proxy (paling reliable)
+  if (CFG.appsScriptUrl) {
     try {
-      xmlText = await fetchFeedWithProxy(proxy, CONFIG.feedUrl);
-      usedProxy = proxy;
-      break;
-    } catch (e) {
-      console.warn(`Proxy gagal: ${proxy}`, e);
+      const r = await fetch(CFG.appsScriptUrl + '?url=' + encodeURIComponent(feed), {
+        signal: AbortSignal.timeout(10000),
+      });
+      if (r.ok) {
+        const j = await r.json();
+        if (j.content) return j.content;
+      }
+    } catch(e) { console.warn('Apps Script gagal:', e); }
+  }
+
+  // METODE 2: allorigins.win
+  try {
+    const r = await fetch(
+      `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`,
+      { signal: AbortSignal.timeout(10000) }
+    );
+    if (r.ok) {
+      const j = await r.json();
+      if (j.contents) return j.contents;
     }
-  }
+  } catch(e) { console.warn('allorigins gagal:', e); }
 
-  if (!xmlText) {
-    // Fallback: gunakan data contoh
-    document.getElementById('error-banner').style.display = 'block';
-    setTimeout(() => document.getElementById('error-banner').style.display = 'none', 5000);
-    loadSampleData();
-    showLoading(false);
-    return;
-  }
+  // METODE 3: corsproxy.io
+  try {
+    const r = await fetch(
+      `https://corsproxy.io/?${encodeURIComponent(feed)}`,
+      { signal: AbortSignal.timeout(10000) }
+    );
+    if (r.ok) return await r.text();
+  } catch(e) { console.warn('corsproxy gagal:', e); }
 
-  // Parse XML
+  // METODE 4: rss2json API
+  try {
+    const r = await fetch(
+      `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&count=50`,
+      { signal: AbortSignal.timeout(10000) }
+    );
+    if (r.ok) {
+      const j = await r.json();
+      if (j.status === 'ok') return JSON.stringify(j); // signal JSON path
+    }
+  } catch(e) { console.warn('rss2json gagal:', e); }
+
+  throw new Error('Semua metode fetch gagal');
+}
+
+function parseRss2json(json) {
+  const j = JSON.parse(json);
+  return j.items.map((item, idx) => {
+    const desc = stripTags(item.description || '').substring(0, 250);
+    const cat = detectCat(item.title, desc);
+    const loc = detectLoc(item.title, desc);
+    return {
+      id: idx,
+      title: item.title || '(tanpa judul)',
+      link: item.link || 'https://www.lelemuku.com',
+      date: item.pubDate || '',
+      desc,
+      image: item.enclosure?.link || item.thumbnail || getImage(item.description),
+      cat, loc,
+    };
+  });
+}
+
+function parseXml(xml) {
   const parser = new DOMParser();
-  const xml = parser.parseFromString(xmlText, 'application/xml');
-  const items = xml.querySelectorAll('item');
+  const doc = parser.parseFromString(xml, 'application/xml');
+  const parseError = doc.querySelector('parsererror');
+  if (parseError) throw new Error('XML parse error');
 
-  newsItems = [];
-  let locatedCount = 0;
+  const items = doc.querySelectorAll('item');
+  const result = [];
 
   items.forEach((item, idx) => {
-    const title = item.querySelector('title')?.textContent?.trim() || '';
-    const link = item.querySelector('link')?.textContent?.trim() || '#';
-    const pubDate = item.querySelector('pubDate')?.textContent || '';
-    const descEl = item.querySelector('description');
-    const description = descEl ? descEl.textContent : '';
-    const contentEl = item.querySelector('encoded') || item.querySelector('content\\:encoded');
-    const content = contentEl ? contentEl.textContent : description;
+    const title = item.querySelector('title')?.textContent?.trim() || '(tanpa judul)';
+    const link = item.querySelector('link')?.textContent?.trim() || 'https://www.lelemuku.com';
+    const date = item.querySelector('pubDate')?.textContent || '';
+    const descRaw = item.querySelector('description')?.textContent || '';
+    const contentRaw = item.querySelector('encoded')?.textContent
+      || item.getElementsByTagNameNS('*', 'encoded')[0]?.textContent
+      || descRaw;
+    const desc = stripTags(descRaw).substring(0, 250);
+    const image = getImage(contentRaw) || getImage(descRaw);
+    const cat = detectCat(title, desc);
+    const loc = detectLoc(title, desc);
 
-    const cleanDesc = stripHtml(description).substring(0, 300);
-    const image = extractImage(content) || extractImage(description);
-    const category = categorizeNews(title, title + ' ' + cleanDesc);
-    const location = detectLocation(title, cleanDesc);
-
-    const newsItem = {
-      id: idx,
-      title,
-      link,
-      pubDate,
-      description: cleanDesc,
-      image,
-      category,
-      location,
-    };
-
-    newsItems.push(newsItem);
-    if (location) locatedCount++;
+    result.push({ id: idx, title, link, date, desc, image, cat, loc });
   });
 
-  // Tambahkan marker ke peta
-  newsItems.filter(n => n.location).forEach(n => addMarker(n));
-
-  // Update sidebar
-  renderNewsList();
-  renderTicker();
-
-  // Update stats
-  document.getElementById('stat-total').textContent = newsItems.length;
-  document.getElementById('stat-time').textContent = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-  showLoading(false);
-  showToast(`✅ ${locatedCount} berita dipetakan dari ${newsItems.length} total`);
-
-  console.log(`Feed dimuat via: ${usedProxy}`);
+  return result;
 }
 
-// ================================================================
-// MARKER MANAGEMENT
-// ================================================================
-function addMarker(news) {
-  const { lat, lng } = news.location;
-  const color = news.category.color;
-  const type = news.category.type;
+// ════════════════════════════════════════════════════════════════
+//  LOAD DATA UTAMA
+// ════════════════════════════════════════════════════════════════
+async function loadData() {
+  setLoading(true);
+  setFeedStatus('Memuat...', 'var(--yellow)');
 
-  const markerHtml = `
-    <div class="news-marker">
-      <div class="marker-ring" style="
-        width:14px;height:14px;
-        background:${color};
-        top:0;left:0;
-        opacity:0.4;
-      "></div>
-      <div class="marker-dot ${type}" data-id="${news.id}">
-      </div>
-    </div>
-  `;
+  // Clear existing markers
+  mapMarkers.forEach(m => mapObj.removeLayer(m.m));
+  mapMarkers = [];
 
-  const icon = L.divIcon({
-    html: markerHtml,
-    className: '',
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -14],
-  });
+  try {
+    const raw = await fetchXml();
 
-  const marker = L.marker([lat, lng], { icon })
-    .addTo(map)
-    .bindPopup(buildPopup(news), {
-      maxWidth: 320,
-      className: 'news-popup',
+    // Deteksi apakah JSON (dari rss2json) atau XML
+    let items;
+    if (raw.trim().startsWith('{') && raw.includes('"items"')) {
+      items = parseRss2json(raw);
+    } else {
+      items = parseXml(raw);
+    }
+
+    allNews = items;
+
+    // Tambahkan marker
+    let locCount = 0;
+    allNews.forEach(n => {
+      if (n.loc) { addMarker(n); locCount++; }
     });
 
-  marker.on('click', () => {
-    setActiveNewsItem(news.id);
-  });
+    renderWire();
+    renderTicker();
+    updateCounts();
 
-  markers.push({ marker, news });
+    document.getElementById('stat-count').textContent = allNews.length;
+    document.getElementById('stat-mapped').textContent = locCount;
+    document.getElementById('update-chip').textContent =
+      `🕐 Update: ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}`;
+
+    setFeedStatus('Online ✓', 'var(--green)');
+    setLoading(false);
+    toast(`✅ ${locCount} dari ${allNews.length} berita dipetakan`, 'success');
+
+  } catch(err) {
+    console.error('Load error:', err);
+    setFeedStatus('Error — Offline', 'var(--red)');
+    setLoading(false);
+    loadFallback();
+    showErrorBar();
+  }
 }
 
-function buildPopup(news) {
-  const imgHtml = news.image
-    ? `<img class="popup-image" src="${news.image}" alt="" onerror="this.parentNode.querySelector('.popup-image-fallback').style.display='flex';this.remove()">`
-    : '';
-  
-  const fallbackEmoji = { breaking: '🔴', urgent: '⚠️', regular: '📰', info: '✅' }[news.category.type] || '📰';
+// ════════════════════════════════════════════════════════════════
+//  MARKER
+// ════════════════════════════════════════════════════════════════
+function addMarker(news) {
+  const c = news.cat;
+  const size = c.id === 'breaking' ? 16 : 13;
+
+  const icon = L.divIcon({
+    html: `<div style="
+      position:relative;
+      width:${size}px;height:${size}px;
+    ">
+      <div style="
+        position:absolute;inset:0;border-radius:50%;
+        background:${c.color};
+        box-shadow:0 0 ${size}px ${c.glowColor},0 0 ${size*2}px ${c.glowColor}33;
+        animation:mPulse 2.5s ease-in-out infinite alternate;
+      "></div>
+      <style>@keyframes mPulse{from{opacity:.75;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}</style>
+    </div>`,
+    className: '',
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2],
+    popupAnchor: [0, -size/2 - 4],
+  });
+
+  const marker = L.marker([news.loc.lat, news.loc.lng], { icon })
+    .addTo(mapObj)
+    .bindPopup(buildPopup(news), { maxWidth: 300 });
+
+  marker.on('click', () => setActiveItem(news.id));
+  mapMarkers.push({ m: marker, news });
+}
+
+function buildPopup(n) {
+  const c = n.cat;
+  const badge = { breaking:'badge-breaking', urgent:'badge-urgent', info:'badge-info', regular:'badge-regular' }[c.id] || 'badge-regular';
+  const label = { breaking:'🔴 BREAKING', urgent:'🟡 PENTING', info:'🟢 INFO', regular:'📰 UMUM' }[c.id] || '📰 UMUM';
+  const imgEl = n.image
+    ? `<img class="popup-img" src="${n.image}" alt="" onerror="this.style.display='none'">`
+    : `<div class="popup-no-img">${{breaking:'🆘',urgent:'⚠️',info:'🌿',regular:'📰'}[c.id]||'📰'}</div>`;
 
   return `
     <div>
-      ${imgHtml}
-      <div class="popup-image-fallback" style="${news.image ? 'display:none' : ''}">
-        <span style="font-size:32px">${fallbackEmoji}</span>
-      </div>
-      <div class="popup-inner">
-        <span class="popup-category cat-${news.category.type}">
-          ${news.category.type === 'breaking' ? '🔴 BREAKING' :
-            news.category.type === 'urgent' ? '🟡 PENTING' :
-            news.category.type === 'info' ? '🟢 INFO' : '📰 UMUM'}
-        </span>
-        <div class="popup-title">${news.title}</div>
+      ${imgEl}
+      <div class="popup-body">
+        <span class="popup-cat-badge ${badge}">${label}</span>
+        <div class="popup-title">${n.title}</div>
         <div class="popup-meta">
-          <span>📍 ${news.location.name}</span>
-          <span class="popup-meta-dot">·</span>
-          <span>🕐 ${timeAgo(news.pubDate)}</span>
+          📍 ${n.loc.name}
+          &nbsp;·&nbsp;
+          🕐 ${timeAgo(n.date)}
         </div>
-        <div class="popup-excerpt">${news.description}</div>
-        <a class="popup-link" href="${news.link}" target="_blank" rel="noopener">
+        <div class="popup-excerpt">${n.desc}</div>
+        <a class="popup-link" href="${n.link}" target="_blank" rel="noopener">
           Baca selengkapnya →
         </a>
       </div>
@@ -1263,212 +1440,232 @@ function buildPopup(news) {
   `;
 }
 
-function clearMarkers() {
-  markers.forEach(({ marker }) => map.removeLayer(marker));
-  markers = [];
-}
+// ════════════════════════════════════════════════════════════════
+//  WIRE PANEL
+// ════════════════════════════════════════════════════════════════
+function renderWire() {
+  const list = document.getElementById('wire-list');
+  const items = wireActiveCat === 'all'
+    ? allNews
+    : allNews.filter(n => n.cat.id === wireActiveCat);
 
-// ================================================================
-// SIDEBAR NEWS LIST
-// ================================================================
-function renderNewsList() {
-  const container = document.getElementById('news-list');
-  const filtered = activeFilter === 'all'
-    ? newsItems
-    : newsItems.filter(n => n.category.type === activeFilter);
-
-  container.innerHTML = '';
-
-  if (filtered.length === 0) {
-    container.innerHTML = `<div style="padding:24px 16px;text-align:center;color:var(--text-muted);font-size:12px">Tidak ada berita ditemukan</div>`;
+  if (!items.length) {
+    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);font-size:11px;font-family:var(--font-mono)">Tidak ada berita</div>`;
     return;
   }
 
-  filtered.forEach(news => {
-    const div = document.createElement('div');
-    div.className = `news-item${activeMarkerId === news.id ? ' active' : ''}`;
-    div.dataset.id = news.id;
-    div.innerHTML = `
-      <div class="news-item-dot" style="background:${news.category.color}"></div>
-      <div class="news-item-content">
-        <div class="news-item-title">${news.title}</div>
-        <div class="news-item-meta">
-          ${news.location ? `<span class="news-location-tag">📍 ${news.location.name}</span>` : ''}
-          <span>${timeAgo(news.pubDate)}</span>
+  list.innerHTML = items.map(n => `
+    <div class="wire-item${activeId===n.id?' active':''}" data-id="${n.id}" onclick="clickWireItem(${n.id})">
+      <div class="wi-dot" style="background:${n.cat.color}"></div>
+      <div class="wi-body">
+        <div class="wi-title">${n.title}</div>
+        <div class="wi-meta">
+          ${n.loc ? `<span class="wi-loc">📍 ${n.loc.name}</span>` : ''}
+          <span>${timeAgo(n.date)}</span>
         </div>
       </div>
-    `;
-    div.onclick = () => {
-      if (news.location) {
-        map.setView([news.location.lat, news.location.lng], 9, { animate: true });
-        const m = markers.find(m => m.news.id === news.id);
-        if (m) m.marker.openPopup();
-      }
-      setActiveNewsItem(news.id);
-    };
-    container.appendChild(div);
-  });
-}
-
-function setActiveNewsItem(id) {
-  activeMarkerId = id;
-  document.querySelectorAll('.news-item').forEach(el => {
-    el.classList.toggle('active', parseInt(el.dataset.id) === id);
-  });
-  // Scroll to item in sidebar
-  const activeEl = document.querySelector('.news-item.active');
-  if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function setFilter(filter, btn) {
-  activeFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
-  btn.className = `filter-btn active-${filter}`;
-  renderNewsList();
-  
-  // Show/hide markers based on filter
-  markers.forEach(({ marker, news }) => {
-    if (filter === 'all' || news.category.type === filter) {
-      marker.getElement()?.style.setProperty('display', 'block');
-    } else {
-      marker.getElement()?.style.setProperty('display', 'none');
-    }
-  });
-}
-
-// ================================================================
-// TICKER
-// ================================================================
-function renderTicker() {
-  const inner = document.getElementById('ticker-inner');
-  const items = newsItems.slice(0, CONFIG.maxTicker);
-  
-  const html = [...items, ...items].map(news => `
-    <div class="ticker-item" onclick="flyToNews(${news.id})">
-      <div class="ticker-dot" style="background:${news.category.color}"></div>
-      <span>${news.title}</span>
-      <span style="opacity:0.4">${news.location ? '· ' + news.location.name : ''}</span>
     </div>
   `).join('');
-  
-  inner.innerHTML = html;
 }
 
-function flyToNews(id) {
-  const news = newsItems.find(n => n.id === id);
-  if (!news?.location) return;
-  map.flyTo([news.location.lat, news.location.lng], 10, { duration: 1.5 });
-  const m = markers.find(m => m.news.id === id);
-  if (m) setTimeout(() => m.marker.openPopup(), 1600);
-  setActiveNewsItem(id);
+function clickWireItem(id) {
+  const n = allNews.find(x => x.id === id);
+  if (!n) return;
+  setActiveItem(id);
+  if (n.loc) {
+    mapObj.flyTo([n.loc.lat, n.loc.lng], 10, { duration: 1.2 });
+    const m = mapMarkers.find(x => x.news.id === id);
+    if (m) setTimeout(() => m.m.openPopup(), 1300);
+  }
 }
 
-// ================================================================
-// UI UTILITIES
-// ================================================================
-function showLoading(show) {
-  const el = document.getElementById('map-loading');
-  el.classList.toggle('hidden', !show);
+function setActiveItem(id) {
+  activeId = id;
+  document.querySelectorAll('.wire-item').forEach(el => {
+    el.classList.toggle('active', +el.dataset.id === id);
+  });
+  const el = document.querySelector(`.wire-item[data-id="${id}"]`);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-function showToast(msg, duration = 4000) {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = `<span>${msg}</span>`;
-  container.appendChild(toast);
+function wireFilter(f, btn) {
+  wireActiveCat = f;
+  document.querySelectorAll('.wf-btn').forEach(b => {
+    b.className = 'wf-btn';
+  });
+  btn.className = `wf-btn on-${f}`;
+  renderWire();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  FILTER KATEGORI (sidebar + marker visibility)
+// ════════════════════════════════════════════════════════════════
+function filterCat(cat, el) {
+  activeCat = cat;
+  document.querySelectorAll('.sb-item[id^="cat-"]').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  mapMarkers.forEach(({ m, news }) => {
+    const show = cat === 'all' || news.cat.id === cat;
+    const el = m.getElement();
+    if (el) el.style.display = show ? '' : 'none';
+  });
+}
+
+function updateCounts() {
+  document.getElementById('cnt-all').textContent = allNews.length;
+  ['breaking','urgent','info','regular'].forEach(c => {
+    document.getElementById(`cnt-${c}`).textContent =
+      allNews.filter(n => n.cat.id === c).length;
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TICKER
+// ════════════════════════════════════════════════════════════════
+function renderTicker() {
+  const track = document.getElementById('ticker-track');
+  const items = allNews.slice(0, 30);
+  const html = [...items, ...items].map(n => `
+    <div class="ticker-item" onclick="clickWireItem(${n.id})">
+      <div class="ticker-dot" style="background:${n.cat.color}"></div>
+      ${n.title}
+      ${n.loc ? `<span style="opacity:.4">· ${n.loc.name}</span>` : ''}
+    </div>
+  `).join('');
+  track.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  FALLBACK DATA (saat RSS gagal)
+// ════════════════════════════════════════════════════════════════
+function loadFallback() {
+  // Ambil dari konten homepage yang sudah diketahui
+  const fb = [
+    { title:'Koalisi HAM Minta Hentikan Operasi Balas Dendam di Dogiyai', loc:'dogiyai', cat:'breaking',
+      link:'https://www.lelemuku.com/2026/03/koalisi-penegak-hukum-dan-hak-asasi.html',
+      img:'https://blogger.googleusercontent.com/img/a/AVvXsEjE9ApBOgCF4bJrYCyUlleBEKv5KqVC7oGp0OSd-D2PYNahg2IqOn6pxK7rOHEVZRfITVYUdkqv4MsJODNk_uSoT8OFyQwrn7sVIckkBr9HOWK3A8bxlSLuQV3GEDa3RRmCPoxVk4zN4v3-0K4SekVvlsWkp5KJBz4jhkN85k7ETKKNwwoVFxBbttkD1eKu=w400-h200-p-k-no-nu'},
+    { title:'Teladan dari Kursi Wali Kota — Pesan Bijak Abisai Rollo tentang Pendidikan', loc:'jayapura', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/teladan-dari-kursi-wali-kota-pesan.html',
+      img:'https://lh3.googleusercontent.com/blogger_img_proxy/AEn0k_tgyF5XNx7PQs1WYsQiVP-3xA0Gyg3bvdp9_PrDCv1a_DxC7lDP7LyuP3Qz78du226dUJEArTPOK9OvkXHKC-C5KAwmnkxdj4AzHNtvH2Ufk2xK5g=w400-h200-n-k-no-nu'},
+    { title:'Ribka Haluk Hadiri Halal Bihalal Kemendagri RI', loc:'jakarta', cat:'regular',
+      link:'https://www.lelemuku.com/2026/03/ribka-haluk-hadiri-halal-bihalal.html', img:null},
+    { title:'Diduga Lakukan Tindak Asusila, Pria di Sentani Barat Ditangkap Polisi', loc:'sentani', cat:'urgent',
+      link:'https://www.lelemuku.com/2026/03/diduga-lakukan-tindak-asusila-terhadap.html', img:null},
+    { title:'Amerika Serikat dan Indonesia Dorong Ekspansi Freeport di Grasberg Papua', loc:'timika', cat:'info',
+      link:'https://www.lelemuku.com/2026/02/amerika-serikat-dan-indonesia-dorong.html', img:null},
+    { title:'Pekan Olahraga Nasional 2028 Akan Digelar di NTB dan NTT', loc:'mataram', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/pekan-olahraga-nasional-2028-akan.html', img:null},
+    { title:'Pemerintah Indonesia Larang Anak di Bawah 16 Tahun Punya Akun Media Sosial', loc:'jakarta', cat:'urgent',
+      link:'https://www.lelemuku.com/2026/03/pemerintah-indonesia-resmi-larang-anak.html', img:null},
+    { title:'Timnas Indonesia Menang Telak 4-0 Atas Saint Kitts and Nevis', loc:'jakarta', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/timnas-indonesia-menang-telak-4-0-atas.html', img:null},
+    { title:'Nembrala, Surga Selancar Internasional di Pulau Rote', loc:'rote', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/nembrala-surga-selancar-internasional.html', img:null},
+    { title:'Pulau Komodo, Habitat Kadal Terbesar dan Warisan Dunia UNESCO', loc:'labuan bajo', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/pulau-komodo-habitat-kadal-terbesar-dan.html', img:null},
+    { title:'Ribka Haluk Dorong RSUD Yowari Naik Tipe B', loc:'yowari', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/ribka-haluk-dorong-peningkatan-layanan.html', img:null},
+    { title:'Israel Serang Kompleks Nuklir Air Berat Khondab di Iran', loc:'nasional', cat:'breaking',
+      link:'https://www.lelemuku.com/2026/03/israel-serang-kompleks-nuklir-air-berat.html', img:null},
+    { title:'Abisai Rollo Gelar Sidang Terbuka Doktor — Visi "Satu Tungku Tiga Batu"', loc:'jayapura', cat:'info',
+      link:'https://www.lelemuku.com/2026/03/abisai-rollo-gelar-sidang-terbuka.html', img:null},
+    { title:'Arus Balik Lebaran: Rekayasa One Way dan Contraflow Masih Berlaku', loc:'jakarta', cat:'urgent',
+      link:'https://www.lelemuku.com/2026/03/arus-balik-lebaran-rekayasa-lalu-lintas.html', img:null},
+  ];
+
+  const jitter = () => (Math.random()-0.5)*0.3;
+
+  allNews = fb.map((f, idx) => {
+    const catObj = CATS.find(c => c.id === f.cat) || CATS[CATS.length-1];
+    const locData = LOC[f.loc];
+    return {
+      id: idx,
+      title: f.title,
+      link: f.link,
+      date: new Date(Date.now() - idx * 15*60000).toISOString(),
+      desc: `Berita dari Lelemuku.com. Klik untuk membaca artikel selengkapnya.`,
+      image: f.img,
+      cat: catObj,
+      loc: locData ? { lat: locData[0]+jitter(), lng: locData[1]+jitter(), name: locData[2] } : null,
+    };
+  });
+
+  allNews.filter(n => n.loc).forEach(n => addMarker(n));
+  renderWire();
+  renderTicker();
+  updateCounts();
+
+  document.getElementById('stat-count').textContent = allNews.length;
+  document.getElementById('stat-mapped').textContent = allNews.filter(n=>n.loc).length;
+  document.getElementById('update-chip').textContent = '🕐 Data Contoh (Offline)';
+
+  toast('⚠ Menampilkan data cadangan — Feed RSS tidak dapat dijangkau', 'warn', 6000);
+}
+
+function showErrorBar() {
+  const bar = document.getElementById('error-bar');
+  bar.textContent = '⚠ Feed RSS gagal dimuat. Lihat panduan setup Apps Script untuk solusi.';
+  bar.style.display = 'block';
+  setTimeout(() => bar.style.display = 'none', 8000);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UI UTILS
+// ════════════════════════════════════════════════════════════════
+function setLoading(show) {
+  document.getElementById('loading').classList.toggle('hidden', !show);
+}
+
+function setFeedStatus(text, color) {
+  document.getElementById('feed-status-text').textContent = text;
+  document.getElementById('feed-status-dot').style.background = color;
+  // Progress bar color
+  const segs = document.querySelectorAll('#feed-progress .status-bar-seg');
+  const colors = { 'var(--green)':[0,1,2,3,4], 'var(--yellow)':[0,1,2], 'var(--red)':[0] };
+  const active = colors[color] || [];
+  segs.forEach((s,i) => s.style.background = active.includes(i) ? color : 'var(--surface2)');
+}
+
+function toast(msg, type='info', duration=4000) {
+  const z = document.getElementById('toast-zone');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  z.appendChild(t);
   setTimeout(() => {
-    toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), 400);
+    t.classList.add('out');
+    setTimeout(() => t.remove(), 350);
   }, duration);
 }
 
-// ================================================================
-// SAMPLE DATA (fallback jika RSS gagal dimuat)
-// ================================================================
-function loadSampleData() {
-  const samples = [
-    { title: 'Gempa Bumi Guncang Jayapura, Warga Berhamburan Keluar Rumah', location: 'jayapura', type: 'breaking', date: new Date(Date.now() - 5*60000) },
-    { title: 'Festival Budaya Papua 2025 Dibuka Gubernur di Jayapura', location: 'jayapura', type: 'info', date: new Date(Date.now() - 15*60000) },
-    { title: 'Banjir Bandang Landa Sorong, Ratusan Warga Mengungsi', location: 'sorong', type: 'breaking', date: new Date(Date.now() - 30*60000) },
-    { title: 'Pembangunan Jalan Trans Papua Barat Dikebut', location: 'manokwari', type: 'info', date: new Date(Date.now() - 45*60000) },
-    { title: 'Longsor Tutup Akses Jalan di Wamena', location: 'wamena', type: 'urgent', date: new Date(Date.now() - 60*60000) },
-    { title: 'Panen Raya di Merauke Lampaui Target', location: 'merauke', type: 'info', date: new Date(Date.now() - 90*60000) },
-    { title: 'KM Dorolonda Terlambat Tiba di Ternate', location: 'ternate', type: 'regular', date: new Date(Date.now() - 2*3600000) },
-    { title: 'Makassar International Eight Festival Dibuka', location: 'makassar', type: 'info', date: new Date(Date.now() - 3*3600000) },
-    { title: 'Kebakaran Hutan Melanda Wilayah Kalimantan Tengah', location: 'kalimantan tengah', type: 'breaking', date: new Date(Date.now() - 4*3600000) },
-    { title: 'Presiden Tinjau Proyek IKN di Kalimantan Timur', location: 'kalimantan timur', type: 'info', date: new Date(Date.now() - 5*3600000) },
-    { title: 'Bali Sambut Wisman dengan Protokol Baru', location: 'bali', type: 'info', date: new Date(Date.now() - 6*3600000) },
-    { title: 'Demo Buruh di Jakarta Tolak Kenaikan BBM', location: 'jakarta', type: 'breaking', date: new Date(Date.now() - 7*3600000) },
-    { title: 'Flores Kembangkan Potensi Wisata Bahari', location: 'flores', type: 'info', date: new Date(Date.now() - 8*3600000) },
-    { title: 'Ambon City of Music Raih Penghargaan UNESCO', location: 'ambon', type: 'info', date: new Date(Date.now() - 9*3600000) },
-    { title: 'Banjir Rob Rendam Pesisir Semarang', location: 'semarang', type: 'urgent', date: new Date(Date.now() - 10*3600000) },
-    { title: 'Rupiah Menguat Terhadap Dolar AS', location: 'jakarta', type: 'regular', date: new Date(Date.now() - 11*3600000) },
-    { title: 'Timika Kembangkan Wisata Alam Pegunungan', location: 'timika', type: 'info', date: new Date(Date.now() - 12*3600000) },
-    { title: 'Nelayan Alor Berhasil Tangkap Ikan Tuna Biru Raksasa', location: 'alor', type: 'regular', date: new Date(Date.now() - 13*3600000) },
-    { title: 'PLTS Terapung Beroperasi di Danau Singkarak', location: 'sumatera barat', type: 'info', date: new Date(Date.now() - 14*3600000) },
-    { title: 'Sidang Korupsi Lahan di Kendari Berlanjut', location: 'kendari', type: 'urgent', date: new Date(Date.now() - 15*3600000) },
-  ];
-
-  newsItems = samples.map((s, idx) => {
-    const locData = LOCATION_DB[s.location];
-    const jitter = () => (Math.random() - 0.5) * 0.4;
-    const catData = CATEGORY_RULES.find(c => c.type === s.type) || { type: 'regular', color: '#f5c842' };
-    return {
-      id: idx,
-      title: s.title,
-      link: 'https://lelemuku.com',
-      pubDate: s.date.toISOString(),
-      description: `Berita dari Lelemuku.com: ${s.title}. Klik untuk membaca selengkapnya di portal berita Lelemuku.`,
-      image: null,
-      category: catData,
-      location: locData ? { lat: locData[0] + jitter(), lng: locData[1] + jitter(), name: locData[2] } : null,
-    };
-  });
-
-  newsItems.filter(n => n.location).forEach(n => addMarker(n));
-  renderNewsList();
-  renderTicker();
-
-  document.getElementById('stat-total').textContent = newsItems.length;
-  document.getElementById('stat-time').textContent = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+function setTab(el) {
+  document.querySelectorAll('.hdr-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
 
-// ================================================================
-// AUTO REFRESH & NOTIFIKASI BERITA BARU
-// ================================================================
-let previousTitles = new Set();
-
-function setupAutoRefresh() {
-  if (refreshTimer) clearInterval(refreshTimer);
-  refreshTimer = setInterval(async () => {
-    const prevCount = newsItems.length;
-    await loadFeed();
-    const newItems = newsItems.filter(n => !previousTitles.has(n.title));
-    if (newItems.length > 0 && prevCount > 0) {
-      showToast(`🔔 ${newItems.length} berita baru dari Lelemuku.com!`);
-      // Animasikan marker baru
-      newItems.slice(0, 3).forEach(n => {
-        if (n.location) {
-          const m = markers.find(m => m.news.id === n.id);
-          if (m) m.marker.bounce?.();
-        }
-      });
-    }
-    previousTitles = new Set(newsItems.map(n => n.title));
-  }, CONFIG.refreshInterval);
+// ════════════════════════════════════════════════════════════════
+//  CLOCK
+// ════════════════════════════════════════════════════════════════
+function updateClock() {
+  const wib = new Date(Date.now() + 7*3600000);
+  document.getElementById('clock').textContent =
+    wib.toISOString().replace('T',' ').substring(0,19) + ' WIB';
 }
 
-// ================================================================
-// INIT
-// ================================================================
-window.addEventListener('DOMContentLoaded', async () => {
+// ════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
   initMap();
-  await loadFeed();
-  previousTitles = new Set(newsItems.map(n => n.title));
-  setupAutoRefresh();
+  loadData();
+  setInterval(updateClock, 1000);
+  updateClock();
+  // Auto-refresh
+  if (CFG.refreshMs > 0) {
+    refreshTimer = setInterval(loadData, CFG.refreshMs);
+  }
 });
 </script>
-
 </body>
 </html>
