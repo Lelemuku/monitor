@@ -373,6 +373,7 @@ html, body {
 .wf.on-breaking{ background:rgba(248,81,73,.1);   border-color:rgba(248,81,73,.3);   color:var(--red); }
 .wf.on-urgent  { background:rgba(227,179,65,.1);  border-color:rgba(227,179,65,.3);  color:var(--yellow); }
 .wf.on-info    { background:rgba(63,185,80,.1);   border-color:rgba(63,185,80,.3);   color:var(--green); }
+.wf.on-world   { background:rgba(240,136,62,.1);  border-color:rgba(240,136,62,.3);  color:var(--orange); }
 
 #wire-list { flex:1; overflow-y:auto; }
 #wire-list::-webkit-scrollbar { width:3px; }
@@ -545,7 +546,7 @@ body::after {
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
+  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
@@ -613,6 +614,9 @@ body::after {
       <div class="sb-item" id="cat-regular"  onclick="filterCat('regular',this)">
         <div class="sb-dot" style="background:var(--blue)"></div>Umum<span class="sb-count" id="cnt-regular">0</span>
       </div>
+      <div class="sb-item" id="cat-world"  onclick="filterCat('world',this)">
+        <div class="sb-dot" style="background:var(--orange)"></div>Dunia<span class="sb-count" id="cnt-world">0</span>
+      </div>
     </div>
 
     <div class="sb-sec">
@@ -623,6 +627,7 @@ body::after {
       <div class="sb-item" onclick="flyTo(-8.6574,121.0794,7)">📍 NTT</div>
       <div class="sb-item" onclick="flyTo(-6.2088,106.8456,9)">📍 Jakarta</div>
       <div class="sb-item" onclick="flyTo(-2.5,118.5,5)">🗺 Indonesia</div>
+      <div class="sb-item" onclick="flyToWorld()">🌍 Peta Dunia</div>
     </div>
 
     <div id="feed-status-box">
@@ -688,6 +693,7 @@ body::after {
         <button class="wf"            data-f="breaking"  onclick="wireFilter('breaking',this)">🔴 Breaking</button>
         <button class="wf"            data-f="urgent"    onclick="wireFilter('urgent',this)">🟡 Penting</button>
         <button class="wf"            data-f="info"      onclick="wireFilter('info',this)">🟢 Info</button>
+        <button class="wf"            data-f="world"     onclick="wireFilter('world',this)">🌍 Dunia</button>
       </div>
 
       <div id="wire-list">
@@ -775,6 +781,208 @@ const LOC = {
   'bali':[-8.4095,115.1889,'Bali'],'denpasar':[-8.6705,115.2126,'Denpasar'],
   'indonesia':[-2.5489,118.0149,'Indonesia'],'nasional':[-2.5489,118.0149,'Nasional'],
 };
+// ══════════════════════════════════════════════
+//  DATABASE LOKASI LUAR NEGERI
+//  Format: [lat, lng, 'Nama Tampil', 'Nama Negara']
+// ══════════════════════════════════════════════
+const LOC_WORLD = {
+  // ── ASIA TENGGARA ──
+  'kuala lumpur':[3.1390,101.6869,'Kuala Lumpur','Malaysia'],
+  'petaling jaya':[3.1073,101.6067,'Petaling Jaya','Malaysia'],
+  'malaysia':[4.2105,101.9758,'Malaysia','Malaysia'],
+  'singapura':[1.3521,103.8198,'Singapura','Singapura'],
+  'singapore':[1.3521,103.8198,'Singapura','Singapura'],
+  'manila':[14.5995,120.9842,'Manila','Filipina'],
+  'filipina':[12.8797,121.7740,'Filipina','Filipina'],
+  'bangkok':[13.7563,100.5018,'Bangkok','Thailand'],
+  'thailand':[15.8700,100.9925,'Thailand','Thailand'],
+  'vietnam':[14.0583,108.2772,'Vietnam','Vietnam'],
+  'hanoi':[21.0285,105.8542,'Hanoi','Vietnam'],
+  'ho chi minh':[10.8231,106.6297,'Ho Chi Minh City','Vietnam'],
+  'myanmar':[19.1633,96.5785,'Myanmar','Myanmar'],
+  'yangon':[16.8661,96.1951,'Yangon','Myanmar'],
+  'naypyidaw':[19.7633,96.0785,'Naypyidaw','Myanmar'],
+  'kamboja':[12.5657,104.9910,'Kamboja','Kamboja'],
+  'phnom penh':[11.5564,104.9282,'Phnom Penh','Kamboja'],
+  'laos':[17.9757,102.6331,'Laos','Laos'],
+  'vientiane':[17.9757,102.6331,'Vientiane','Laos'],
+  'brunei':[4.5353,114.7277,'Brunei','Brunei'],
+  'timor leste':[8.8742,125.7275,'Timor-Leste','Timor-Leste'],
+  'dili':[-8.5586,125.5736,'Dili','Timor-Leste'],
+  // ── ASIA TIMUR ──
+  'china':[35.8617,104.1954,'China','China'],
+  'beijing':[39.9042,116.4074,'Beijing','China'],
+  'shanghai':[31.2304,121.4737,'Shanghai','China'],
+  'guangzhou':[23.1291,113.2644,'Guangzhou','China'],
+  'shenzhen':[22.5431,114.0579,'Shenzhen','China'],
+  'tiongkok':[35.8617,104.1954,'China','China'],
+  'jepang':[36.2048,138.2529,'Jepang','Jepang'],
+  'tokyo':[35.6762,139.6503,'Tokyo','Jepang'],
+  'osaka':[34.6937,135.5023,'Osaka','Jepang'],
+  'kyoto':[35.0116,135.7681,'Kyoto','Jepang'],
+  'ikebukuro':[35.7295,139.7109,'Ikebukuro, Tokyo','Jepang'],
+  'hokkaido':[43.0646,141.3468,'Hokkaido','Jepang'],
+  'korea selatan':[35.9078,127.7669,'Korea Selatan','Korea Selatan'],
+  'seoul':[37.5665,126.9780,'Seoul','Korea Selatan'],
+  'busan':[35.1796,129.0756,'Busan','Korea Selatan'],
+  'korea utara':[40.3399,127.5101,'Korea Utara','Korea Utara'],
+  'pyongyang':[39.0194,125.7381,'Pyongyang','Korea Utara'],
+  'taiwan':[23.6978,120.9605,'Taiwan','Taiwan'],
+  'taipei':[25.0330,121.5654,'Taipei','Taiwan'],
+  'hong kong':[22.3193,114.1694,'Hong Kong','Hong Kong'],
+  // ── ASIA SELATAN ──
+  'india':[20.5937,78.9629,'India','India'],
+  'new delhi':[28.6139,77.2090,'New Delhi','India'],
+  'mumbai':[19.0760,72.8777,'Mumbai','India'],
+  'pakistan':[30.3753,69.3451,'Pakistan','Pakistan'],
+  'islamabad':[33.7294,73.0931,'Islamabad','Pakistan'],
+  'karachi':[24.8607,67.0011,'Karachi','Pakistan'],
+  'bangladesh':[23.6850,90.3563,'Bangladesh','Bangladesh'],
+  'dhaka':[23.8103,90.4125,'Dhaka','Bangladesh'],
+  'sri lanka':[7.8731,80.7718,'Sri Lanka','Sri Lanka'],
+  'nepal':[28.3949,84.1240,'Nepal','Nepal'],
+  'kathmandu':[27.7172,85.3240,'Kathmandu','Nepal'],
+  'afghanistan':[33.9391,67.7100,'Afghanistan','Afghanistan'],
+  'kabul':[34.5553,69.2075,'Kabul','Afghanistan'],
+  // ── ASIA TENGAH & BARAT ──
+  'iran':[32.4279,53.6880,'Iran','Iran'],
+  'teheran':[35.6892,51.3890,'Teheran','Iran'],
+  'tehran':[35.6892,51.3890,'Teheran','Iran'],
+  'arab saudi':[23.8859,45.0792,'Arab Saudi','Arab Saudi'],
+  'saudi arabia':[23.8859,45.0792,'Arab Saudi','Arab Saudi'],
+  'riyadh':[24.7136,46.6753,'Riyadh','Arab Saudi'],
+  'mekah':[21.3891,39.8579,'Mekah','Arab Saudi'],
+  'mekkah':[21.3891,39.8579,'Mekah','Arab Saudi'],
+  'madinah':[24.5247,39.5692,'Madinah','Arab Saudi'],
+  'dubai':[25.2048,55.2708,'Dubai','UEA'],
+  'abu dhabi':[24.4539,54.3773,'Abu Dhabi','UEA'],
+  'uni emirat arab':[23.4241,53.8478,'UEA','UEA'],
+  'turki':[38.9637,35.2433,'Turki','Turki'],
+  'ankara':[39.9334,32.8597,'Ankara','Turki'],
+  'istanbul':[41.0082,28.9784,'Istanbul','Turki'],
+  'israel':[31.0461,34.8516,'Israel','Israel'],
+  'tel aviv':[32.0853,34.7818,'Tel Aviv','Israel'],
+  'yerusalem':[31.7683,35.2137,'Yerusalem','Israel'],
+  'palestina':[31.9522,35.2332,'Palestina','Palestina'],
+  'gaza':[31.5017,34.4668,'Gaza','Palestina'],
+  'suriah':[34.8021,38.9968,'Suriah','Suriah'],
+  'damaskus':[33.5138,36.2765,'Damaskus','Suriah'],
+  'irak':[33.2232,43.6793,'Irak','Irak'],
+  'baghdad':[33.3152,44.3661,'Baghdad','Irak'],
+  'lebanon':[33.8547,35.8623,'Lebanon','Lebanon'],
+  'beirut':[33.8886,35.4955,'Beirut','Lebanon'],
+  'yordania':[30.5852,36.2384,'Yordania','Yordania'],
+  'amman':[31.9454,35.9284,'Amman','Yordania'],
+  'yaman':[15.5527,48.5164,'Yaman','Yaman'],
+  'qatar':[25.3548,51.1839,'Qatar','Qatar'],
+  'doha':[25.2854,51.5310,'Doha','Qatar'],
+  'kuwait':[29.3117,47.4818,'Kuwait','Kuwait'],
+  'bahrain':[26.0667,50.5577,'Bahrain','Bahrain'],
+  'oman':[21.4735,55.9754,'Oman','Oman'],
+  'azerbaijan':[40.1431,47.5769,'Azerbaijan','Azerbaijan'],
+  'baku':[40.4093,49.8671,'Baku','Azerbaijan'],
+  // ── EROPA ──
+  'inggris':[55.3781,-3.4360,'Inggris','Inggris'],
+  'london':[51.5074,-0.1278,'London','Inggris'],
+  'manchester':[53.4808,-2.2426,'Manchester','Inggris'],
+  'prancis':[46.2276,2.2137,'Prancis','Prancis'],
+  'paris':[48.8566,2.3522,'Paris','Prancis'],
+  'jerman':[51.1657,10.4515,'Jerman','Jerman'],
+  'berlin':[52.5200,13.4050,'Berlin','Jerman'],
+  'munich':[48.1351,11.5820,'Munich','Jerman'],
+  'italia':[41.8719,12.5674,'Italia','Italia'],
+  'roma':[41.9028,12.4964,'Roma','Italia'],
+  'milan':[45.4654,9.1859,'Milan','Italia'],
+  'spanyol':[40.4637,-3.7492,'Spanyol','Spanyol'],
+  'madrid':[40.4168,-3.7038,'Madrid','Spanyol'],
+  'barcelona':[41.3851,2.1734,'Barcelona','Spanyol'],
+  'portugal':[39.3999,-8.2245,'Portugal','Portugal'],
+  'lisbon':[38.7223,-9.1393,'Lisbon','Portugal'],
+  'belanda':[52.1326,5.2913,'Belanda','Belanda'],
+  'amsterdam':[52.3676,4.9041,'Amsterdam','Belanda'],
+  'belgia':[50.5039,4.4699,'Belgia','Belgia'],
+  'brussel':[50.8503,4.3517,'Brussels','Belgia'],
+  'swiss':[46.8182,8.2275,'Swiss','Swiss'],
+  'austria':[47.5162,14.5501,'Austria','Austria'],
+  'swedia':[60.1282,18.6435,'Swedia','Swedia'],
+  'stockholm':[59.3293,18.0686,'Stockholm','Swedia'],
+  'norwegia':[60.4720,8.4689,'Norwegia','Norwegia'],
+  'oslo':[59.9139,10.7522,'Oslo','Norwegia'],
+  'denmark':[56.2639,9.5018,'Denmark','Denmark'],
+  'finlandia':[61.9241,25.7482,'Finlandia','Finlandia'],
+  'polandia':[51.9194,19.1451,'Polandia','Polandia'],
+  'warsawa':[52.2297,21.0122,'Warsawa','Polandia'],
+  'ukraina':[48.3794,31.1656,'Ukraina','Ukraina'],
+  'kyiv':[50.4501,30.5234,'Kyiv','Ukraina'],
+  'rusia':[61.5240,105.3188,'Rusia','Rusia'],
+  'moskow':[55.7558,37.6173,'Moskow','Rusia'],
+  'yunani':[39.0742,21.8243,'Yunani','Yunani'],
+  'athena':[37.9838,23.7275,'Athena','Yunani'],
+  'rumania':[45.9432,24.9668,'Rumania','Rumania'],
+  'hungaria':[47.1625,19.5033,'Hungaria','Hungaria'],
+  'budapest':[47.4979,19.0402,'Budapest','Hungaria'],
+  'ceko':[49.8175,15.4730,'Ceko','Ceko'],
+  'vatikan':[41.9029,12.4534,'Vatikan','Vatikan'],
+  'serbia':[44.0165,21.0059,'Serbia','Serbia'],
+  'kroasia':[45.1000,15.2000,'Kroasia','Kroasia'],
+  // ── AMERIKA ──
+  'amerika serikat':[37.0902,-95.7129,'Amerika Serikat','AS'],
+  'as':[37.0902,-95.7129,'Amerika Serikat','AS'],
+  'washington':[38.9072,-77.0369,'Washington D.C.','AS'],
+  'new york':[40.7128,-74.0060,'New York','AS'],
+  'los angeles':[34.0522,-118.2437,'Los Angeles','AS'],
+  'chicago':[41.8781,-87.6298,'Chicago','AS'],
+  'houston':[29.7604,-95.3698,'Houston','AS'],
+  'miami':[25.7617,-80.1918,'Miami','AS'],
+  'philadelphia':[39.9526,-75.1652,'Philadelphia','AS'],
+  'san francisco':[37.7749,-122.4194,'San Francisco','AS'],
+  'kanada':[56.1304,-106.3468,'Kanada','Kanada'],
+  'toronto':[43.6532,-79.3832,'Toronto','Kanada'],
+  'ottawa':[45.4215,-75.6972,'Ottawa','Kanada'],
+  'meksiko':[23.6345,-102.5528,'Meksiko','Meksiko'],
+  'brazil':[14.2350,-51.9253,'Brazil','Brazil'],
+  'sao paulo':[-23.5505,-46.6333,'São Paulo','Brazil'],
+  'rio de janeiro':[-22.9068,-43.1729,'Rio de Janeiro','Brazil'],
+  'argentina':[-38.4161,-63.6167,'Argentina','Argentina'],
+  'buenos aires':[-34.6037,-58.3816,'Buenos Aires','Argentina'],
+  'colombia':[4.5709,-74.2973,'Colombia','Colombia'],
+  'chile':[-35.6751,-71.5430,'Chile','Chile'],
+  'venezuela':[6.4238,-66.5897,'Venezuela','Venezuela'],
+  'kuba':[21.5218,-77.7812,'Kuba','Kuba'],
+  'saint kitts':[17.3578,-62.7830,'Saint Kitts','Saint Kitts & Nevis'],
+  'nevis':[17.1557,-62.5796,'Nevis','Saint Kitts & Nevis'],
+  // ── AFRIKA ──
+  'mesir':[26.8206,30.8025,'Mesir','Mesir'],
+  'kairo':[30.0444,31.2357,'Kairo','Mesir'],
+  'afrika selatan':[-30.5595,22.9375,'Afrika Selatan','Afrika Selatan'],
+  'johannesburg':[-26.2041,28.0473,'Johannesburg','Afrika Selatan'],
+  'nigeria':[9.0820,8.6753,'Nigeria','Nigeria'],
+  'abuja':[9.0579,7.4951,'Abuja','Nigeria'],
+  'lagos':[6.5244,3.3792,'Lagos','Nigeria'],
+  'kenya':[-0.0236,37.9062,'Kenya','Kenya'],
+  'nairobi':[-1.2921,36.8219,'Nairobi','Kenya'],
+  'ethiopia':[9.1450,40.4897,'Ethiopia','Ethiopia'],
+  'maroko':[31.7917,-7.0926,'Maroko','Maroko'],
+  'libya':[26.3351,17.2283,'Libya','Libya'],
+  'sudan':[12.8628,30.2176,'Sudan','Sudan'],
+  'somalia':[5.1521,46.1996,'Somalia','Somalia'],
+  'mogadishu':[2.0469,45.3182,'Mogadishu','Somalia'],
+  'tanzania':[-6.3690,34.8888,'Tanzania','Tanzania'],
+  // ── OSEANIA ──
+  'australia':[-25.2744,133.7751,'Australia','Australia'],
+  'sydney':[-33.8688,151.2093,'Sydney','Australia'],
+  'melbourne':[-37.8136,144.9631,'Melbourne','Australia'],
+  'canberra':[-35.2809,149.1300,'Canberra','Australia'],
+  'perth':[-31.9505,115.8605,'Perth','Australia'],
+  'new zealand':[-40.9006,174.8860,'Selandia Baru','Selandia Baru'],
+  'selandia baru':[-40.9006,174.8860,'Selandia Baru','Selandia Baru'],
+  'wellington':[-41.2866,174.7756,'Wellington','Selandia Baru'],
+  'auckland':[-36.8509,174.7645,'Auckland','Selandia Baru'],
+  'papua new guinea':[-6.3149,143.9555,'Papua Nugini','Papua Nugini'],
+  'papua nugini':[-6.3149,143.9555,'Papua Nugini','Papua Nugini'],
+  'port moresby':[-9.4438,147.1803,'Port Moresby','Papua Nugini'],
+  'fiji':[-17.7134,178.0650,'Fiji','Fiji'],
+};
 
 const CATS = [
   {id:'breaking',color:'#f85149',glow:'rgba(248,81,73,.5)',
@@ -810,6 +1018,11 @@ function initMap(){
 
 function flyTo(lat,lng,z){ mapObj.flyTo([lat,lng],z,{duration:1.2}); }
 
+function flyToWorld(){
+  // Zoom keluar ke tampilan dunia, lalu kembali ke Indonesia saat filter berubah
+  mapObj.flyTo([20,0],2,{duration:1.8});
+}
+
 // ══════════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════════
@@ -821,13 +1034,49 @@ function detectCat(t,d){
 
 function detectLoc(t,d){
   const s=(t+' '+d).toLowerCase();
-  const keys=Object.keys(LOC).sort((a,b)=>b.length-a.length);
-  for(const k of keys){
-    if(s.includes(k)){
-      const v=LOC[k]; const j=()=>(Math.random()-.5)*.22;
-      return {lat:v[0]+j(),lng:v[1]+j(),name:v[2]};
+
+  // Cek header berita: format "KOTA, LELEMUKU.COM" di awal judul/deskripsi
+  // Blogger Lelemuku umumnya menulis lokasi di awal, misal: "TOKYO, LELEMUKU.COM - ..."
+  const headerMatch = s.match(/^([a-z\s\.]+),\s*(lelemuku\.com|lelelemuku)/);
+  const headerCity = headerMatch ? headerMatch[1].trim() : null;
+
+  // Cek apakah ada keyword luar negeri yang kuat di teks
+  const worldKeys = Object.keys(LOC_WORLD).sort((a,b)=>b.length-a.length);
+  const indoKeys  = Object.keys(LOC).sort((a,b)=>b.length-a.length);
+
+  // Prioritas 1: header city yang cocok dengan LOC_WORLD (paling akurat)
+  if(headerCity){
+    for(const k of worldKeys){
+      if(headerCity===k || headerCity.includes(k)){
+        const v=LOC_WORLD[k]; const j=()=>(Math.random()-.5)*.18;
+        return {lat:v[0]+j(),lng:v[1]+j(),name:v[2],country:v[3],isWorld:true};
+      }
+    }
+    // Cek LOC Indonesia juga
+    for(const k of indoKeys){
+      if(headerCity===k || headerCity.includes(k)){
+        const v=LOC[k]; const j=()=>(Math.random()-.5)*.22;
+        return {lat:v[0]+j(),lng:v[1]+j(),name:v[2],isWorld:false};
+      }
     }
   }
+
+  // Prioritas 2: scan seluruh teks, LOC_WORLD dulu (keyword lebih spesifik)
+  for(const k of worldKeys){
+    if(s.includes(k)){
+      const v=LOC_WORLD[k]; const j=()=>(Math.random()-.5)*.18;
+      return {lat:v[0]+j(),lng:v[1]+j(),name:v[2],country:v[3],isWorld:true};
+    }
+  }
+
+  // Prioritas 3: Indonesia
+  for(const k of indoKeys){
+    if(s.includes(k)){
+      const v=LOC[k]; const j=()=>(Math.random()-.5)*.22;
+      return {lat:v[0]+j(),lng:v[1]+j(),name:v[2],isWorld:false};
+    }
+  }
+
   return null;
 }
 
@@ -957,13 +1206,34 @@ async function loadData(){
 //  MARKER
 // ══════════════════════════════════════════════
 function addMarker(news){
-  const c=news.cat; const sz=c.id==='breaking'?16:13;
+  const c=news.cat;
+  const isWorld=news.loc?.isWorld||false;
+  const sz=c.id==='breaking'?16:13;
+
+  // Marker dunia: ada ring animasi + emoji 🌍 di tengah
+  // Marker lokal: bulatan solid biasa
+  const markerHtml = isWorld
+    ? `<div style="position:relative;width:${sz}px;height:${sz}px">
+         <div style="position:absolute;inset:-4px;border-radius:50%;border:2px solid ${c.color};opacity:.5;animation:wRing 2.2s ease-out infinite;"></div>
+         <div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c.color};
+           box-shadow:0 0 ${sz}px ${c.glow};
+           animation:mPls 2.5s ease-in-out infinite alternate;
+           display:flex;align-items:center;justify-content:center;
+           font-size:${Math.max(7,sz-5)}px;line-height:1;">🌍</div>
+       </div>
+       <style>
+         @keyframes wRing{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.5);opacity:0}}
+         @keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}
+       </style>`
+    : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;
+         background:${c.color};
+         box-shadow:0 0 ${sz}px ${c.glow},0 0 ${sz*2}px ${c.glow}44;
+         animation:mPls 2.5s ease-in-out infinite alternate;">
+       </div>
+       <style>@keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}</style>`;
+
   const icon=L.divIcon({
-    html:`<div style="width:${sz}px;height:${sz}px;border-radius:50%;
-      background:${c.color};
-      box-shadow:0 0 ${sz}px ${c.glow},0 0 ${sz*2}px ${c.glow}44;
-      animation:mPls 2.5s ease-in-out infinite alternate;"></div>
-      <style>@keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}</style>`,
+    html:markerHtml,
     className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2-4]
   });
   const marker=L.marker([news.loc.lat,news.loc.lng],{icon})
@@ -983,7 +1253,7 @@ function buildPopup(n){
   return`<div>${imgH}<div class="pu-body">
     <span class="pu-badge ${bl}">${lb}</span>
     <div class="pu-title">${n.title}</div>
-    <div class="pu-meta">📍 ${n.loc.name} · 🕐 ${ago(n.date)}</div>
+    <div class="pu-meta">${n.loc.isWorld?'🌍':'📍'} ${n.loc.name}${n.loc.country?' · '+n.loc.country:''} · 🕐 ${ago(n.date)}</div>
     <div class="pu-desc">${n.desc}</div>
     <a class="pu-link" href="${n.link}" target="_blank" rel="noopener">Baca selengkapnya →</a>
   </div></div>`;
@@ -994,7 +1264,7 @@ function buildPopup(n){
 // ══════════════════════════════════════════════
 function renderWire(){
   const list=document.getElementById('wire-list');
-  const items=wireCat==='all'?allNews:allNews.filter(n=>n.cat.id===wireCat);
+  const items=wireCat==='all'?allNews:wireCat==='world'?allNews.filter(n=>n.loc?.isWorld):allNews.filter(n=>n.cat.id===wireCat);
   if(!items.length){
     list.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono)">Tidak ada berita</div>`;
     return;
@@ -1005,7 +1275,7 @@ function renderWire(){
       <div class="wi-body">
         <div class="wi-title">${n.title}</div>
         <div class="wi-meta">
-          ${n.loc?`<span class="wi-loc">📍 ${n.loc.name}</span>`:''}
+          ${n.loc?`<span class="wi-loc">${n.loc.isWorld?'🌍':'📍'} ${n.loc.name}${n.loc.isWorld&&n.loc.country?' ('+n.loc.country+')':''}</span>`:''}
           <span>${ago(n.date)}</span>
         </div>
       </div>
@@ -1066,7 +1336,7 @@ function filterCat(cat,el){
   document.querySelectorAll('.sb-item[id^="cat-"]').forEach(i=>i.classList.remove('active'));
   el.classList.add('active');
   mapMarkers.forEach(({m,news})=>{
-    const show=cat==='all'||news.cat.id===cat;
+    const show=cat==='all'||(cat==='world'?news.loc?.isWorld:(!news.loc?.isWorld&&news.cat.id===cat));
     const el=m.getElement(); if(el) el.style.display=show?'':'none';
   });
 }
@@ -1076,6 +1346,8 @@ function updateCounts(){
   ['breaking','urgent','info','regular'].forEach(c=>{
     document.getElementById(`cnt-${c}`).textContent=allNews.filter(n=>n.cat.id===c).length;
   });
+  const wEl=document.getElementById('cnt-world');
+  if(wEl) wEl.textContent=allNews.filter(n=>n.loc?.isWorld).length;
 }
 
 // ══════════════════════════════════════════════
@@ -1088,7 +1360,7 @@ function renderTicker(){
       <div class="tk-item" onclick="clickWire(${n.id})">
         <div class="tk-dot" style="background:${n.cat.color}"></div>
         ${n.title}
-        ${n.loc?`<span style="opacity:.35">· ${n.loc.name}</span>`:''}
+        ${n.loc?`<span style="opacity:.35">· ${n.loc.isWorld&&n.loc.country?n.loc.country:n.loc.name}</span>`:''}
       </div>`).join('');
 }
 
