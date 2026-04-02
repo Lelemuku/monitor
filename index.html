@@ -843,33 +843,43 @@ function ago(ds){
 // ══════════════════════════════════════════════
 // FETCH FEED — VERSI DIPERBAIKI
 // ══════════════════════════════════════════════
-async function tryFetch(url, timeout = 18000) {
+async function tryFetch(url, timeout = 25000) {
   const controller = new AbortController();
-  setTimeout(() => controller.abort(), timeout);
-  const r = await fetch(url, { signal: controller.signal });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r;
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const r = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r;
+  } catch (e) {
+    clearTimeout(id);
+    throw e;
+  }
 }
 
 // FETCH FEED — VERSI MINIMALIS & KUAT
 async function fetchFeed(feedUrl) {
-  console.log('🔄 Mencoba fetch feed...');
+  console.log('🔄 Mencoba ambil feed...');
 
-  // 1. APPS SCRIPT (utama)
   if (CFG.appsScriptUrl) {
-    try {
-      const r = await tryFetch(`${CFG.appsScriptUrl}?url=${encodeURIComponent(feedUrl)}`, 20000);
-      const j = await r.json();
-      if (j.content && j.content.length > 1000) {
-        console.log('✅ BERHASIL via Apps Script');
-        return {text: j.content, src: 'Apps Script'};
+    for (let attempt = 1; attempt <= 3; attempt++) {   // retry 3x
+      try {
+        const r = await tryFetch(`${CFG.appsScriptUrl}?url=${encodeURIComponent(feedUrl)}`, 25000);
+        const j = await r.json();
+        
+        if (j.content && j.content.length > 1000) {
+          console.log(`✅ BERHASIL via Apps Script (attempt ${attempt})`);
+          if (j.fromCache) console.log('📦 Dari Cache');
+          return {text: j.content, src: 'Apps Script'};
+        }
+      } catch (e) {
+        console.warn(`Attempt ${attempt} gagal:`, e.message);
+        if (attempt < 3) await new Promise(r => setTimeout(r, 1500)); // tunggu 1.5 detik
       }
-    } catch (e) {
-      console.warn('Apps Script timeout/gagal:', e.message);
     }
   }
 
-  // Kalau Apps Script gagal, langsung fallback ke data cadangan
+  // Kalau tetap gagal, pakai fallback data
   throw new Error('Semua metode gagal');
 }
 // ══════════════════════════════════════════════
