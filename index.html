@@ -504,164 +504,241 @@ body::after {
   font-family:var(--font-mono); letter-spacing:.5px; text-align:center; white-space:nowrap;
 }
 
-/* ═══════════════════════════════════
-   MOBILE OVERLAY (wire panel mobile)
-═══════════════════════════════════ */
-#mobile-overlay {
-  display:none; position:absolute; inset:0; background:rgba(0,0,0,.4);
-  z-index:1050; backdrop-filter:blur(2px);
+
+
+
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — Desktop (≥769px)
+   Wire panel di kanan, handle toggle, sidebar tampil
+═══════════════════════════════════════════════════════ */
+@media (min-width: 769px) {
+  #wire-panel {
+    width: 300px;
+    background: var(--surface);
+    border-left: 1px solid var(--border2);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow: hidden;
+    transition: width .3s cubic-bezier(.4,0,.2,1), background .3s, border-color .3s;
+  }
+  #wire-panel.collapsed { width: 0; border-left-width: 0; overflow: hidden; }
+  #wire-handle {
+    position: absolute; top: 50%; right: 0;
+    transform: translateY(-50%);
+    width: 22px; height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--border2); border-right: none;
+    border-radius: 6px 0 0 6px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 601; color: var(--text3); font-size: 11px;
+    transition: background .2s, color .2s;
+    user-select: none;
+  }
+  #wire-handle:hover { background: var(--surface2); color: var(--accent); }
+  #wire-panel.collapsed #wire-handle { right: -22px; border-right: 1px solid var(--border2); }
+  #fab-filter, #fab-wire, #mob-backdrop { display: none !important; }
+  #wire-toggle-btn { display: none; }
+  #wire-close-mobile { display: none !important; }
 }
 
-/* ═══════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — Mobile & Tablet (≤768px)
+═══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #sidebar { display:none; }
-  #logo-tag, .hdr-stat, #clock { display:none; }
-  #wire-toggle-btn { display:flex; }
+  /* Sembunyikan elemen desktop */
+  #sidebar { display: none !important; }
+  #logo-tag, .hdr-stat, #clock { display: none !important; }
+  #wire-desk-btn { display: none !important; }
+  #wire-handle { display: none !important; }
 
-  /* wire panel jadi drawer dari kanan pada mobile */
-  #wire-outer { position:absolute; top:0; right:0; bottom:0; z-index:1060; }
-  #wire-panel {
-    width: 290px;
-    height: 100%;
-    transform: translateX(100%);
-    transition: transform .3s cubic-bezier(.4,0,.2,1), background .3s;
-    position:relative;
-    border-left:1px solid var(--border2);
-    box-shadow: -4px 0 24px var(--shadow);
+  /* Wire toggle di header mobile */
+  #wire-toggle-btn { display: flex; }
+
+  /* Wire panel: TERSEMBUNYI, jadi drawer dari bawah */
+  #wire-outer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    z-index: 1500;
+    transition: height 0s;
+    pointer-events: none;
   }
-  #wire-panel.open-mobile { transform: translateX(0); }
-  #wire-handle { display: none; }
-  #mobile-overlay.visible { display:block; }
+  #wire-outer.mob-open {
+    height: 100%;
+    pointer-events: auto;
+  }
+  #wire-panel {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 100% !important;
+    height: 72vh;
+    max-height: 72vh;
+    background: var(--surface);
+    border-radius: 16px 16px 0 0;
+    border-top: 2px solid var(--border2);
+    border-left: none;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform .32s cubic-bezier(.4,0,.2,1), background .3s;
+    box-shadow: 0 -8px 32px var(--shadow);
+  }
+  #wire-outer.mob-open #wire-panel {
+    transform: translateY(0);
+  }
+  /* Drag handle visual di atas drawer */
+  #wire-drag-bar {
+    display: block;
+    width: 40px; height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  #wire-close-mobile { display: flex !important; }
+  #wire-panel { flex-shrink: 0; }
+
+  /* FAB buttons */
+  #fab-filter, #fab-wire { display: flex !important; }
 }
 
 @media (max-width: 480px) {
-  #logo-name { font-size:13px; }
-  #wire-panel { width: 100vw; }
+  #logo-name { font-size: 13px; }
+  #wire-panel { height: 80vh; max-height: 80vh; }
 }
 
-/* ═══════════════════════════════════
-   FILTER MODAL MOBILE
-═══════════════════════════════════ */
-#filter-fab {
-  display: none;
-  position: fixed;
-  bottom: 48px; /* di atas ticker */
-  left: 16px;
-  z-index: 1200;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
-  box-shadow: 0 4px 16px rgba(240,180,41,.45);
-  color: #000;
-  font-size: 18px;
-  cursor: pointer;
-  align-items: center; justify-content: center;
-  transition: transform .2s, box-shadow .2s;
-}
-#filter-fab:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(240,180,41,.6); }
-
-#filter-modal-bg {
+/* ── BACKDROP (shared oleh filter & wire modal) ── */
+#mob-backdrop {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 1300;
+  background: rgba(0,0,0,.5);
+  z-index: 1400;
   backdrop-filter: blur(3px);
   opacity: 0;
   transition: opacity .25s;
 }
-#filter-modal-bg.vis { opacity: 1; }
+#mob-backdrop.vis { opacity: 1; }
 
-#filter-modal {
+/* ── FAB BUTTONS ── */
+#fab-filter, #fab-wire {
+  display: none; /* tampil di mobile via media query */
   position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 1400;
+  z-index: 1200;
+  align-items: center; justify-content: center;
+  border: none; cursor: pointer;
+  border-radius: 28px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  gap: 6px;
+  padding: 0 14px;
+  height: 44px;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  white-space: nowrap;
+  bottom: 38px; /* tepat di atas ticker */
+}
+#fab-filter:hover, #fab-wire:hover { transform: translateY(-2px); }
+#fab-filter:active, #fab-wire:active { transform: scale(.96); }
+
+#fab-filter {
+  left: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--accent);
+}
+#fab-wire {
+  right: 12px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+}
+
+/* ── FILTER MODAL (drawer bawah) ── */
+#filter-modal {
+  display: none; /* diatur via JS */
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 1600;
   background: var(--surface);
   border-radius: 16px 16px 0 0;
-  border-top: 1px solid var(--border2);
-  padding: 0 0 32px;
-  transform: translateY(100%);
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 -8px 32px var(--shadow);
+  border-top: 2px solid var(--border2);
   max-height: 88vh;
   overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 -8px 32px var(--shadow);
 }
-#filter-modal.open { transform: translateY(0); }
+#filter-modal.fm-open { transform: translateY(0); }
 
-#fm-handle {
-  width: 36px; height: 4px;
+#fm-drag-bar {
+  width: 40px; height: 4px;
   background: var(--border2);
   border-radius: 2px;
-  margin: 10px auto 0;
+  margin: 10px auto 4px;
+  cursor: pointer;
 }
-
 #fm-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--accent);
-  text-transform: uppercase;
-  padding: 12px 18px 8px;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 2px; color: var(--accent); text-transform: uppercase;
+  padding: 10px 18px 8px;
   border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
 }
+#fm-close-btn {
+  background: none; border: none; color: var(--text3);
+  font-size: 18px; cursor: pointer; line-height: 1; padding: 0;
+}
+#fm-close-btn:hover { color: var(--text); }
 
-.fm-section { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.fm-section { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .fm-label {
   font-family: var(--font-mono); font-size: 9px;
   letter-spacing: 2px; color: var(--text3);
-  text-transform: uppercase; padding: 4px 18px 6px;
+  text-transform: uppercase; padding: 4px 18px 5px;
 }
-
 .fm-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 9px 18px; cursor: pointer;
+  padding: 10px 18px; cursor: pointer;
   transition: background .15s; user-select: none;
 }
 .fm-row:hover { background: rgba(128,128,128,.06); }
-.fm-row.active-fm { color: var(--accent); }
+.fm-row.fm-active { background: rgba(240,180,41,.06); }
 .fm-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .fm-name {
   font-family: var(--font-mono); font-size: 11px;
   letter-spacing: 1px; text-transform: uppercase;
-  color: var(--text3); flex: 1;
+  color: var(--text2); flex: 1;
 }
-.fm-row.active-fm .fm-name { color: var(--accent); }
-.fm-count {
-  font-family: var(--font-mono); font-size: 10px;
-  color: var(--text3);
-}
+.fm-row.fm-active .fm-name { color: var(--accent); }
+.fm-count { font-family: var(--font-mono); font-size: 10px; color: var(--text3); }
 .fm-check {
-  width: 16px; height: 16px;
-  border: 1px solid var(--border2);
-  border-radius: 50%;
+  width: 20px; height: 20px;
+  border: 1px solid var(--border2); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 9px; flex-shrink: 0;
+  font-size: 10px; flex-shrink: 0; color: transparent;
+  transition: all .2s;
 }
-.fm-row.active-fm .fm-check {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #000;
+.fm-row.fm-active .fm-check {
+  background: var(--accent); border-color: var(--accent); color: #000;
 }
-
-.fm-fly-row {
+.fm-fly {
   display: flex; align-items: center; gap: 10px;
-  padding: 9px 18px; cursor: pointer;
-  transition: background .15s; font-size: 12px; color: var(--text2);
+  padding: 10px 18px; cursor: pointer;
+  font-size: 13px; color: var(--text2);
+  transition: background .15s;
 }
-.fm-fly-row:hover { background: rgba(128,128,128,.06); color: var(--text); }
+.fm-fly:hover { background: rgba(128,128,128,.06); color: var(--text); }
+.fm-bottom-pad { height: 24px; }
 
-@media (max-width: 768px) {
-  #filter-fab { display: flex; }
-}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
+  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
@@ -695,10 +772,10 @@ body::after {
       WIRE
     </button>
 
-    <!-- Wire toggle (mobile) -->
-    <button id="wire-toggle-btn" onclick="toggleWireMobile()" title="Buka panel berita">
-      📰
-    </button>
+    <!-- Wire toggle (mobile) — ikon di header -->
+    <button id="wire-toggle-btn" onclick="openWireMob()"
+      style="display:none;align-items:center;justify-content:center;width:40px;height:100%;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text2);font-size:15px;cursor:pointer;transition:all .2s;flex-shrink:0;"
+      title="Buka Wire Berita">📰</button>
 
     <!-- Theme toggle -->
     <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
@@ -785,32 +862,30 @@ body::after {
     <div id="toast-zone"></div>
   </div>
 
-  <!-- WIRE PANEL WRAPPER -->
+  <!-- WIRE PANEL -->
   <div id="wire-outer">
-    <!-- Mobile overlay -->
-    <div id="mobile-overlay" onclick="toggleWireMobile()"></div>
-
     <div id="wire-panel">
-      <!-- Handle desktop -->
-      <div id="wire-handle" onclick="toggleWireDesktop()" title="Buka/tutup panel">
-        <span id="handle-arrow">◀</span>
+      <!-- Handle desktop (klik untuk collapse) -->
+      <div id="wire-handle" onclick="toggleWireDesktop()" title="Tutup panel">
+        <span id="handle-arrow">▶</span>
       </div>
-
-      <div id="wire-header">
-        <span id="wire-title">⬡ Wire Berita</span>
-        <!-- Close btn mobile -->
-        <button onclick="toggleWireMobile()"
-          style="margin-left:auto;background:none;border:none;color:var(--text3);font-size:17px;cursor:pointer;line-height:1;display:none;" id="wire-close-mobile">✕</button>
+      <!-- Drag bar (mobile saja) -->
+      <div id="wire-drag-bar" onclick="closeWireMob()"></div>
+      <!-- Header panel -->
+      <div id="wire-header" style="padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span id="wire-title" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--accent);flex:1;">⬡ Wire Berita</span>
+        <button id="wire-close-mobile" onclick="closeWireMob()"
+          style="display:none;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
       </div>
-
+      <!-- Filters -->
       <div class="wire-filters">
-        <button class="wf on-all"     data-f="all"      onclick="wireFilter('all',this)">Semua</button>
-        <button class="wf"            data-f="breaking"  onclick="wireFilter('breaking',this)">🔴 Breaking</button>
-        <button class="wf"            data-f="urgent"    onclick="wireFilter('urgent',this)">🟡 Penting</button>
-        <button class="wf"            data-f="info"      onclick="wireFilter('info',this)">🟢 Info</button>
-        <button class="wf"            data-f="world"     onclick="wireFilter('world',this)">🌍 Dunia</button>
+        <button class="wf on-all"  onclick="wireFilter('all',this)">Semua</button>
+        <button class="wf"         onclick="wireFilter('breaking',this)">🔴 Breaking</button>
+        <button class="wf"         onclick="wireFilter('urgent',this)">🟡 Penting</button>
+        <button class="wf"         onclick="wireFilter('info',this)">🟢 Info</button>
+        <button class="wf"         onclick="wireFilter('world',this)">🌍 Dunia</button>
       </div>
-
+      <!-- List -->
       <div id="wire-list">
         <div style="padding:28px 14px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono)">Memuat berita...</div>
       </div>
@@ -1479,8 +1554,8 @@ function clickWire(id){
     const m=mapMarkers.find(x=>x.news.id===id);
     if(m) setTimeout(()=>m.m.openPopup(),1300);
   }
-  // tutup panel otomatis di mobile setelah klik
-  if(window.innerWidth<=768) setTimeout(()=>toggleWireMobile(false),800);
+  // Tutup wire drawer di mobile setelah klik berita
+  if(window.innerWidth<=768) setTimeout(()=>closeWireMob(),700);
 }
 
 function setActive(id){
@@ -1496,26 +1571,7 @@ function wireFilter(f,btn){
   renderWire();
 }
 
-// ══════════════════════════════════════════════
-//  TOGGLE WIRE PANEL
-// ══════════════════════════════════════════════
-function toggleWireDesktop(){
-  wirePanelOpen=!wirePanelOpen;
-  const panel=document.getElementById('wire-panel');
-  const arrow=document.getElementById('handle-arrow');
-  panel.classList.toggle('collapsed',!wirePanelOpen);
-  arrow.textContent=wirePanelOpen?'▶':'◀';
-}
 
-function toggleWireMobile(forceState){
-  const panel=document.getElementById('wire-panel');
-  const overlay=document.getElementById('mobile-overlay');
-  const closeBtn=document.getElementById('wire-close-mobile');
-  const isOpen = typeof forceState==='boolean' ? !forceState : !panel.classList.contains('open-mobile');
-  panel.classList.toggle('open-mobile',isOpen);
-  overlay.classList.toggle('visible',isOpen);
-  closeBtn.style.display=isOpen?'block':'none';
-}
 
 // ══════════════════════════════════════════════
 //  FILTER
@@ -1640,59 +1696,109 @@ function toast(msg,type='info',dur=4000){
 //  THEME TOGGLE
 // ══════════════════════════════════════════════
 
+
+
 // ══════════════════════════════════════════════
-//  FILTER MODAL MOBILE
+//  MOBILE DRAWER SYSTEM
+//  - Wire drawer  : openWireMob / closeWireMob
+//  - Filter drawer: openFilterMob / closeFilterMob
+//  - closeMobAll  : tutup semuanya (dipanggil backdrop)
 // ══════════════════════════════════════════════
-function openFilterModal(){
-  document.getElementById('filter-modal-bg').style.display='block';
-  document.getElementById('filter-modal-bg').classList.add('vis');
-  document.getElementById('filter-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+const $ = id => document.getElementById(id);
+
+function showBackdrop(){
+  const bd = $('mob-backdrop');
+  bd.style.display = 'block';
+  requestAnimationFrame(()=>bd.classList.add('vis'));
+}
+function hideBackdrop(){
+  const bd = $('mob-backdrop');
+  bd.classList.remove('vis');
+  setTimeout(()=>{ bd.style.display='none'; }, 280);
 }
 
-function closeFilterModal(){
-  document.getElementById('filter-modal-bg').classList.remove('vis');
-  document.getElementById('filter-modal').classList.remove('open');
-  setTimeout(()=>{
-    document.getElementById('filter-modal-bg').style.display='none';
-    document.body.style.overflow='';
-  },300);
+// ── Wire ──
+function openWireMob(){
+  closeFilterMob(false);          // tutup filter jika terbuka
+  $('wire-outer').classList.add('mob-open');
+  $('wire-close-mobile').style.display = 'flex';
+  showBackdrop();
+  document.body.style.overflow = 'hidden';
+}
+function closeWireMob(){
+  $('wire-outer').classList.remove('mob-open');
+  $('wire-close-mobile').style.display = 'none';
+  hideBackdrop();
+  document.body.style.overflow = '';
 }
 
+// ── Filter ──
+function openFilterMob(){
+  closeWireMob();                 // tutup wire jika terbuka
+  const fm = $('filter-modal');
+  fm.style.display = 'block';
+  requestAnimationFrame(()=>fm.classList.add('fm-open'));
+  showBackdrop();
+  document.body.style.overflow = 'hidden';
+}
+function closeFilterMob(backdrop=true){
+  const fm = $('filter-modal');
+  fm.classList.remove('fm-open');
+  setTimeout(()=>{ fm.style.display='none'; }, 320);
+  if(backdrop) { hideBackdrop(); document.body.style.overflow=''; }
+}
+
+// ── Tutup semua (backdrop click) ──
+function closeMobAll(){
+  $('wire-outer').classList.remove('mob-open');
+  $('wire-close-mobile').style.display = 'none';
+  const fm = $('filter-modal');
+  fm.classList.remove('fm-open');
+  setTimeout(()=>{ fm.style.display='none'; }, 320);
+  hideBackdrop();
+  document.body.style.overflow = '';
+}
+
+// ── Desktop wire toggle ──
+function toggleWireDesktop(){
+  wirePanelOpen = !wirePanelOpen;
+  $('wire-panel').classList.toggle('collapsed', !wirePanelOpen);
+  $('handle-arrow').textContent = wirePanelOpen ? '▶' : '◀';
+}
+
+// ── Filter dari modal mobile ──
 function fmFilter(cat, el){
-  // Sinkronkan dengan filterCat desktop
-  filterCat(cat, document.getElementById('cat-'+cat)||{classList:{add:()=>{},remove:()=>{}}});
+  // Terapkan filter ke peta
+  filterCat(cat, $('cat-'+cat) || {classList:{add:()=>{},remove:()=>{}}});
 
   // Update visual modal
   document.querySelectorAll('.fm-row').forEach(r=>{
-    r.classList.remove('active-fm');
-    r.querySelector('.fm-check').textContent='';
+    r.classList.remove('fm-active');
+    r.querySelector('.fm-check').textContent = '';
   });
-  el.classList.add('active-fm');
-  el.querySelector('.fm-check').textContent='✓';
+  el.classList.add('fm-active');
+  el.querySelector('.fm-check').textContent = '✓';
 
-  // Update sidebar desktop juga
+  // Sync sidebar desktop
   document.querySelectorAll('.sb-item[id^="cat-"]').forEach(i=>i.classList.remove('active'));
-  const sbEl=document.getElementById('cat-'+cat);
-  if(sbEl) sbEl.classList.add('active');
+  const sb = $('cat-'+cat);
+  if(sb) sb.classList.add('active');
 
-  activeCat=cat;
-  closeFilterModal();
+  activeCat = cat;
+  closeFilterMob();
 }
 
-// Sync hitungan ke modal
+// ── Sync hitungan ke filter modal ──
 function syncFmCounts(){
-  ['all','breaking','urgent','info','regular'].forEach(c=>{
-    const el=document.getElementById('fmcnt-'+c);
-    if(el){
-      const src=document.getElementById('cnt-'+c);
-      if(src) el.textContent=src.textContent;
-    }
+  ['all','breaking','urgent','info','regular','world'].forEach(c=>{
+    const el = $('fmc-'+c);
+    const src = $('cnt-'+c);
+    if(el && src) el.textContent = src.textContent;
   });
-  const wEl=document.getElementById('fmcnt-world');
-  const wSrc=document.getElementById('cnt-world');
-  if(wEl&&wSrc) wEl.textContent=wSrc.textContent;
 }
+
+// ── Juga panggil clickWire dari wire mobile → tutup drawer ──
+const _origClickWire = typeof clickWire !== 'undefined' ? clickWire : null;
 
 function toggleTheme(){
   isDark=!isDark;
@@ -1731,65 +1837,85 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<!-- FILTER FAB BUTTON (mobile) -->
-<button id="filter-fab" onclick="openFilterModal()" title="Filter Berita">⚙</button>
+<!-- ═══════════════════════════════════════════════════
+     BACKDROP (dipakai filter & wire mobile)
+═══════════════════════════════════════════════════ -->
+<div id="mob-backdrop" onclick="closeMobAll()"></div>
 
-<!-- FILTER MODAL (mobile) -->
-<div id="filter-modal-bg" onclick="closeFilterModal()"></div>
+<!-- ═══════════════════════════════════════════════════
+     FAB BUTTONS — hanya tampil di mobile/tablet
+═══════════════════════════════════════════════════ -->
+<button id="fab-filter" onclick="openFilterMob()" title="Filter Kategori">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+  FILTER
+</button>
+
+<button id="fab-wire" onclick="openWireMob()" title="Wire Berita">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  WIRE
+</button>
+
+<!-- ═══════════════════════════════════════════════════
+     FILTER MODAL — drawer dari bawah
+═══════════════════════════════════════════════════ -->
 <div id="filter-modal">
-  <div id="fm-handle"></div>
-  <div id="fm-title">⬡ Filter & Navigasi</div>
+  <div id="fm-drag-bar" onclick="closeFilterMob()"></div>
+  <div id="fm-title">
+    <span>⬡ Filter &amp; Navigasi</span>
+    <button id="fm-close-btn" onclick="closeFilterMob()">✕</button>
+  </div>
 
   <div class="fm-section">
     <div class="fm-label">Kategori Berita</div>
-    <div class="fm-row active-fm" id="fm-all"      onclick="fmFilter('all',this)">
+    <div class="fm-row fm-active" id="fm-all"      onclick="fmFilter('all',this)">
       <div class="fm-dot" style="background:var(--accent)"></div>
       <span class="fm-name">Semua</span>
-      <span class="fm-count" id="fmcnt-all">0</span>
+      <span class="fm-count" id="fmc-all">0</span>
       <div class="fm-check">✓</div>
     </div>
     <div class="fm-row" id="fm-breaking" onclick="fmFilter('breaking',this)">
       <div class="fm-dot" style="background:var(--red)"></div>
       <span class="fm-name">Breaking</span>
-      <span class="fm-count" id="fmcnt-breaking">0</span>
+      <span class="fm-count" id="fmc-breaking">0</span>
       <div class="fm-check"></div>
     </div>
     <div class="fm-row" id="fm-urgent" onclick="fmFilter('urgent',this)">
       <div class="fm-dot" style="background:var(--yellow)"></div>
       <span class="fm-name">Penting</span>
-      <span class="fm-count" id="fmcnt-urgent">0</span>
+      <span class="fm-count" id="fmc-urgent">0</span>
       <div class="fm-check"></div>
     </div>
     <div class="fm-row" id="fm-info" onclick="fmFilter('info',this)">
       <div class="fm-dot" style="background:var(--green)"></div>
       <span class="fm-name">Info</span>
-      <span class="fm-count" id="fmcnt-info">0</span>
+      <span class="fm-count" id="fmc-info">0</span>
       <div class="fm-check"></div>
     </div>
     <div class="fm-row" id="fm-regular" onclick="fmFilter('regular',this)">
       <div class="fm-dot" style="background:var(--blue)"></div>
       <span class="fm-name">Umum</span>
-      <span class="fm-count" id="fmcnt-regular">0</span>
+      <span class="fm-count" id="fmc-regular">0</span>
       <div class="fm-check"></div>
     </div>
     <div class="fm-row" id="fm-world" onclick="fmFilter('world',this)">
       <div class="fm-dot" style="background:var(--orange)"></div>
       <span class="fm-name">Dunia</span>
-      <span class="fm-count" id="fmcnt-world">0</span>
+      <span class="fm-count" id="fmc-world">0</span>
       <div class="fm-check"></div>
     </div>
   </div>
 
   <div class="fm-section">
     <div class="fm-label">Wilayah</div>
-    <div class="fm-fly-row" onclick="fly(-2.5916,140.6690,8);closeFilterModal()">📍 Papua</div>
-    <div class="fm-fly-row" onclick="fly(-3.6954,128.1814,8);closeFilterModal()">📍 Maluku</div>
-    <div class="fm-fly-row" onclick="fly(1.5709,127.8088,8);closeFilterModal()">📍 Maluku Utara</div>
-    <div class="fm-fly-row" onclick="fly(-8.6574,121.0794,7);closeFilterModal()">📍 NTT</div>
-    <div class="fm-fly-row" onclick="fly(-6.2088,106.8456,9);closeFilterModal()">📍 Jakarta</div>
-    <div class="fm-fly-row" onclick="fly(-2.5,118.5,5);closeFilterModal()">🗺 Seluruh Indonesia</div>
-    <div class="fm-fly-row" onclick="mapObj.flyTo([20,10],2,{duration:1.8});closeFilterModal()">🌍 Peta Dunia</div>
+    <div class="fm-fly" onclick="fly(-2.5916,140.6690,8);closeFilterMob()">📍 Papua</div>
+    <div class="fm-fly" onclick="fly(-3.6954,128.1814,8);closeFilterMob()">📍 Maluku</div>
+    <div class="fm-fly" onclick="fly(1.5709,127.8088,8);closeFilterMob()">📍 Maluku Utara</div>
+    <div class="fm-fly" onclick="fly(-8.6574,121.0794,7);closeFilterMob()">📍 NTT</div>
+    <div class="fm-fly" onclick="fly(-6.2088,106.8456,9);closeFilterMob()">📍 Jakarta</div>
+    <div class="fm-fly" onclick="fly(-2.5,118.5,5);closeFilterMob()">🗺 Seluruh Indonesia</div>
+    <div class="fm-fly" onclick="mapObj.flyTo([20,10],2,{duration:1.8});closeFilterMob()">🌍 Peta Dunia</div>
   </div>
+  <div class="fm-bottom-pad"></div>
 </div>
 
 </body>
