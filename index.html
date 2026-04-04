@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Lelemuku Monitor — Peta Berita Indonesia</title>
+<title>#Lelemuku Monitor — Peta Berita Indonesia</title>
 <meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
 <link rel="icon" type="image/x-icon" href="https://www.lelemuku.com/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -738,7 +738,7 @@ body::after {
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
+  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
@@ -751,7 +751,7 @@ body::after {
 
   <div id="header-nav">
     <button class="nav-btn active">PETA</button>
-    <button class="nav-btn" onclick="window.open('https://monitor.lelemuku.com','_blank')">WIRE</button>
+    <button class="nav-btn" onclick="window.open('https://www.lelemuku.com','_blank')">WIRE</button>
   </div>
 
   <div id="header-gap"></div>
@@ -769,13 +769,13 @@ body::after {
     <button id="wire-desk-btn" onclick="toggleWireDesktop()" title="Buka/tutup panel berita"
       style="display:flex;align-items:center;gap:4px;height:100%;padding:0 13px;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text3);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-      WIRE
+      ARTIKEL
     </button>
 
     <!-- Wire toggle (mobile) — ikon di header -->
     <button id="wire-toggle-btn" onclick="openWireMob()"
       style="display:none;align-items:center;justify-content:center;width:40px;height:100%;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text2);font-size:15px;cursor:pointer;transition:all .2s;flex-shrink:0;"
-      title="Buka Wire Berita">📰</button>
+      title="Buka Artikel Berita">📰</button>
 
     <!-- Theme toggle -->
     <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
@@ -907,7 +907,7 @@ body::after {
 // ══════════════════════════════════════════════
 const CFG = {
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbybY32nXiUKVh3zwytuB264rxJ4OM5Ewx6lKMfDDxicPCNlz39yYmEJyEtvsoPcKCJU/exec',   
-  feeds: ['https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=100'],
+  feeds: ['https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=50'],
   refreshMs: 5 * 60 * 1000,
 };
 
@@ -1085,9 +1085,9 @@ const LOC = {
 
 const CATS = [
   {id:'breaking',color:'#f85149',glow:'rgba(248,81,73,.5)',
-   kw:['gempa','tsunami','perang','banjir','longsor','kebakaran','bencana','meledak','ledakan','demo','bentrok','korban','meninggal','evakuasi','penembakan','terkini','darurat','mendesak','konflik','serangan','operasi','tewas']},
+   kw:['gempa','tsunami','banjir','longsor','kebakaran','bencana','ledakan','demo','bentrok','korban','meninggal','evakuasi','penembakan','terkini','darurat','mendesak','konflik','serangan','operasi','tewas']},
   {id:'urgent',color:'#e3b341',glow:'rgba(227,179,65,.5)',
-   kw:['korupsi','sidang','vonis','penangkapan','hukum','kriminal','ditangkap','tersangka','penggeledahan','asusila','pencabulan','pencurian','penahanan','tangkap','polisi','jaksa']},
+   kw:['korupsi','sidang','vonis','penangkapan','hukum','kriminal','ditangkap','tersangka','penggeledahan','asusila','pencabulan','pencurian','penahanan','polisi','jaksa']},
   {id:'info',color:'#3fb950',glow:'rgba(63,185,80,.5)',
    kw:['festival','budaya','wisata','peresmian','pelantikan','bantuan','beasiswa','prestasi','juara','program','pengembangan','investasi','ekonomi','bisnis','proyek','doktor','halal bihalal','naik tipe','award']},
 ];
@@ -1380,6 +1380,25 @@ const LOC_WORLD = {
   'papua new guinea':[-6.3149,143.9555,'Papua Nugini','Papua Nugini'],
   'suva':[-18.1416,178.4419,'Suva','Fiji'],
   'fiji':[-17.7134,178.0650,'Fiji','Fiji'],
+  'kundiawa':[-6.02,144.97,'Kundiawa','Papua Nugini'],
+'goroka':[-6.0834,145.3874,'Goroka','Papua Nugini'],
+'kokopo':[-4.3437,152.2688,'Kokopo','Papua Nugini'],
+'wewak':[-3.55,143.63,'Wewak','Papua Nugini'],
+'wabag':[-5.483,143.7,'Wabag','Papua Nugini'],
+'kerema':[-7.963,145.779,'Kerema','Papua Nugini'],
+'madang':[-5.22,145.79,'Madang','Papua Nugini'],
+'lorengau':[-2.034,147.272,'Lorengau','Papua Nugini'],
+'alotau':[-10.316,150.459,'Alotau','Papua Nugini'],
+'lae':[-6.723,146.99,'Lae','Papua Nugini'],
+'kavieng':[-2.578,150.807,'Kavieng','Papua Nugini'],
+'popondetta':[-8.765,148.233,'Popondetta','Papua Nugini'],
+'buka':[-5.422,154.673,'Buka','Papua Nugini'],
+'mendi':[-6.149,143.647,'Mendi','Papua Nugini'],
+'kimbe':[-5.551,150.138,'Kimbe','Papua Nugini'],
+'vanimo':[-2.684,141.302,'Vanimo','Papua Nugini'],
+'daru':[-9.078,143.21,'Daru','Papua Nugini'],
+'mount hagen':[-5.857,144.231,'Mount Hagen','Papua Nugini'],
+'minj':[-5.863,144.67,'Minj','Papua Nugini'],
 };
 
 // ═══════════════════════════════════════════════════
@@ -1570,7 +1589,7 @@ async function loadData(){
       document.getElementById('update-chip').textContent=
         `🕐 ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})} WIB`;
       setFeedStatus(`Online ✓ (${src})`,'var(--green)');
-      toast(`✅ ${lc} dari ${allNews.length} berita Lelemuku yang dipetakan`,'success');
+      toast(`✅ ${lc} dari ${allNews.length} berita dipetakan via ${src}`,'success');
       success=true;
       break;
     }catch(e){console.warn('Feed error:',e.message);}
@@ -1589,23 +1608,31 @@ function addMarker(news){
   const c=news.cat;
   const isW=news.loc?.isWorld||false;
   const isDef=news.loc?.isDefault||false;
-  const sz=c.id==='breaking'?16:13;
-  const wSz=isW?Math.max(sz,15):sz;
-  const effSz=isDef?Math.max(sz-3,8):wSz; // marker default lebih kecil
-  const markerHtml=isW
-    ?`<div style="position:relative;width:${wSz}px;height:${wSz}px">
+  const isBreaking=c.id==='breaking';
+  const sz=isBreaking?16:13;
+  const effSz=isDef?Math.max(sz-3,8):sz;
+  const markerHtml=isBreaking
+    // Breaking: wRing pulse keluar + bulatan solid
+    ?`<div style="position:relative;width:${sz}px;height:${sz}px">
         <div style="position:absolute;inset:-5px;border-radius:50%;border:2px solid ${c.color};
           animation:wRing 2.2s ease-out infinite;opacity:.6;pointer-events:none;"></div>
-        <div style="width:${wSz}px;height:${wSz}px;border-radius:50%;background:${c.color};
-          box-shadow:0 0 ${wSz}px ${c.glow};
-          animation:mPls 2.5s ease-in-out infinite alternate;
-          display:flex;align-items:center;justify-content:center;
-          font-size:${Math.max(8,wSz-6)}px;line-height:1;">🌍</div>
+        <div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c.color};
+          box-shadow:0 0 ${sz}px ${c.glow},0 0 ${sz*2}px ${c.glow}44;
+          animation:mPls 2.5s ease-in-out infinite alternate;"></div>
       </div>
       <style>
         @keyframes wRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.4);opacity:0}}
         @keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}
       </style>`
+    // Dunia: bulatan mPls biasa + emoji 🌍
+    :isW
+    ?`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c.color};
+        box-shadow:0 0 ${sz}px ${c.glow},0 0 ${sz*2}px ${c.glow}44;
+        animation:mPls 2.5s ease-in-out infinite alternate;
+        display:flex;align-items:center;justify-content:center;
+        font-size:${Math.max(7,sz-5)}px;line-height:1;">🌍</div>
+      <style>@keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}</style>`
+    // Default (lokasi tidak diketahui): redup, tanpa animasi
     :isDef
     ?`<div style="width:${effSz}px;height:${effSz}px;border-radius:50%;
         background:${c.color};opacity:0.45;
@@ -1615,7 +1642,7 @@ function addMarker(news){
         box-shadow:0 0 ${sz}px ${c.glow},0 0 ${sz*2}px ${c.glow}44;
         animation:mPls 2.5s ease-in-out infinite alternate;"></div>
       <style>@keyframes mPls{from{opacity:.7;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}</style>`;
-  const iSz=isW?[wSz+10,wSz+10]:isDef?[effSz,effSz]:[sz,sz];
+  const iSz=isBreaking?[sz+10,sz+10]:isDef?[effSz,effSz]:[sz,sz];
   const icon=L.divIcon({
     html:markerHtml,
     className:'',iconSize:iSz,iconAnchor:[iSz[0]/2,iSz[1]/2],popupAnchor:[0,-iSz[1]/2-4]
@@ -2032,7 +2059,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     <div class="fm-fly" onclick="flyBounds([[-9.6,114.3],[-7.8,119.1]]);closeFilterMob()">🗺 Nusa Tenggara</div>
     <div class="fm-fly" onclick="flyBounds([[-6.2,119.2],[2.1,125.5]]);closeFilterMob()">🗺 Sulawesi</div>
     <div class="fm-fly" onclick="fly(-6.2088,106.8456,9);closeFilterMob()">📍 Jakarta</div>
-    <div class="fm-fly" onclick="fly(-2.5,118.5,5);closeFilterMob()">🗺 Seluruh Indonesia</div>
+    <div class="fm-fly" onclick="fly(-2.5,118.5,5);closeFilterMob()">🗺 Indonesia</div>
     <div class="fm-fly" onclick="mapObj.flyTo([20,10],2,{duration:1.8});closeFilterMob()">🌍 Peta Dunia</div>
   </div>
   <div class="fm-bottom-pad"></div>
