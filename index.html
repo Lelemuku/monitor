@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Lelemuku Monitor — Peta Berita Indonesia</title>
+<title>Monitor Lelemuku — Peta Berita Indonesia</title>
 <meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
 <link rel="icon" type="image/x-icon" href="https://www.lelemuku.com/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -738,21 +738,18 @@ body::after {
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
+  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
-      <div id="logo-name">Lelemuku Monitor</div>
+      <div id="logo-name">Monitor Lelemuku</div>
       <div id="logo-tag">Peta Berita Indonesia</div>
     </div>
   </a>
 
-  <div id="live-pill"><div class="live-ring"></div>LIVE</div>
-
   <div id="header-nav">
-    <button class="nav-btn active" id="btn-dark"  onclick="setThemeMode('dark',this)">🌙 GELAP</button>
-    <button class="nav-btn"        id="btn-light" onclick="setThemeMode('light',this)">☀️ TERANG</button>
-    <button class="nav-btn" onclick="window.open('https://www.lelemuku.com','_blank')">BERITA</button>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
+    <button class="nav-btn" onclick="window.open('https://monitor.lelemuku.com','_blank')">BERITA</button>
   </div>
 
   <div id="header-gap"></div>
@@ -777,10 +774,6 @@ body::after {
     <button id="wire-toggle-btn" onclick="openWireMob()"
       style="display:none;align-items:center;justify-content:center;width:40px;height:100%;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text2);font-size:15px;cursor:pointer;transition:all .2s;flex-shrink:0;"
       title="Buka Kabar Berita">📰</button>
-
-    <!-- Theme toggle -->
-    <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
-
     <div id="clock">—</div>
   </div>
 </div>
