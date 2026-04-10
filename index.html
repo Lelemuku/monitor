@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>#MonitorLelemuku — Peta Berita Indonesia</title>
+<title>Lelemuku Monitor — Peta Berita Indonesia</title>
 <meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
 <link rel="icon" type="image/x-icon" href="https://www.lelemuku.com/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -55,9 +55,9 @@
   --orange: #f0883e;
   --accent: #f0b429;
   --accent2:#e09921;
-  --font-mono: 'Share Tech Mono', monospace;
-  --font-head: 'Rajdhani', sans-serif;
-  --font-body: 'Barlow Condensed', sans-serif;
+ --font-head: Georgia, "Times New Roman", serif;
+ --font-body: Georgia, serif;
+ --font-mono: "Courier New", monospace;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -153,7 +153,7 @@ html, body {
 }
 #theme-toggle:hover { background: rgba(240,180,41,.06); }
 
-/* Wire toggle button (mobile) */
+/* Kabar toggle button (mobile) */
 #wire-toggle-btn {
   display: none;
   align-items: center; justify-content: center;
@@ -248,7 +248,7 @@ html, body {
   width:100%; height:100%;
   background: var(--bg);
 }
-.leaflet-tile { filter: var(--tile-filter) !important; }
+/* tile filter diatur via JS _applyLabel() */
 .leaflet-control-zoom {
   border: 1px solid var(--border2) !important;
   border-radius:6px !important; overflow:hidden; box-shadow:none !important;
@@ -267,8 +267,8 @@ html, body {
 
 /* Overlay chips */
 #map-chips {
-  position:absolute; top:10px; left:10px; z-index:800;
-  display:flex; flex-direction:column; gap:6px; pointer-events:none;
+  position:absolute; top:10px; right:48px; z-index:800; /* kanan, beri ruang dari zoom btn */
+  display:flex; flex-direction:column; gap:6px; pointer-events:none; align-items:flex-end;
 }
 .m-chip {
   background: var(--overlay); border:1px solid var(--border2);
@@ -278,7 +278,7 @@ html, body {
   transition: background .3s;
 }
 #coord-chip {
-  position:absolute; bottom:38px; left:10px; z-index:800;
+  position:absolute; bottom:38px; right:10px; z-index:800;
   pointer-events:none;
 }
 
@@ -300,7 +300,7 @@ html, body {
 .ld-txt { font-family:var(--font-mono); font-size:10px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; }
 
 /* ═══════════════════════════════════
-   WIRE PANEL (kanan — slideable)
+   KABAR PANEL (kanan — slideable)
 ═══════════════════════════════════ */
 #wire-panel {
   width: 300px;
@@ -510,7 +510,7 @@ body::after {
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE — Desktop (≥769px)
-   Wire panel di kanan, handle toggle, sidebar tampil
+   Kabar panel di kanan, handle toggle, sidebar tampil
 ═══════════════════════════════════════════════════════ */
 @media (min-width: 769px) {
   #wire-panel {
@@ -551,10 +551,10 @@ body::after {
   #wire-desk-btn { display: none !important; }
   #wire-handle { display: none !important; }
 
-  /* Wire toggle di header mobile */
+  /* Kabar toggle di header mobile */
   #wire-toggle-btn { display: flex; }
 
-  /* Wire panel: TERSEMBUNYI, jadi drawer dari bawah */
+  /* Kabar panel: TERSEMBUNYI, jadi drawer dari bawah */
   #wire-outer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -738,11 +738,11 @@ body::after {
 
 <!-- HEADER -->
 <div id="header">
-  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
+  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
-      <div id="logo-name">Monitor Lelemuku</div>
+      <div id="logo-name">Lelemuku Monitor</div>
       <div id="logo-tag">Peta Berita Indonesia</div>
     </div>
   </a>
@@ -750,8 +750,9 @@ body::after {
   <div id="live-pill"><div class="live-ring"></div>LIVE</div>
 
   <div id="header-nav">
-    <button class="nav-btn active">PETA</button>
-    <button class="nav-btn" onclick="window.open('https://www.lelemuku.com','_blank')">WIRE</button>
+    <button class="nav-btn active" id="btn-dark"  onclick="setThemeMode('dark',this)">🌙 GELAP</button>
+    <button class="nav-btn"        id="btn-light" onclick="setThemeMode('light',this)">☀️ TERANG</button>
+    <button class="nav-btn" onclick="window.open('https://www.lelemuku.com','_blank')">BERITA</button>
   </div>
 
   <div id="header-gap"></div>
@@ -769,13 +770,13 @@ body::after {
     <button id="wire-desk-btn" onclick="toggleWireDesktop()" title="Buka/tutup panel berita"
       style="display:flex;align-items:center;gap:4px;height:100%;padding:0 13px;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text3);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-      ARTIKEL
+      KABAR
     </button>
 
     <!-- Wire toggle (mobile) — ikon di header -->
     <button id="wire-toggle-btn" onclick="openWireMob()"
       style="display:none;align-items:center;justify-content:center;width:40px;height:100%;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text2);font-size:15px;cursor:pointer;transition:all .2s;flex-shrink:0;"
-      title="Buka Artikel Berita">📰</button>
+      title="Buka Kabar Berita">📰</button>
 
     <!-- Theme toggle -->
     <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
@@ -795,7 +796,7 @@ body::after {
         <div class="sb-dot" style="background:var(--accent)"></div>Semua<span class="sb-count" id="cnt-all">0</span>
       </div>
       <div class="sb-item" id="cat-breaking" onclick="filterCat('breaking',this)">
-        <div class="sb-dot" style="background:var(--red)"></div>Breaking<span class="sb-count" id="cnt-breaking">0</span>
+        <div class="sb-dot" style="background:var(--red)"></div>Peristiwa<span class="sb-count" id="cnt-breaking">0</span>
       </div>
       <div class="sb-item" id="cat-urgent"   onclick="filterCat('urgent',this)">
         <div class="sb-dot" style="background:var(--yellow)"></div>Penting<span class="sb-count" id="cnt-urgent">0</span>
@@ -823,7 +824,7 @@ body::after {
     </div>
 
     <div id="feed-status-box">
-      <div class="fs-label">Status Feed</div>
+      <div class="fs-label">Status</div>
       <div class="fs-row">
         <span class="fs-text" id="fs-text">Memuat...</span>
         <span class="fs-dot" id="fs-dot"></span>
@@ -837,7 +838,7 @@ body::after {
 
     <div id="legend">
       <div class="leg-label">Keterangan</div>
-      <div class="leg-row"><div class="leg-dot" style="background:var(--red);box-shadow:0 0 5px var(--red)"></div>Breaking / Bencana</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--red);box-shadow:0 0 5px var(--red)"></div>Peristiwa Besar</div>
       <div class="leg-row"><div class="leg-dot" style="background:var(--yellow);box-shadow:0 0 5px var(--yellow)"></div>Berita Penting</div>
       <div class="leg-row"><div class="leg-dot" style="background:var(--green);box-shadow:0 0 5px var(--green)"></div>Info & Lokal</div>
       <div class="leg-row"><div class="leg-dot" style="background:var(--blue);box-shadow:0 0 5px var(--blue)"></div>Berita Umum</div>
@@ -860,9 +861,10 @@ body::after {
 
     <div id="error-bar"></div>
     <div id="toast-zone"></div>
+
   </div>
 
-  <!-- WIRE PANEL -->
+  <!-- KABAR PANEL -->
   <div id="wire-outer">
     <div id="wire-panel">
       <!-- Handle desktop (klik untuk collapse) -->
@@ -873,14 +875,14 @@ body::after {
       <div id="wire-drag-bar" onclick="closeWireMob()"></div>
       <!-- Header panel -->
       <div id="wire-header" style="padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;">
-        <span id="wire-title" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--accent);flex:1;">⬡ Wire Berita</span>
+        <span id="wire-title" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--accent);flex:1;">⬡ Kabar Berita</span>
         <button id="wire-close-mobile" onclick="closeWireMob()"
           style="display:none;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
       </div>
       <!-- Filters -->
       <div class="wire-filters">
         <button class="wf on-all"  onclick="wireFilter('all',this)">Semua</button>
-        <button class="wf"         onclick="wireFilter('breaking',this)">🔴 Breaking</button>
+        <button class="wf"         onclick="wireFilter('breaking',this)">🔴 Peristiwa</button>
         <button class="wf"         onclick="wireFilter('urgent',this)">🟡 Penting</button>
         <button class="wf"         onclick="wireFilter('info',this)">🟢 Info</button>
         <button class="wf"         onclick="wireFilter('world',this)">🌍 Dunia</button>
@@ -907,7 +909,7 @@ body::after {
 // ══════════════════════════════════════════════
 const CFG = {
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbybY32nXiUKVh3zwytuB264rxJ4OM5Ewx6lKMfDDxicPCNlz39yYmEJyEtvsoPcKCJU/exec',   
-  feeds: ['https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=100'],
+  feeds: ['https://www.lelemuku.com/feeds/posts/default?alt=rss&max-results=150'],
   refreshMs: 5 * 60 * 1000,
 };
 
@@ -1399,35 +1401,40 @@ const LOC = {
   // Maluku
     'ternate': [0.7791, 127.3802, 'Ternate'],
     'tidore': [0.7077, 127.4180, 'Tidore'],
-    'sofifi': [0.7460, 127.5609, 'Sofifi'],
+    'sofifi': [0.7460, 127.5609, 'Tidore'],
     'morotai': [2.2880, 128.3740, 'Morotai'],
     'tobelo': [1.7228, 128.0047, 'Tobelo'],
     'bacan': [-0.6308, 127.5318, 'Bacan'],
     'sanana': [-2.0533, 125.9789, 'Sanana'],
-    'jailolo': [1.0917, 127.4917, 'Jailolo'],
-    'labuha': [-0.6400, 127.4833, 'Labuha'],
-    'weda': [0.3500, 127.8833, 'Weda'],
-    'maba': [0.8283, 128.3053, 'KotaMaba'],
+    'jailolo': [1.0917, 127.4917, 'Halmahera Barat'],
+    'labuha': [-0.6400, 127.4833, 'Halmahera Selatan'],
+    'weda': [0.3500, 127.8833, 'Halmahera Tengah'],
+    'halmahera tengah': [0.3500, 127.8833, 'Halmahera Tengah'],
+    'maba': [0.8283, 128.3053, 'Maba'],
     'daruba': [2.0783, 128.2900, 'Daruba'],
     'bobong': [-1.7400, 124.0100, 'Bobong'],
     'ambon': [-3.6954, 128.1814, 'Ambon'],
-    'seram': [-3.0898, 129.4817, 'Seram'],
-    'buru': [-3.3965, 126.5890, 'Buru'],
     'tual': [-5.6608, 132.7511, 'Tual'],
-    'kei': [-5.6108, 132.7511, 'Kep.Kei'],
-    'aru': [-6.1700, 134.5000, 'Kep.Aru'],
-    'haruku': [-3.5800, 128.4300, 'Haruku'],
-    'saparua': [-3.5700, 128.6500, 'Saparua'],
-    'malukutengah': [-3.2385, 128.8000, 'MalukuTengah'],
-    'namlea': [-3.2573, 126.6995, 'Namlea'],
-    'namrole': [-3.8433, 126.7000, 'Namrole'],
-    'dobo': [-5.7722, 134.2094, 'Dobo'],
-    'saumlaki': [-7.9886, 131.3089, 'Saumlaki'],
-    'tiakur': [-8.1800, 129.8400, 'Tiakur'],
-    'masohi': [-3.3387, 128.9168, 'Masohi'],
-    'langgur': [-5.6578, 132.7044, 'Langgur'],
-    'piru': [-3.0625, 128.1875, 'Piru'],
-    'bula': [-3.1022, 130.4639, 'Bula'],
+    'haruku': [-3.5800, 128.4300, 'Maluku Tengah'],
+    'saparua': [-3.5700, 128.6500, 'Maluku Tengah'],
+    'masohi': [-3.3387, 128.9168, 'Maluku Tengah'],
+    'seram': [-3.0898, 129.4817, 'Maluku Tengah'],
+    'maluku tengah': [-3.2385, 128.8000, 'Maluku Tengah'],
+    'namlea': [-3.2573, 126.6995, 'Buru'],
+    'buru': [-3.2573, 126.6995, 'Buru'],
+    'namrole': [-3.8433, 126.7000, 'Buru Selatan'],
+    'dobo': [-5.7722, 134.2094, 'Kepulauan Aru'],
+    'aru': [-6.1700, 134.5000, 'Kepulauan Aru'],
+    'saumlaki': [-7.9886, 131.3089, 'Kepulauan Tanimbar'],
+    'tanimbar': [-7.9886, 131.3089, 'Kepulauan Tanimbar'],
+    'tiakur': [-8.1800, 129.8400, 'Maluku Barat Daya'],
+    'langgur': [-5.6578, 132.7044, 'Maluku Tenggara'],
+    'maluku tenggara': [-5.6578, 132.7044, 'Maluku Tenggara'],
+    'kei': [-5.6108, 132.7511, 'Maluku Tenggara'],
+    'piru': [-3.0625, 128.1875, 'Seram Bagian Barat'],
+    'sbb': [-3.0625, 128.1875, 'Seram Bagian Barat'],
+    'bula': [-3.1022, 130.4639, 'Seram Bagian Timur'],
+    'sbt': [-3.1022, 130.4639, 'Seram Bagian Timur'],
   // Papua
     'sorong': [-0.8762, 131.2512, 'Kota Sorong'],
     'aimas': [-0.9592, 131.3200, 'Sorong'],
@@ -1441,8 +1448,8 @@ const LOC = {
     'sorongselatan': [-1.8628, 131.9988, 'Sorong Selatan'],
     'sorsel': [-1.8628, 131.9988, 'Sorong Selatan'],
     'teminabuan': [-1.4472, 132.0200, 'Sorong Selatan'],
-    'tambrauw': [-0.5000, 132.0000, 'Tambrauw'],
-    'fef': [-0.9167, 132.2333, 'Tambrauw'],
+    'tambrauw': [-0.7947, 132.4264, 'Tambrauw'],
+    'fef': [-0.7947, 132.4264, 'Tambrauw'],
     'manokwari': [-0.8615, 134.0622, 'Manokwari'],
     'bintuni': [-2.1077, 133.5220, 'Teluk Bintuni'],
     'teluk bintuni': [-2.1077, 133.5220, 'Teluk Bintuni'],
@@ -1535,9 +1542,9 @@ const LOC = {
 
 const CATS = [
   {id:'breaking',color:'#f85149',glow:'rgba(248,81,73,.5)',
-   kw:['gempa','tsunami','banjir','longsor','kebakaran','bencana','ledakan','demo','bentrok','korban','meninggal','evakuasi','penembakan','terkini','darurat','mendesak','konflik','serangan','tewas']},
+   kw:['gempa','tsunami','banjir','longsor','kebakaran','bencana','ledakan','demo','bentrok','korban','meninggal','evakuasi','penembakan','terkini','darurat','mendesak','konflik','serangan','operasi','tewas']},
   {id:'urgent',color:'#e3b341',glow:'rgba(227,179,65,.5)',
-   kw:['korupsi','sidang','vonis','penangkapan','hukum','operasi','kriminal','ditangkap','tersangka','penggeledahan','asusila','pencabulan','pencurian','penahanan','polisi','jaksa']},
+   kw:['korupsi','sidang','vonis','penangkapan','hukum','kriminal','ditangkap','tersangka','penggeledahan','asusila','pencabulan','pencurian','penahanan','polisi','jaksa']},
   {id:'info',color:'#3fb950',glow:'rgba(63,185,80,.5)',
    kw:['festival','budaya','wisata','peresmian','pelantikan','bantuan','beasiswa','prestasi','juara','program','pengembangan','investasi','ekonomi','bisnis','proyek','doktor','halal bihalal','naik tipe','award']},
 ];
@@ -1553,19 +1560,91 @@ let isDark = true;
 // ══════════════════════════════════════════════
 //  MAP INIT
 // ══════════════════════════════════════════════
+// ── Definisi tile layers ──
+// ── Peta dasar tunggal: Esri World Imagery (satelit) ──
+const SATELIT_LAYER = {
+  url:    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  attr:   'Imagery &copy; Esri, Maxar, Earthstar Geographics | <a href="https://lelemuku.com">Lelemuku.com</a>',
+  opts:   { maxZoom:19 },
+  filter: 'brightness(0.95) saturate(1.05)',
+};
+
+// ── Label overlay per tema ──
+// dark_only_labels & light_only_labels = PNG transparan (teks saja, tanpa background)
+const LABEL_LAYERS = {
+  dark: {
+    // Carto dark labels — nama jalan, kota, POI; teks putih di atas gelap
+    url:  'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
+    attr: '&copy; <a href="https://carto.com/">CARTO</a>',
+    opts: { subdomains:'abcd', maxZoom:20, opacity:0.90, pane:'overlayPane' },
+  },
+  light: {
+    // Carto light labels — teks gelap, lebih terbaca di tema terang
+    url:  'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+    attr: '&copy; <a href="https://carto.com/">CARTO</a>',
+    opts: { subdomains:'abcd', maxZoom:20, opacity:0.95, pane:'overlayPane' },
+  },
+};
+
+
+let currentSatelitLayer = null;
+let currentLabelLayer   = null;
+let currentThemeMode    = 'dark';  // 'dark' | 'light'
+
 function initMap(){
-  mapObj = L.map('map',{center:[-2.5,118.5],zoom:5,zoomControl:true,minZoom:4,maxZoom:14});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://carto.com/">CARTO</a> | <a href="https://lelemuku.com">Lelemuku.com</a>',
-    subdomains:'abcd',maxZoom:20
-  }).addTo(mapObj);
+  // zoom control dipindah ke kanan agar tidak menabrak jam
+  mapObj = L.map('map',{
+    center:[-2.5,118.5], zoom:5,
+    zoomControl:false,          // matikan default (kiri)
+    minZoom:4, maxZoom:19
+  });
+  L.control.zoom({ position:'topright' }).addTo(mapObj); // zoom di kanan atas
+
+  _initSatelit();   // pasang tile satelit Esri (sekali seumur hidup)
+  _applyLabel('dark'); // label Carto dark (default)
+
   mapObj.on('mousemove',e=>{
     document.getElementById('coord-chip').textContent =
       `📡 ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
   });
 }
 
+// ── Inisialisasi satelit (dipanggil sekali di initMap) ──
+function _initSatelit(){
+  if(currentSatelitLayer) return;
+  const t = SATELIT_LAYER;
+  currentSatelitLayer = L.tileLayer(t.url, { attribution:t.attr, ...t.opts }).addTo(mapObj);
+  // Filter CSS pada tile satelit
+  const applyFilter = () => {
+    mapObj.getPanes().tilePane?.querySelectorAll('.leaflet-tile').forEach(el=>{
+      if(!el.closest?.('.leaflet-overlay-pane')) el.style.filter = t.filter;
+    });
+  };
+  currentSatelitLayer.on('load', applyFilter);
+  applyFilter();
+}
+
+// ── Ganti label overlay sesuai tema ──
+function _applyLabel(mode){
+  if(currentLabelLayer){ mapObj.removeLayer(currentLabelLayer); currentLabelLayer=null; }
+  const l = LABEL_LAYERS[mode] || LABEL_LAYERS.dark;
+  currentLabelLayer = L.tileLayer(l.url, { attribution:l.attr, ...l.opts }).addTo(mapObj);
+  currentThemeMode = mode;
+}
+
+// ── Toggle tema dark/light (tombol di nav) ──
+function setThemeMode(mode, btn){
+  isDark = (mode === 'dark');
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-toggle').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('lm-theme', mode);
+  _applyLabel(mode);
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
 function flyTo(lat,lng,z){ mapObj.flyTo([lat,lng],z,{duration:1.2}); }
+
 const fly = flyTo;
 
 // Zoom ke bounding box wilayah
@@ -2038,9 +2117,9 @@ async function loadData(){
       document.getElementById('st-count').textContent=allNews.length;
       document.getElementById('st-mapped').textContent=lc;
       document.getElementById('update-chip').textContent=
-        `🕐 ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})} WIB`;
+        `🕐 JAM ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}`;
       setFeedStatus(`Online ✓ (${src})`,'var(--green)');
-      toast(`✅ ${lc} dari ${allNews.length} berita Lelemuku telah dipetakan`,'success');
+      toast(`✅ ${lc} dari ${allNews.length} berita Lelemuku telah berhasil dipetakan`,'success');
       success=true;
       break;
     }catch(e){console.warn('Feed error:',e.message);}
@@ -2122,7 +2201,7 @@ function buildPopup(n){
 }
 
 // ══════════════════════════════════════════════
-//  WIRE PANEL
+//  PANEL KABAR
 // ══════════════════════════════════════════════
 function renderWire(){
   const list=document.getElementById('wire-list');
@@ -2152,7 +2231,7 @@ function clickWire(id){
     const m=mapMarkers.find(x=>x.news.id===id);
     if(m) setTimeout(()=>m.m.openPopup(),1300);
   }
-  // Tutup wire drawer di mobile setelah klik berita
+  // Tutup kabar drawer di mobile setelah klik berita
   if(window.innerWidth<=768) setTimeout(()=>closeWireMob(),700);
 }
 
@@ -2298,7 +2377,7 @@ function toast(msg,type='info',dur=4000){
 
 // ══════════════════════════════════════════════
 //  MOBILE DRAWER SYSTEM
-//  - Wire drawer  : openWireMob / closeWireMob
+//  - Kabar drawer  : openWireMob / closeWireMob
 //  - Filter drawer: openFilterMob / closeFilterMob
 //  - closeMobAll  : tutup semuanya (dipanggil backdrop)
 // ══════════════════════════════════════════════
@@ -2315,7 +2394,7 @@ function hideBackdrop(){
   setTimeout(()=>{ bd.style.display='none'; }, 280);
 }
 
-// ── Wire ──
+// ── Kabar ──
 function openWireMob(){
   closeFilterMob(false);          // tutup filter jika terbuka
   $('wire-outer').classList.add('mob-open');
@@ -2332,7 +2411,7 @@ function closeWireMob(){
 
 // ── Filter ──
 function openFilterMob(){
-  closeWireMob();                 // tutup wire jika terbuka
+  closeWireMob();                 // tutup kabar jika terbuka
   const fm = $('filter-modal');
   fm.style.display = 'block';
   requestAnimationFrame(()=>fm.classList.add('fm-open'));
@@ -2357,7 +2436,7 @@ function closeMobAll(){
   document.body.style.overflow = '';
 }
 
-// ── Desktop wire toggle ──
+// ── Desktop kabar toggle ──
 function toggleWireDesktop(){
   wirePanelOpen = !wirePanelOpen;
   $('wire-panel').classList.toggle('collapsed', !wirePanelOpen);
@@ -2399,16 +2478,10 @@ function syncFmCounts(){
 const _origClickWire = typeof clickWire !== 'undefined' ? clickWire : null;
 
 function toggleTheme(){
-  isDark=!isDark;
-  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
-  document.getElementById('theme-toggle').textContent=isDark?'🌙':'☀️';
-  localStorage.setItem('lm-theme',isDark?'dark':'light');
-  // Update tile layer
-  setTimeout(()=>{ mapObj.eachLayer(l=>{ if(l._url) l._url=isDark
-    ?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    :'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-    mapObj.removeLayer(l); mapObj.addLayer(l);
-  }); },50);
+  // Theme toggle button (🌙/☀️) tetap berfungsi sebagai shortcut
+  isDark = !isDark;
+  setThemeMode(isDark?'dark':'light',
+    document.getElementById(isDark?'btn-dark':'btn-light'));
 }
 
 // ══════════════════════════════════════════════
@@ -2429,6 +2502,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(saved==='light'){ isDark=false; document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-toggle').textContent='☀️'; }
 
   initMap();
+  // Setelah initMap, terapkan label sesuai tema yang di-restore
+  if(saved==='light') _applyLabel('light');
+  // Restore tema tersimpan: hanya ganti label overlay & UI color
+  if(saved==='light'){
+    isDark=false;
+    document.getElementById('theme-toggle').textContent='☀️';
+    document.getElementById('btn-light')?.classList.add('active');
+    document.getElementById('btn-dark')?.classList.remove('active');
+    // Label overlay akan di-set oleh _applyLabel di initMap, lalu kita koreksi
+  }
   loadData();
   setInterval(tick,1000); tick();
   if(CFG.refreshMs>0) setInterval(loadData,CFG.refreshMs);
@@ -2436,7 +2519,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <!-- ═══════════════════════════════════════════════════
-     BACKDROP (dipakai filter & wire mobile)
+     BACKDROP (dipakai filter & kabar mobile)
 ═══════════════════════════════════════════════════ -->
 <div id="mob-backdrop" onclick="closeMobAll()"></div>
 
@@ -2445,12 +2528,12 @@ window.addEventListener('DOMContentLoaded',()=>{
 ═══════════════════════════════════════════════════ -->
 <button id="fab-filter" onclick="openFilterMob()" title="Filter Kategori">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-  FILTER
+  SARING
 </button>
 
 <button id="fab-wire" onclick="openWireMob()" title="Wire Berita">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-  WIRE
+  KABAR
 </button>
 
 <!-- ═══════════════════════════════════════════════════
@@ -2473,7 +2556,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     </div>
     <div class="fm-row" id="fm-breaking" onclick="fmFilter('breaking',this)">
       <div class="fm-dot" style="background:var(--red)"></div>
-      <span class="fm-name">Breaking</span>
+      <span class="fm-name">Peristiwa</span>
       <span class="fm-count" id="fmc-breaking">0</span>
       <div class="fm-check"></div>
     </div>
