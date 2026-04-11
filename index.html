@@ -3,11 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Monitor Lelemuku — Peta Berita Indonesia</title>
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#06090f">
+<meta name="application-name" content="Lelemuku Monitor">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Lelemuku Monitor — Peta Berita Indonesia</title>
 <meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
 <link rel="icon" type="image/x-icon" href="https://www.lelemuku.com/favicon.ico">
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://server.arcgisonline.com">
+<link rel="preconnect" href="https://basemaps.cartocdn.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="canonical" href="https://monitor.lelemuku.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://monitor.lelemuku.com/">
+<meta property="og:title" content="Monitor Lelemuku — Peta Berita Indonesia">
+<meta property="og:description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia.">
+<meta property="og:image" content="https://monitor.lelemuku.com/og-image.jpg">
+<meta property="og:site_name" content="Lelemuku Monitor">
+<meta property="og:locale" content="id_ID">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://monitor.lelemuku.com/">
+<meta name="twitter:title" content="Monitor Lelemuku — Peta Berita Indonesia">
+<meta name="twitter:description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia.">
+<meta name="twitter:image" content="https://monitor.lelemuku.com/og-image.jpg">
+<meta name="twitter:image:alt" content="Peta berita interaktif Lelemuku Monitor untuk Indonesia">
+<meta property="og:image:alt" content="Peta berita interaktif Lelemuku Monitor untuk Indonesia">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
 <style>
 /* ═══════════════════════════════════
@@ -61,6 +88,18 @@
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 html, body {
   height: 100%;
@@ -499,10 +538,18 @@ body::after {
 ═══════════════════════════════════ */
 #error-bar {
   display:none; position:absolute; top:10px; left:50%; transform:translateX(-50%);
-  z-index:2500; background:rgba(248,81,73,.1); border:1px solid rgba(248,81,73,.28);
-  border-radius:6px; padding:7px 13px; font-size:10px; color:#ff7b72;
-  font-family:var(--font-mono); letter-spacing:.5px; text-align:center; white-space:nowrap;
+  z-index:2500; background:rgba(248,81,73,.12); border:1px solid rgba(248,81,73,.32);
+  border-radius:8px; padding:10px 13px; font-size:10px; color:#ffb4ae;
+  font-family:var(--font-mono); letter-spacing:.5px; text-align:left; max-width:min(520px,calc(100vw - 24px)); line-height:1.45;
+  box-shadow:0 8px 30px var(--shadow);
 }
+#error-bar strong { color:#ff7b72; display:block; margin-bottom:3px; }
+#error-bar button {
+  margin-top:7px; border:1px solid rgba(248,81,73,.35); background:rgba(248,81,73,.12);
+  color:#ffb4ae; border-radius:5px; padding:4px 8px; font-family:var(--font-mono);
+  font-size:9px; cursor:pointer; letter-spacing:.8px;
+}
+#error-bar button:hover { background:rgba(248,81,73,.2); }
 
 
 
@@ -735,21 +782,24 @@ body::after {
 </style>
 </head>
 <body>
+<h1 class="sr-only">Monitor Berita Lelemuku</h1>
+<noscript>
+  <div style="padding:12px;background:#f0b429;color:#06090f;text-align:center;font-family:Arial,sans-serif;font-size:14px;">Lelemuku Monitor membutuhkan JavaScript untuk menampilkan peta dan berita interaktif.</div>
+</noscript>
 
 <!-- HEADER -->
-<div id="header">
-  <a id="logo-wrap" href="https://monitor.lelemuku.com" target="_blank">
+<div id="header" role="banner">
+  <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank" rel="noopener" aria-label="Buka situs utama Lelemuku.com">
     <img id="logo-img" src="https://www.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
-      <div id="logo-name">Monitor Lelemuku</div>
+      <div id="logo-name">Lelemuku Monitor</div>
       <div id="logo-tag">Peta Berita Indonesia</div>
     </div>
   </a>
 
   <div id="header-nav">
-    <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema">🌙</button>
-    <button class="nav-btn" onclick="window.open('https://monitor.lelemuku.com','_blank')">BERITA</button>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Ganti tema" aria-label="Ganti tema gelap atau terang">🌙</button>
   </div>
 
   <div id="header-gap"></div>
@@ -758,31 +808,34 @@ body::after {
     <div class="hdr-stat">📰 <strong id="st-count">0</strong>&nbsp;berita</div>
     <div class="hdr-stat">📍 <strong id="st-mapped">0</strong>&nbsp;peta</div>
 
-    <button id="refresh-btn" onclick="loadData()" title="Perbarui berita">
+    <button id="refresh-btn" onclick="loadData()" title="Perbarui berita" aria-label="Perbarui berita terbaru">
       <svg id="refresh-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       PERBARUI
     </button>
 
     <!-- Wire panel toggle (desktop) -->
-    <button id="wire-desk-btn" onclick="toggleWireDesktop()" title="Buka/tutup panel berita"
+    <button id="wire-desk-btn" onclick="toggleWireDesktop()" title="Buka/tutup panel berita" aria-label="Buka atau tutup panel kabar berita" aria-controls="wire-panel" aria-expanded="true"
       style="display:flex;align-items:center;gap:4px;height:100%;padding:0 13px;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text3);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
       KABAR
     </button>
 
     <!-- Wire toggle (mobile) — ikon di header -->
-    <button id="wire-toggle-btn" onclick="openWireMob()"
+    <button id="wire-toggle-btn" onclick="openWireMob()" aria-label="Buka panel kabar berita" aria-controls="wire-panel" aria-expanded="false"
       style="display:none;align-items:center;justify-content:center;width:40px;height:100%;border-left:1px solid var(--border);background:none;border-top:none;border-right:none;border-bottom:none;color:var(--text2);font-size:15px;cursor:pointer;transition:all .2s;flex-shrink:0;"
       title="Buka Kabar Berita">📰</button>
+
+    <!-- Theme toggle -->
+
     <div id="clock">—</div>
   </div>
 </div>
 
 <!-- MAIN -->
-<div id="main">
+<main id="main" role="main">
 
   <!-- SIDEBAR KIRI -->
-  <div id="sidebar">
+  <div id="sidebar" role="navigation" aria-label="Filter kategori dan navigasi wilayah">
     <div class="sb-sec">
       <div class="sb-label">Filter Kategori</div>
       <div class="sb-item active" id="cat-all"      onclick="filterCat('all',this)">
@@ -840,54 +893,54 @@ body::after {
 
   <!-- MAP -->
   <div id="map-wrap">
-    <div id="map"></div>
+    <div id="map" role="application" aria-label="Peta interaktif lokasi berita Lelemuku"></div>
 
     <div id="map-chips">
       <div class="m-chip" id="update-chip">🕐 Belum diperbarui</div>
     </div>
     <div class="m-chip" id="coord-chip">📡 Arahkan kursor ke peta</div>
 
-    <div id="loading">
-      <div class="ld-spin"></div>
-      <div class="ld-txt">Memuat berita...</div>
+    <div id="loading" role="status" aria-live="polite" aria-label="Status pemuatan berita">
+      <div class="ld-spin" aria-hidden="true"></div>
+      <div class="ld-txt" id="loading-text">Memuat berita terbaru...</div>
     </div>
 
-    <div id="error-bar"></div>
+    <div id="error-bar" role="alert" aria-live="assertive"></div>
     <div id="toast-zone"></div>
 
   </div>
 
   <!-- KABAR PANEL -->
   <div id="wire-outer">
-    <div id="wire-panel">
+    <div id="wire-panel" role="complementary" aria-labelledby="wire-title">
       <!-- Handle desktop (klik untuk collapse) -->
-      <div id="wire-handle" onclick="toggleWireDesktop()" title="Tutup panel">
+      <div id="wire-handle" role="button" tabindex="0" aria-label="Tutup panel kabar berita" onclick="toggleWireDesktop()" title="Tutup panel">
         <span id="handle-arrow">▶</span>
       </div>
       <!-- Drag bar (mobile saja) -->
-      <div id="wire-drag-bar" onclick="closeWireMob()"></div>
+      <div id="wire-drag-bar" role="button" tabindex="0" aria-label="Tutup panel kabar berita" onclick="closeWireMob()"></div>
       <!-- Header panel -->
       <div id="wire-header" style="padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;">
         <span id="wire-title" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--accent);flex:1;">⬡ Kabar Berita</span>
-        <button id="wire-close-mobile" onclick="closeWireMob()"
+        <button id="wire-close-mobile" onclick="closeWireMob()" aria-label="Tutup panel kabar berita"
           style="display:none;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
       </div>
       <!-- Filters -->
       <div class="wire-filters">
-        <button class="wf on-all"  onclick="wireFilter('all',this)">Semua</button>
-        <button class="wf"         onclick="wireFilter('breaking',this)">🔴 Peristiwa</button>
-        <button class="wf"         onclick="wireFilter('urgent',this)">🟡 Penting</button>
-        <button class="wf"         onclick="wireFilter('info',this)">🟢 Info</button>
-        <button class="wf"         onclick="wireFilter('world',this)">🌍 Dunia</button>
+        <button class="wf on-all" onclick="wireFilter('all',this)" aria-label="Tampilkan semua kabar berita">Semua</button>
+        <button class="wf" onclick="wireFilter('breaking',this)" aria-label="Tampilkan kabar kategori peristiwa">🔴 Peristiwa</button>
+        <button class="wf" onclick="wireFilter('urgent',this)" aria-label="Tampilkan kabar penting">🟡 Penting</button>
+        <button class="wf" onclick="wireFilter('info',this)" aria-label="Tampilkan kabar info">🟢 Info</button>
+        <button class="wf" onclick="wireFilter('world',this)" aria-label="Tampilkan kabar dunia">🌍 Dunia</button>
       </div>
       <!-- List -->
-      <div id="wire-list">
-        <div style="padding:28px 14px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono)">Memuat berita...</div>
+      <div id="wire-list" role="feed" aria-live="polite" aria-busy="true">
+        <div role="status" style="padding:28px 14px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono)">Memuat berita terbaru...</div>
       </div>
     </div>
   </div>
 
-</div>
+</main>
 
 <!-- TICKER -->
 <div id="ticker">
@@ -912,34 +965,64 @@ const CFG = {
 const LOC = {
   
   
-    'indonesia': [-2.5489, 118.0149, 'Indonesia'],
-    'nasional': [-2.5489, 118.0149, 'Nasional'],
-    'ikn': [-0.8200, 116.7200, 'IKNNusantara'],
-    'nusantara': [-0.8200, 116.7200, 'IKNNusantara'],
+    'indonesia': [-2.5489, 118.0149, 'Jakarta'],
+    'nasional': [-2.5489, 118.0149, 'Jakarta'],
+    'ikn': [-0.8200, 116.7200, 'IKN Nusantara'],
+    'nusantara': [-0.8200, 116.7200, 'IKN Nusantara'],
   // Sumatra
-    'banda aceh': [5.5483, 95.3238, 'BandaAceh'],
-    'bandaaceh': [5.5483, 95.3238, 'BandaAceh'],
+    'aceh': [5.5483, 95.3238, 'Banda Aceh'],
+    'banda aceh': [5.5483, 95.3238, 'Banda Aceh'],
+    'bandaaceh': [5.5483, 95.3238, 'Banda Aceh'],
     'lhokseumawe': [5.1801, 97.1558, 'Lhokseumawe'],
     'langsa': [4.4783, 97.9689, 'Langsa'],
     'sabang': [5.8833, 95.3167, 'Sabang'],
     'subulussalam': [2.6433, 98.0044, 'Subulussalam'],
-    'meulaboh': [4.1333, 96.1167, 'Meulaboh'],
-    'blangpidie': [3.6800, 96.9617, 'Blangpidie'],
-    'jantho': [5.2656, 95.5875, 'Jantho'],
-    'calang': [4.6167, 95.6167, 'Calang'],
-    'tapaktuan': [3.2645, 97.1781, 'Tapaktuan'],
-    'singkil': [2.3167, 97.7667, 'Singkil'],
-    'karangbaru': [4.0667, 98.0000, 'KarangBaru'],
-    'takengon': [4.6333, 96.8333, 'Takengon'],
-    'kutacane': [3.5000, 97.8333, 'Kutacane'],
-    'idireyeuk': [4.9000, 97.8333, 'IdiRayeuk'],
-    'simpangtiga': [4.6833, 96.7833, 'SimpangTigaRedelong'],
+    'meulaboh': [4.1333, 96.1167, 'Aceh Barat'],
+    'aceh barat': [4.1333, 96.1167, 'Aceh Barat'],
+    'blangpidie': [3.6800, 96.9617, 'Aceh Barat Daya'],
+    'aceh barat daya': [3.6800, 96.9617, 'Aceh Barat Daya'],
+    'jantho': [5.2656, 95.5875, 'Aceh Besar'],
+    'aceh besar': [5.2656, 95.5875, 'Aceh Besar'],
+    'calang': [4.6167, 95.6167, 'Aceh Jaya'],
+    'aceh jaya': [4.6167, 95.6167, 'Aceh Jaya'],
+    'tapaktuan': [3.2645, 97.1781, 'Aceh Selatan'],
+    'aceh selatan': [3.2645, 97.1781, 'Aceh Selatan'],
+    'singkil': [2.3167, 97.7667, 'Aceh Singkil'],
+    'aceh singkil': [2.3167, 97.7667, 'Aceh Singkil'],
+    'karangbaru': [4.0667, 98.0000, 'Aceh Tamiang'],
+    'karang baru': [4.0667, 98.0000, 'Aceh Tamiang'],
+    'aceh tamiang': [4.0667, 98.0000, 'Aceh Tamiang'],
+    'takengon': [4.6333, 96.8333, 'Aceh Tengah'],
+    'aceh tengah': [4.6333, 96.8333, 'Aceh Tengah'],
+    'kutacane': [3.5000, 97.8333, 'Aceh Tenggara'],
+    'aceh tenggara': [3.5000, 97.8333, 'Aceh Tenggara'],
+    'idireyeuk': [4.9000, 97.8333, 'Aceh Timur'],
+    'idi reyeuk': [4.9000, 97.8333, 'Aceh Timur'],
+    'idirayeuk': [4.9000, 97.8333, 'Aceh Timur'],
+    'idi rayeuk': [4.9000, 97.8333, 'Aceh Timur'],
+    'aceh timur': [4.9000, 97.8333, 'Aceh Timur'],
+    'simpangtiga': [4.6833, 96.7833, 'Bener Meriah'],
+    'simpangtiga redelong': [4.6833, 96.7833, 'Bener Meriah'],
+    'simpang tiga redelong': [4.6833, 96.7833, 'Bener Meriah'],
+    'simpang tiga': [4.6833, 96.7833, 'Bener Meriah'],
+    'redelong': [4.6833, 96.7833, 'Bener Meriah'],
+    'bener meriah': [4.6833, 96.7833, 'Bener Meriah'],
     'bireuen': [5.2000, 96.6833, 'Bireuen'],
-    'blangkejeren': [3.9500, 97.2833, 'Blangkejeren'],
-    'sukamakmur': [4.1167, 96.3667, 'Sukamakmur'],
-    'sigli': [5.3833, 95.9667, 'Sigli'],
-    'meureudu': [5.1833, 96.2667, 'Meureudu'],
-    'sinabang': [2.4667, 96.3833, 'Sinabang'],
+    'bireun': [5.2000, 96.6833, 'Bireuen'],
+    'blangkejeren': [3.9500, 97.2833, 'Gayo Lues'],
+    'blang kejeren': [3.9500, 97.2833, 'Gayo Lues'],
+    'gayo lues': [3.9500, 97.2833, 'Gayo Lues'],
+    'sukamakmur': [4.1167, 96.3667, 'Nagan Raya'],
+    'suka makmur': [4.1167, 96.3667, 'Nagan Raya'],
+    'naganraya': [4.1167, 96.3667, 'Nagan Raya'],
+    'nagan raya': [4.1167, 96.3667, 'Nagan Raya'],
+    'sigli': [5.3833, 95.9667, 'Pidie'],
+    'pidie': [5.3833, 95.9667, 'Pidie'],
+    'meureudu': [5.1833, 96.2667, 'Pidie Jaya'],
+    'pidiejaya': [5.1833, 96.2667, 'Pidie Jaya'],
+    'pidie jaya': [5.1833, 96.2667, 'Pidie Jaya'],
+    'sinabang': [2.4667, 96.3833, 'Simeulue'],
+    'simeulue': [2.4667, 96.3833, 'Simeulue'],
     'medan': [3.5952, 98.6722, 'Medan'],
     'binjai': [3.6005, 98.4857, 'Binjai'],
     'pematangsiantar': [2.9595, 99.0687, 'Pematangsiantar'],
@@ -994,6 +1077,7 @@ const LOC = {
     'padangaro': [-1.7000, 100.8833, 'PadangAro'],
     'batusangkar': [-0.4652, 100.5993, 'Batusangkar'],
     'pekanbaru': [0.5071, 101.4478, 'Pekanbaru'],
+	'siak': [0.7970, 102.0499, 'Siak'],
     'dumai': [1.6772, 101.4460, 'Dumai'],
     'bengkalis': [1.4736, 102.1081, 'Bengkalis'],
     'tembilahan': [-0.3333, 103.1667, 'Tembilahan'],
@@ -1592,6 +1676,7 @@ function initMap(){
     minZoom:4, maxZoom:19
   });
   L.control.zoom({ position:'topright' }).addTo(mapObj); // zoom di kanan atas
+  setTimeout(enhanceAccessibility, 0);
 
   _initSatelit();   // pasang tile satelit Esri (sekali seumur hidup)
   _applyLabel('dark'); // label Carto dark (default)
@@ -2089,8 +2174,10 @@ function parseXml(text){
 //  LOAD UTAMA
 // ══════════════════════════════════════════════
 async function loadData(){
-  setLoading(true);
-  setFeedStatus('Memuat...','var(--yellow)');
+  setLoading(true, 'Memuat berita terbaru dari Lelemuku...');
+  setFeedStatus('Memuat berita...','var(--yellow)');
+  const errBar=document.getElementById('error-bar');
+  if(errBar) errBar.style.display='none';
   document.getElementById('refresh-btn').classList.add('spin');
 
   mapMarkers.forEach(({m})=>mapObj.removeLayer(m));
@@ -2118,7 +2205,10 @@ async function loadData(){
     }catch(e){console.warn('Feed error:',e.message);}
   }
 
-  if(!success){ loadFallback(); showErrBar(); }
+  if(!success){
+    loadFallback();
+    showErrBar('Sumber berita sedang tidak dapat dijangkau. Data cadangan ditampilkan sementara agar peta tetap bisa dibaca.');
+  }
 
   setLoading(false);
   document.getElementById('refresh-btn').classList.remove('spin');
@@ -2200,11 +2290,11 @@ function renderWire(){
   const list=document.getElementById('wire-list');
   const items=wireCat==='all'?allNews:wireCat==='world'?allNews.filter(n=>n.loc?.isWorld):allNews.filter(n=>n.cat.id===wireCat);
   if(!items.length){
-    list.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono)">Tidak ada berita</div>`;
+    list.innerHTML=`<div role="status" style="padding:24px;text-align:center;color:var(--text3);font-size:10px;font-family:var(--font-mono);line-height:1.5">Tidak ada berita pada filter ini.<br>Pilih kategori lain atau perbarui data.</div>`;
     return;
   }
   list.innerHTML=items.map(n=>`
-    <div class="wi${activeId===n.id?' active':''}" data-id="${n.id}" onclick="clickWire(${n.id})">
+    <div class="wi${activeId===n.id?' active':''}" role="button" tabindex="0" aria-label="Buka berita: ${n.title.replace(/"/g, '&quot;')}" data-id="${n.id}" onclick="clickWire(${n.id})">
       <div class="wi-dot" style="background:${n.cat.color}"></div>
       <div class="wi-body">
         <div class="wi-title">${n.title}</div>
@@ -2214,6 +2304,7 @@ function renderWire(){
         </div>
       </div>
     </div>`).join('');
+  enhanceAccessibility();
 }
 
 function clickWire(id){
@@ -2236,6 +2327,7 @@ function setActive(id){
 
 function wireFilter(f,btn){
   wireCat=f;
+  document.getElementById('wire-list')?.setAttribute('aria-busy','false');
   document.querySelectorAll('.wf').forEach(b=>b.className='wf');
   btn.className=`wf on-${f}`;
   renderWire();
@@ -2332,17 +2424,45 @@ function loadFallback(){
   setFeedStatus('Offline — Data Cadangan','var(--red)');
 }
 
-function showErrBar(){
+function showErrBar(message='Berita gagal dimuat. Periksa koneksi atau coba lagi beberapa saat.'){
   const b=document.getElementById('error-bar');
-  b.textContent='⚠ RSS tidak dapat dijangkau. Setup Google Apps Script untuk solusi permanen.';
+  b.innerHTML=`<strong>Berita gagal dimuat sempurna.</strong><span>${message}</span><br><button type="button" onclick="loadData()" aria-label="Coba muat ulang berita">COBA LAGI</button>`;
   b.style.display='block';
-  setTimeout(()=>b.style.display='none',10000);
+  setTimeout(()=>{ if(b) b.style.display='none'; },20000);
 }
 
 // ══════════════════════════════════════════════
 //  UI UTILS
 // ══════════════════════════════════════════════
-function setLoading(v){ document.getElementById('loading').classList.toggle('hidden',!v); }
+function setLoading(v, text='Memuat berita terbaru...'){
+  const loading=document.getElementById('loading');
+  const loadingText=document.getElementById('loading-text');
+  const wireList=document.getElementById('wire-list');
+  if(loadingText) loadingText.textContent=text;
+  if(loading) loading.classList.toggle('hidden',!v);
+  if(wireList) wireList.setAttribute('aria-busy', v ? 'true' : 'false');
+}
+
+function enhanceAccessibility(){
+  const zoomIn=document.querySelector('.leaflet-control-zoom-in');
+  const zoomOut=document.querySelector('.leaflet-control-zoom-out');
+  if(zoomIn){ zoomIn.setAttribute('aria-label','Perbesar peta'); zoomIn.setAttribute('title','Perbesar peta'); }
+  if(zoomOut){ zoomOut.setAttribute('aria-label','Perkecil peta'); zoomOut.setAttribute('title','Perkecil peta'); }
+
+  document.querySelectorAll('.sb-item[onclick], .fm-row[onclick], .fm-fly[onclick], #wire-handle, #wire-drag-bar').forEach(el=>{
+    if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+    if(!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.replace(/\s+/g,' ').trim() || 'Tombol navigasi');
+  });
+
+  document.querySelectorAll('[role="button"][tabindex="0"]').forEach(el=>{
+    if(el.dataset.keyReady) return;
+    el.dataset.keyReady='1';
+    el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }
+    });
+  });
+}
 
 function setFeedStatus(text,color){
   document.getElementById('fs-text').textContent=text;
@@ -2390,12 +2510,14 @@ function hideBackdrop(){
 // ── Kabar ──
 function openWireMob(){
   closeFilterMob(false);          // tutup filter jika terbuka
+  $('wire-toggle-btn')?.setAttribute('aria-expanded','true');
   $('wire-outer').classList.add('mob-open');
   $('wire-close-mobile').style.display = 'flex';
   showBackdrop();
   document.body.style.overflow = 'hidden';
 }
 function closeWireMob(){
+  $('wire-toggle-btn')?.setAttribute('aria-expanded','false');
   $('wire-outer').classList.remove('mob-open');
   $('wire-close-mobile').style.display = 'none';
   hideBackdrop();
@@ -2434,6 +2556,8 @@ function toggleWireDesktop(){
   wirePanelOpen = !wirePanelOpen;
   $('wire-panel').classList.toggle('collapsed', !wirePanelOpen);
   $('handle-arrow').textContent = wirePanelOpen ? '▶' : '◀';
+  $('wire-desk-btn')?.setAttribute('aria-expanded', wirePanelOpen ? 'true' : 'false');
+  $('wire-handle')?.setAttribute('aria-label', wirePanelOpen ? 'Tutup panel kabar berita' : 'Buka panel kabar berita');
 }
 
 // ── Filter dari modal mobile ──
@@ -2505,6 +2629,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('btn-dark')?.classList.remove('active');
     // Label overlay akan di-set oleh _applyLabel di initMap, lalu kita koreksi
   }
+  enhanceAccessibility();
   loadData();
   setInterval(tick,1000); tick();
   if(CFG.refreshMs>0) setInterval(loadData,CFG.refreshMs);
@@ -2514,17 +2639,17 @@ window.addEventListener('DOMContentLoaded',()=>{
 <!-- ═══════════════════════════════════════════════════
      BACKDROP (dipakai filter & kabar mobile)
 ═══════════════════════════════════════════════════ -->
-<div id="mob-backdrop" onclick="closeMobAll()"></div>
+<div id="mob-backdrop" onclick="closeMobAll()" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      FAB BUTTONS — hanya tampil di mobile/tablet
 ═══════════════════════════════════════════════════ -->
-<button id="fab-filter" onclick="openFilterMob()" title="Filter Kategori">
+<button id="fab-filter" onclick="openFilterMob()" title="Filter Kategori" aria-label="Buka filter kategori dan navigasi">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
   SARING
 </button>
 
-<button id="fab-wire" onclick="openWireMob()" title="Wire Berita">
+<button id="fab-wire" onclick="openWireMob()" title="Wire Berita" aria-label="Buka panel kabar berita">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
   KABAR
 </button>
@@ -2532,11 +2657,11 @@ window.addEventListener('DOMContentLoaded',()=>{
 <!-- ═══════════════════════════════════════════════════
      FILTER MODAL — drawer dari bawah
 ═══════════════════════════════════════════════════ -->
-<div id="filter-modal">
-  <div id="fm-drag-bar" onclick="closeFilterMob()"></div>
+<div id="filter-modal" role="dialog" aria-modal="true" aria-labelledby="fm-title">
+  <div id="fm-drag-bar" role="button" tabindex="0" aria-label="Tutup filter kategori" onclick="closeFilterMob()"></div>
   <div id="fm-title">
     <span>⬡ Filter &amp; Navigasi</span>
-    <button id="fm-close-btn" onclick="closeFilterMob()">✕</button>
+    <button id="fm-close-btn" onclick="closeFilterMob()" aria-label="Tutup filter kategori">✕</button>
   </div>
 
   <div class="fm-section">
