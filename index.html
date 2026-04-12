@@ -306,7 +306,7 @@ html, body {
 
 /* Overlay chips */
 #map-chips {
-  position:absolute; top:10px; right:48px; z-index:800; /* kanan, beri ruang dari zoom btn */
+  position:absolute; top:10px; left:48px; z-index:800; /* kanan, beri ruang dari zoom btn */
   display:flex; flex-direction:column; gap:6px; pointer-events:none; align-items:flex-end;
 }
 .m-chip {
@@ -317,7 +317,7 @@ html, body {
   transition: background .3s;
 }
 #coord-chip {
-  position:absolute; bottom:38px; right:10px; z-index:800;
+  position:absolute; top:38px; left:48px; z-index:800;
   pointer-events:none;
 }
 
@@ -1710,6 +1710,8 @@ const LOC = {
     'maba': [0.8283, 128.3053, 'Maba'],
     'daruba': [2.0783, 128.2900, 'Daruba'],
     'bobong': [-1.7400, 124.0100, 'Bobong'],
+	
+    'maluku': [-3.6954, 128.1814, 'Ambon'],	
     'ambon': [-3.6954, 128.1814, 'Ambon'],
     'tual': [-5.6608, 132.7511, 'Tual'],
     'haruku': [-3.5800, 128.4300, 'Maluku Tengah'],
@@ -1720,19 +1722,27 @@ const LOC = {
     'namlea': [-3.2573, 126.6995, 'Buru'],
     'buru': [-3.2573, 126.6995, 'Buru'],
     'namrole': [-3.8433, 126.7000, 'Buru Selatan'],
+    'buru selatan': [-3.8433, 126.7000, 'Buru Selatan'],
     'dobo': [-5.7722, 134.2094, 'Kepulauan Aru'],
+    'kepulauan aru': [-6.1700, 134.5000, 'Kepulauan Aru'],
     'aru': [-6.1700, 134.5000, 'Kepulauan Aru'],
     'saumlaki': [-7.9886, 131.3089, 'Kepulauan Tanimbar'],
     'tanimbar': [-7.9886, 131.3089, 'Kepulauan Tanimbar'],
+    'kepulauan tanimbar': [-7.9886, 131.3089, 'Kepulauan Tanimbar'],
     'tiakur': [-8.1800, 129.8400, 'Maluku Barat Daya'],
+    'maluku barat daya': [-8.1800, 129.8400, 'Maluku Barat Daya'],
+    'moa': [-8.1800, 129.8400, 'Maluku Barat Daya'],
     'langgur': [-5.6578, 132.7044, 'Maluku Tenggara'],
     'maluku tenggara': [-5.6578, 132.7044, 'Maluku Tenggara'],
     'kei': [-5.6108, 132.7511, 'Maluku Tenggara'],
     'piru': [-3.0625, 128.1875, 'Seram Bagian Barat'],
+    'seram bagian barat': [-3.0625, 128.1875, 'Seram Bagian Barat'],
     'sbb': [-3.0625, 128.1875, 'Seram Bagian Barat'],
     'bula': [-3.1022, 130.4639, 'Seram Bagian Timur'],
     'sbt': [-3.1022, 130.4639, 'Seram Bagian Timur'],
+    'seram bagian timur': [-3.1022, 130.4639, 'Seram Bagian Timur'],
   // Papua
+    'papua barat daya': [-0.8762, 131.2512, 'Kota Sorong'],
     'sorong': [-0.8762, 131.2512, 'Kota Sorong'],
     'aimas': [-0.9592, 131.3200, 'Sorong'],
     'rajaampat': [-0.2967, 130.7818, 'Raja Ampat'],
@@ -1747,6 +1757,7 @@ const LOC = {
     'teminabuan': [-1.4472, 132.0200, 'Sorong Selatan'],
     'tambrauw': [-0.7947, 132.4264, 'Tambrauw'],
     'fef': [-0.7947, 132.4264, 'Tambrauw'],
+    'papua barat': [-0.8615, 134.0622, 'Manokwari'],
     'manokwari': [-0.8615, 134.0622, 'Manokwari'],
     'bintuni': [-2.1077, 133.5220, 'Teluk Bintuni'],
     'teluk bintuni': [-2.1077, 133.5220, 'Teluk Bintuni'],
@@ -1762,6 +1773,8 @@ const LOC = {
     'angi': [-1.3306, 133.9174, 'Pegunungan Arfak'],
 	'anggi': [-1.3306, 133.9174,  'Pegunungan Arfak'],
 	'arfak': [-1.3306, 133.9174,  'Pegunungan Arfak'],
+    'pegunungan arfak': [-1.3306, 133.9174, 'Pegunungan Arfak'],
+    'papua': [-2.5916, 140.6690, 'Kota Jayapura'],
     'jayapura': [-2.5916, 140.6690, 'Kota Jayapura'],
     'sentani': [-2.5893, 140.5182, 'Jayapura'],
     'abepura': [-2.6500, 140.6300, 'Kota Jayapura'],
@@ -1781,6 +1794,7 @@ const LOC = {
     'yapen': [-1.8853, 136.2444, 'Kepulauan Yapen'],
     'sorendiweri': [-0.6922, 135.6467, 'Supiori'],
     'supiori': [-0.6922, 135.6467, 'Supiori'],
+    'papua pegunungan': [-4.0902, 138.9539, 'Jayawijaya'],
     'wamena': [-4.0902, 138.9539, 'Jayawijaya'],
     'jayawijaya': [-4.0902, 138.9539, 'Jayawijaya'],
     'dekai': [-4.8616, 139.4936, 'Yahukimo'],
@@ -1801,6 +1815,7 @@ const LOC = {
     'tiom': [-3.9246, 138.4528, 'Lanny Jaya'],
     'lannyjaya': [-3.9246, 138.4528, 'Lanny Jaya'],
     'lanny jaya': [-3.9246, 138.4528, 'Lanny Jaya'],
+    'papua tengah': [-3.3617, 135.4895, 'Nabire'],
     'nabire': [-3.3617, 135.4895, 'Nabire'],
     'timika': [-4.5302, 136.8906, 'Mimika'],
     'mimika': [-4.5302, 136.8906, 'Mimika'],
@@ -1821,17 +1836,18 @@ const LOC = {
     'sugapa': [-3.7411, 137.0435, 'Intan Jaya'],
     'ilaga': [-3.9781, 137.6228, 'Puncak'],
     'puncak': [-3.9781, 137.6228, 'Puncak'],
+    'papua selatan': [-8.4942, 140.4017, 'Merauke'],
+    'merauke': [-8.4942, 140.4017, 'Merauke'],
     'agats': [-5.5500, 138.1400, 'Asmat'],
     'asmat': [-5.5500, 138.1400, 'Asmat'],
     'mappi': [-6.5417, 139.3167, 'Mappi'],
     'mapi': [-6.5417, 139.3167, 'Mappi'],
     'kepi': [-6.5417, 139.3167, 'Mappi'],
     'keppi': [-6.5417, 139.3167, 'Mappi'],
-    'merauke': [-8.4942, 140.4017, 'Merauke'],
     'boven': [-6.0956, 140.3497, 'Boven Digoel'],
     'boven digul': [-6.0956, 140.3497, 'Boven Digoel'],
     'tanahmerah': [-6.0956, 140.3497, 'Boven Digoel'],
-    'tanah merah': [-6.0956, 140.3497, 'Boven Digoel']
+    'tanah merah': [-6.0956, 140.3497, 'Boven Digoel'],
 
 
 
@@ -2302,7 +2318,7 @@ function detectLoc(title, rawDesc) {
 
   // ── DEFAULT: Tidak diketahui → Jakarta ──
   const bigJ = () => (Math.random() - 0.5) * 1.5;
-  return { lat: -6.2088 + bigJ(), lng: 106.8456 + bigJ(), name: 'Jakarta', isWorld: false, isDefault: true };
+  return { lat: -6.2088 + bigJ(), lng: 106.8456 + bigJ(), name: 'Jakarta Pusat', isWorld: false, isDefault: true };
 }
 
 
