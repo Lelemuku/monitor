@@ -600,6 +600,7 @@ const LOC = {
     'sekadauhilir': [-0.0333, 110.9667, 'SekadauHilir'],
     'sintang': [0.0667, 111.5000, 'Sintang'],
     'palangkaraya': [-2.2136, 113.9108, 'Palangkaraya'],
+    'palangka raya': [-2.2136, 113.9108, 'Palangkaraya'],
     'sampit': [-2.5326, 112.9527, 'Sampit'],
     'buntok': [-1.7500, 114.8333, 'Buntok'],
     'tamianglayang': [-1.9833, 115.4667, 'TamiangLayang'],
