@@ -306,7 +306,6 @@ const LOC = {
 'okut': [-4.1000, 104.3000, 'Ogan Komering Ulu Timur'],
 'martapura': [-4.1000, 104.3000, 'Ogan Komering Ulu Timur'],
 'penukal abab lematang ilir': [-3.3000, 103.9000, 'Penukal Abab Lematang Ilir'],
-'pali': [-3.3000, 103.9000, 'Penukal Abab Lematang Ilir'],
 'talang ubi': [-3.3000, 103.9000, 'Penukal Abab Lematang Ilir'],
 'lubuk linggau': [-3.2947, 102.8610, 'Lubuk Linggau'],
 'lubuklinggau': [-3.2947, 102.8610, 'Lubuk Linggau'],
