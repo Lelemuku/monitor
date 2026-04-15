@@ -4,6 +4,7 @@
 const LOC = {
   
   
+
     'indonesia': [-2.5489, 118.0149, 'Jakarta'],
     'nasional': [-2.5489, 118.0149, 'Jakarta'],
     'ikn': [-0.8200, 116.7200, 'IKN Nusantara'],
@@ -103,9 +104,9 @@ const LOC = {
     'toba samosir': [2.3333, 99.0667, 'Toba Samosir'],
     'tobasa': [2.3333, 99.0667, 'Toba Samosir'],
     'balige': [2.3333, 99.0667, 'Toba Samosir'],
-    'humbang hasundutan': [2.3667, 98.8833, 'Humbang Hasundutan'],
-    'dolok sanggul': [2.3667, 98.8833, 'Humbang Hasundutan'],
-    'doloksanggul': [2.3667, 98.8833, 'Humbang Hasundutan'],
+    'hungbang hasundutan': [2.3667, 98.8833, 'Hungbang Hasundutan'],
+    'dolok sanggul': [2.3667, 98.8833, 'Hungbang Hasundutan'],
+    'doloksanggul': [2.3667, 98.8833, 'Hungbang Hasundutan'],
     'nias selatan': [-0.5422, 97.8144, 'Nias Selatan'],
     'teluk dalam': [-0.5422, 97.8144, 'Nias Selatan'],
     'telukdalam': [-0.5422, 97.8144, 'Nias Selatan'],
@@ -116,10 +117,10 @@ const LOC = {
     'serdang bedagai': [3.4833, 98.9667, 'Serdang Bedagai'],
     'sei rampah': [3.4833, 98.9667, 'Serdang Bedagai'],
     'seirampah': [3.4833, 98.9667, 'Serdang Bedagai'],
-    'batubara': [3.2049, 99.4749, 'Batu Bara'],
-	'batu bara': [3.2049, 99.4749, 'Batu Bara'],
-    'lima puluh': [3.2049, 99.4749, 'Batu Bara'],
-    'limapuluh': [3.2049, 99.4749, 'Batu Bara'],
+    'batubara': [-0.1521, 100.6603, 'Batu Bara'],
+    'batu bara': [-0.1521, 100.6603, 'Batu Bara'],
+    'lima puluh': [-0.1521, 100.6603, 'Batu Bara'],
+    'limapuluh': [-0.1521, 100.6603, 'Batu Bara'],
     'padang lawas utara': [1.5500, 99.3833, 'Padang Lawas Utara'],
     'gunung tua': [1.5500, 99.3833, 'Padang Lawas Utara'],
     'gunungtua': [1.5500, 99.3833, 'Padang Lawas Utara'],
@@ -142,7 +143,7 @@ const LOC = {
     'nias barat': [1.1167, 97.0500, 'Nias Barat'],
     'lahomi': [1.1167, 97.0500, 'Nias Barat'],
 	'onolimbu': [1.1167, 97.0500, 'Nias Barat'],
-	'nias utara': [1.3833, 97.7333,'Nias Utara'] 
+	'nias utara': [1.3833, 97.7333,'Nias Utara'], 
 	'lolofaoso': [1.3833, 97.7333, 'Nias Utara'], 
     'lotu': [1.3833, 97.7333, 'Nias Utara'],	
     'padang': [-0.8532, 100.5018, 'Padang'], 
@@ -231,6 +232,7 @@ const LOC = {
 'batam': [1.0456, 104.0305, 'Batam'],
 'bintan': [1.0613, 104.5294, 'Bintan'],
 'bandar seri bentan': [1.0613, 104.5294, 'Bintan'],
+'bintan': [1.0613, 104.5294, 'Bintan'],
 'karimun': [0.9915, 103.4272, 'Karimun'],
 'tanjung balai karimun': [0.9915, 103.4272, 'Karimun'],
 'kepulauan anambas': [3.2315, 106.1850, 'Kepulauan Anambas'],
@@ -1162,20 +1164,11 @@ const LOC = {
     'tanah merah': [-6.0956, 140.3497, 'Boven Digoel'],
 
 
+
 };
 
 
-
-
-// ═══════════════════════════════════════════════════
-//  DATABASE LOKASI LUAR NEGERI
-//  Format: [lat, lng, 'Nama Tampil', 'Nama Negara']
-//  PENTING: keyword ini hanya cocok jika muncul di
-//  HEADER berita (format: "KOTA, LELEMUKU.COM - ...")
-//  bukan di isi artikel — sehingga tidak ada false positive.
-// ═══════════════════════════════════════════════════
-
-const LOC_WORLD = {  
+const LOC_WORLD = {
   // Asia Tenggara
   'kuala lumpur':[3.1390,101.6869,'Kuala Lumpur','Malaysia'],
   'malaysia':[3.1390,101.6869,'Malaysia','Malaysia'],
@@ -1737,6 +1730,7 @@ const LOC_WORLD = {
   'mount hagen': [-5.5000, 144.2500, 'Papua Nugini'],
   'jiwaka': [-5.7500, 144.7500, 'Papua Nugini'],
   'minj': [-5.7500, 144.7500, 'Papua Nugini'],
-
+  
+  
+  
 };
-
