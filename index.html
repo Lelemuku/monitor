@@ -1017,12 +1017,13 @@ let currentLabelLayer   = null;
 let currentThemeMode    = 'dark';  // 'dark' | 'light'
 
 function initMap(){
-  const bounds = L.latLngBounds(L.latLng(-89.98155760646617, -180), L.latLng(89.99346179538875, 180));
+  const bounds = [  [-85, -Infinity], [85, Infinity] ];
 
   mapObj = L.map('map',{
     center: [-2.5, 118.5], 
     zoom: 5,
     zoomControl: false,
+	worldCopyJump: true,
     minZoom: 4, 
     maxZoom: 19,
     maxBounds: bounds, // <-- TAMBAHKAN INI
