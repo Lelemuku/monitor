@@ -1730,8 +1730,6 @@ const LOC_WORLD = {
   'port moresby': [-9.4789, 147.1486, 'Papua Nugini'],
   'papua nugini': [-9.4789, 147.1486, 'Papua Nugini'],
   'papua new guinea':[-9.4789, 147.1486, ,'Papua Nugini'],
-  'simbu': [-6.0000, 144.9500, 'Papua Nugini'],
-  'kundiawa': [-6.0000, 144.9500, 'Papua Nugini'],
   'eastern highlands': [-6.0833, 145.3833, 'Papua Nugini'],
   'goroka': [-6.0833, 145.3833, 'Papua Nugini'],
   'east new britain': [-4.3333, 152.2500, 'Papua Nugini'],
@@ -1763,12 +1761,18 @@ const LOC_WORLD = {
   'sandaun': [-3.5000, 141.5000, 'Papua Nugini'],
   'vanimo': [-3.5000, 141.5000, 'Papua Nugini'],
   'western': [-9.0000, 141.0000, 'Papua Nugini'],
+  'fly river': [-9.0000, 141.0000, 'Papua Nugini'],
   'daru': [-9.0000, 141.0000, 'Papua Nugini'],
   'western highlands': [-5.5000, 144.2500, 'Papua Nugini'],
   'mount hagen': [-5.5000, 144.2500, 'Papua Nugini'],
   'jiwaka': [-5.7500, 144.7500, 'Papua Nugini'],
+  'kurumul': [-5.7500, 144.7500, 'Papua Nugini'],
+  'banz': [-5.7500, 144.7500, 'Papua Nugini'],
   'minj': [-5.7500, 144.7500, 'Papua Nugini'],
-  
-  
+  'hela': [-6.0000, 143.5000, 'Papua Nugini'],
+  'tari': [-6.0000, 143.5000, 'Papua Nugini'],
+  'simbu': [-6.0000, 144.9500, 'Papua Nugini'],
+  'chimbu': [-6.0000, 144.9500, 'Papua Nugini'],
+  'kundiawa': [-6.0000, 144.9500, 'Papua Nugini'],
   
 };
