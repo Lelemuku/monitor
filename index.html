@@ -1100,58 +1100,47 @@ function detectCat(t,d){
 // ═══════════════════════════════════════════════════
 //  DETEKSI LOKASI — VERSI SIMPEL & AKURAT
 // ═══════════════════════════════════════════════════
-// Helper: cek apakah kata (cityName) muncul sebagai kata utuh di dalam string teks
-function isWholeWord(text, cityName) {
-  // Escape karakter regex khusus
-  const escaped = cityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`\\b${escaped}\\b`, 'i');
-  return regex.test(text);
-}
-
 function detectLoc(title, rawDesc) {
   const jitter = () => (Math.random() - 0.5) * 0.12;
 
-  // Bersihkan HTML, ambil 200 karakter pertama untuk header
-  const plain = rawDesc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 200);
-  
-  // Header: "KOTA, LELEMUKU" -> exact match nanti
+  // Bersihkan HTML, ambil 200 karakter pertama
+  const plain = rawDesc.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim().substring(0, 200);
+
+  // Cari "KOTA, LELEMUKU" di awal teks (case-insensitive)
+  // Format: "JAYAPURA, LELEMUKU.COM" atau "NEW YORK, LELEMUKU.COM"
   const m = plain.match(/^([A-Z][A-Z0-9 .,'\-]{1,50}),\s*(?:LELEMUKU|LELELEMUKU)/i);
   const headerCity = m ? m[1].trim().toLowerCase() : null;
 
-  // --- PRIORITAS 1: HEADER ---
   if (headerCity) {
-    // Cek Indonesia
+    // Cek Indonesia dulu (prioritas utama)
     const indoKeys = Object.keys(LOC).sort((a,b) => b.length - a.length);
     for (const k of indoKeys) {
-      // Exact match (case-insensitive sudah di lowercase)
-      if (headerCity === k) {
+      if (headerCity === k || headerCity.includes(k)) {
         const v = LOC[k];
         return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], isWorld: false };
       }
     }
-    // Cek Dunia
+    // Cek luar negeri
     const worldKeys = Object.keys(LOC_WORLD).sort((a,b) => b.length - a.length);
     for (const k of worldKeys) {
-      if (headerCity === k) {
+      if (headerCity === k || headerCity.includes(k)) {
         const v = LOC_WORLD[k];
         return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], country: v[3], isWorld: true };
       }
     }
-    // Jika header tidak dikenali, catat ke konsol (debug)
-    console.warn(`⚠️ Header city not found in DB: "${headerCity}"`);
   }
 
-  // --- PRIORITAS 2: JUDUL (Whole word matching) ---
+  // Tidak ada header → cek nama kota di JUDUL (Indonesia saja, aman)
   const tl = title.toLowerCase();
-  // Cek Indonesia di judul
   const indoKeys2 = Object.keys(LOC).sort((a,b) => b.length - a.length);
   for (const k of indoKeys2) {
-    if (isWholeWord(tl, k)) {
+    if (tl.includes(k)) {
       const v = LOC[k];
       return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], isWorld: false };
     }
   }
-  // Cek kota dunia spesifik di judul (daftar aman)
+
+  // Cek nama kota asing spesifik di judul
   const worldSafe = [
     'tokyo','seoul','beijing','shanghai','london','paris','berlin',
     'washington','new york','sydney','dubai','istanbul','ankara',
@@ -1164,17 +1153,26 @@ function detectLoc(title, rawDesc) {
     'doha','riyadh','abu dhabi','colombo','kathmandu'
   ];
   for (const k of worldSafe) {
-    if (isWholeWord(tl, k) && LOC_WORLD[k]) {
+    if (tl.includes(k) && LOC_WORLD[k]) {
       const v = LOC_WORLD[k];
       return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], country: v[3], isWorld: true };
     }
   }
 
-  // --- PRIORITAS 3: DEFAULT (Jakarta dengan jitter lebih besar) ---
+  // ── DEFAULT: Tidak diketahui → Jakarta ──
   const bigJ = () => (Math.random() - 0.5) * 1.5;
   return { lat: -6.2088 + bigJ(), lng: 106.8456 + bigJ(), name: 'Jakarta Pusat', isWorld: false, isDefault: true };
 }
 
+
+function strip(h){ const d=document.createElement('div');d.innerHTML=h;return(d.textContent||'').trim(); }
+function getImg(h){ const m=h&&h.match(/<img[^>]+src=["']([^"']+)["']/i);return m?m[1]:null; }
+function ago(ds){
+  if(!ds)return'—';
+  const s=(Date.now()-new Date(ds).getTime())/1000;
+  if(s<60)return`${~~s}d lalu`;if(s<3600)return`${~~(s/60)}m lalu`;
+  if(s<86400)return`${~~(s/3600)}j lalu`;return`${~~(s/86400)}hr lalu`;
+}
 // ══════════════════════════════════════════════
 // FETCH FEED — VERSI DIPERBAIKI
 // ══════════════════════════════════════════════
