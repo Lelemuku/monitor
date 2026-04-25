@@ -1104,66 +1104,76 @@ function detectLoc(title, rawDesc) {
   const jitter = () => (Math.random() - 0.5) * 0.12;
 
   // Bersihkan HTML, ambil 200 karakter pertama
-  const plain = rawDesc.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim().substring(0, 200);
+  const plain = rawDesc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 200);
 
-  // Cari "KOTA, LELEMUKU" di awal teks (case-insensitive)
-  // Format: "JAYAPURA, LELEMUKU.COM" atau "NEW YORK, LELEMUKU.COM"
+  // Cari "KOTA, LELEMUKU" di awal teks
   const m = plain.match(/^([A-Z][A-Z0-9 .,'\-]{1,50}),\s*(?:LELEMUKU|LELELEMUKU)/i);
   const headerCity = m ? m[1].trim().toLowerCase() : null;
 
+  // ----- Fungsi pembantu untuk whole word matching (tanpa regex global) -----
+  function isWholeWord(text, word) {
+    // Escape karakter regex
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // \b batas kata, tapi perhatikan huruf besar/kecil
+    const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+    return regex.test(text);
+  }
+
+  // ----- PRIORITAS 1: HEADER (exact match) -----
   if (headerCity) {
-    // Cek Indonesia dulu (prioritas utama)
-    const indoKeys = Object.keys(LOC).sort((a,b) => b.length - a.length);
+    // Cek Indonesia (exact)
+    const indoKeys = Object.keys(LOC).sort((a, b) => b.length - a.length);
     for (const k of indoKeys) {
-      if (headerCity === k || headerCity.includes(k)) {
+      if (headerCity === k) {
         const v = LOC[k];
-        return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], isWorld: false };
+        return { lat: v[0] + jitter(), lng: v[1] + jitter(), name: v[2], isWorld: false };
       }
     }
-    // Cek luar negeri
-    const worldKeys = Object.keys(LOC_WORLD).sort((a,b) => b.length - a.length);
+    // Cek Dunia (exact)
+    const worldKeys = Object.keys(LOC_WORLD).sort((a, b) => b.length - a.length);
     for (const k of worldKeys) {
-      if (headerCity === k || headerCity.includes(k)) {
+      if (headerCity === k) {
         const v = LOC_WORLD[k];
-        return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], country: v[3], isWorld: true };
+        return { lat: v[0] + jitter(), lng: v[1] + jitter(), name: v[2], country: v[3], isWorld: true };
       }
     }
+    // Jika header tidak dikenali, catat di konsol (tidak mengganggu program)
+    if (console && console.warn) console.warn('⚠️ Header city not found in DB: "' + headerCity + '"');
   }
 
-  // Tidak ada header → cek nama kota di JUDUL (Indonesia saja, aman)
+  // ----- PRIORITAS 2: JUDUL (whole word matching) -----
   const tl = title.toLowerCase();
-  const indoKeys2 = Object.keys(LOC).sort((a,b) => b.length - a.length);
+  // Cek Indonesia di judul
+  const indoKeys2 = Object.keys(LOC).sort((a, b) => b.length - a.length);
   for (const k of indoKeys2) {
-    if (tl.includes(k)) {
+    if (isWholeWord(tl, k)) {
       const v = LOC[k];
-      return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], isWorld: false };
+      return { lat: v[0] + jitter(), lng: v[1] + jitter(), name: v[2], isWorld: false };
     }
   }
-
-  // Cek nama kota asing spesifik di judul
+  // Cek kota dunia spesifik di judul (daftar aman)
   const worldSafe = [
-    'tokyo','seoul','beijing','shanghai','london','paris','berlin',
-    'washington','new york','sydney','dubai','istanbul','ankara',
-    'teheran','tehran','riyadh','tel aviv','gaza','kyiv','moscow','moskow',
-    'manila','bangkok','singapore','singapura','kuala lumpur','yangon',
-    'hanoi','ho chi minh','dili','port moresby','wellington','auckland',
-    'toronto','mexico city','sao paulo','buenos aires','kairo',
-    'nairobi','johannesburg','lagos','ikebukuro','philadelphia','saint kitts',
-    'new delhi','mumbai','karachi','dhaka','kabul','baghdad','beirut',
-    'doha','riyadh','abu dhabi','colombo','kathmandu'
+    'tokyo', 'seoul', 'beijing', 'shanghai', 'london', 'paris', 'berlin',
+    'washington', 'new york', 'sydney', 'dubai', 'istanbul', 'ankara',
+    'teheran', 'tehran', 'riyadh', 'tel aviv', 'gaza', 'kyiv', 'moscow', 'moskow',
+    'manila', 'bangkok', 'singapore', 'singapura', 'kuala lumpur', 'yangon',
+    'hanoi', 'ho chi minh', 'dili', 'port moresby', 'wellington', 'auckland',
+    'toronto', 'mexico city', 'sao paulo', 'buenos aires', 'kairo',
+    'nairobi', 'johannesburg', 'lagos', 'ikebukuro', 'philadelphia', 'saint kitts',
+    'new delhi', 'mumbai', 'karachi', 'dhaka', 'kabul', 'baghdad', 'beirut',
+    'doha', 'abu dhabi', 'colombo', 'kathmandu'
   ];
   for (const k of worldSafe) {
-    if (tl.includes(k) && LOC_WORLD[k]) {
+    if (isWholeWord(tl, k) && LOC_WORLD[k]) {
       const v = LOC_WORLD[k];
-      return { lat: v[0]+jitter(), lng: v[1]+jitter(), name: v[2], country: v[3], isWorld: true };
+      return { lat: v[0] + jitter(), lng: v[1] + jitter(), name: v[2], country: v[3], isWorld: true };
     }
   }
 
-  // ── DEFAULT: Tidak diketahui → Jakarta ──
+  // ----- DEFAULT: Jakarta -----
   const bigJ = () => (Math.random() - 0.5) * 1.5;
   return { lat: -6.2088 + bigJ(), lng: 106.8456 + bigJ(), name: 'Jakarta Pusat', isWorld: false, isDefault: true };
 }
-
 
 function strip(h){ const d=document.createElement('div');d.innerHTML=h;return(d.textContent||'').trim(); }
 function getImg(h){ const m=h&&h.match(/<img[^>]+src=["']([^"']+)["']/i);return m?m[1]:null; }
