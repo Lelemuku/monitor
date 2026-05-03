@@ -1152,6 +1152,7 @@ const LOC = {
     'puncak': [-3.9781, 137.6228, 'Puncak'],
     'papua selatan': [-8.4942, 140.4017, 'Merauke'],
     'merauke': [-8.4942, 140.4017, 'Merauke'],
+    'salor': [-8.4942, 140.4017, 'Merauke'],
     'agats': [-5.5500, 138.1400, 'Asmat'],
     'asmat': [-5.5500, 138.1400, 'Asmat'],
     'mappi': [-6.5417, 139.3167, 'Mappi'],
