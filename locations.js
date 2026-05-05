@@ -1602,6 +1602,7 @@ const LOC_WORLD = {
   'manama':[26.2235,50.5876,'Manama','Bahrain'],
   'bahrain':[26.0667,50.5577,'Bahrain','Bahrain'],
   'muscat':[23.5880,58.3829,'Muscat','Oman'],
+  'muskat':[23.5880,58.3829,'Muscat','Oman'],
   'oman':[21.4735,55.9754,'Oman','Oman'],
   'baku':[40.4093,49.8671,'Baku','Azerbaijan'],
   // Eropa
@@ -1915,6 +1916,7 @@ const LOC_WORLD = {
   'nigeria': [9.0820, 8.6753, 'Nigeria'],
   'abuja': [9.0820, 8.6753, 'Nigeria'],
   'lagos':[6.5244,3.3792, 'Nigeria'],
+  'abidjan': [6.8276, -5.2860, 'Pantai Gading'],
   'pantai gading': [6.8276, -5.2860, 'Pantai Gading'],
   'yamoussoukro': [6.8276, -5.2860, 'Pantai Gading'],
   'republik afrika tengah': [4.3601, 18.5203, 'Republik Afrika Tengah'],
