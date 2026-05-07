@@ -38,6 +38,120 @@
 
 <style>
 /* ═══════════════════════════════════
+   AD POPUP STYLING
+═══════════════════════════════════ */
+
+/* Overlay background */
+.ad-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal container */
+.ad-popup-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Close button */
+.ad-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.ad-popup-close:hover {
+  background: var(--surface3);
+  color: var(--text);
+  transform: rotate(90deg);
+  border-color: var(--accent);
+}
+
+/* Content area */
+.ad-popup-content {
+  padding: 16px;
+  text-align: center;
+}
+
+.ad-popup-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* Footer */
+.ad-popup-footer {
+  padding: 10px 16px 16px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.ad-popup-footer small {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .ad-popup-modal {
+    max-width: 340px;
+  }
+  
+  .ad-popup-overlay {
+    padding: 15px;
+  }
+}
+	
+	
+/* ═══════════════════════════════════
    TEMA VARIABEL
 ═══════════════════════════════════ */
 [data-theme="dark"] {
@@ -1887,5 +2001,125 @@ window.addEventListener('DOMContentLoaded',()=>{
   <div class="fm-bottom-pad"></div>
 </div>
 
+
+<!-- ═══════════════════════════════════
+     AD POPUP MODAL
+═══════════════════════════════════ -->
+<div id="ad-popup" class="ad-popup-overlay" style="display:none;">
+  <div class="ad-popup-modal">
+    <button class="ad-popup-close" onclick="closeAdPopup()" aria-label="Tutup iklan">✕</button>
+    <div class="ad-popup-content">
+      <small class="ad-popup-label">IKLAN</small>
+      
+      <!-- Google AdSense Code -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3649077782201846"
+           data-ad-slot="2325042365"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      
+    </div>
+    <div class="ad-popup-footer">
+      <small>Iklan ini akan muncul sekali sehari</small>
+    </div>
+  </div>
+</div>
+
+
+// ═══════════════════════════════════
+//  AD POPUP CONTROLLER
+// ═══════════════════════════════════
+
+let adPopupTimer;
+const AD_POPUP_DELAY = 20000; // 20 detik (ubah sesuai keinginan)
+const AD_POPUP_COOLDOWN = 24 * 60 * 60 * 1000; // 24 jam (ms)
+
+// Show popup setelah delay
+function scheduleAdPopup() {
+  // Cek apakah user sudah tutup iklan hari ini
+  const lastClosed = localStorage.getItem('adPopupLastClosed');
+  const now = Date.now();
+  
+  if (lastClosed && (now - parseInt(lastClosed)) < AD_POPUP_COOLDOWN) {
+    console.log('📊 Ad popup: cooldown aktif, tidak ditampilkan');
+    return;
+  }
+  
+  // Jadwalkan popup muncul
+  adPopupTimer = setTimeout(() => {
+    showAdPopup();
+  }, AD_POPUP_DELAY);
+}
+
+// Tampilkan popup
+function showAdPopup() {
+  const popup = document.getElementById('ad-popup');
+  if (popup) {
+    popup.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent scroll
+    
+    // Track event ke GA4 (jika ada)
+    if (typeof gtag === 'function') {
+      gtag('event', 'ad_popup_shown', {
+        'event_category': 'ads',
+        'event_label': 'bottom_responsive_ad'
+      });
+    }
+    
+    console.log('📊 Ad popup: ditampilkan');
+  }
+}
+
+// Tutup popup
+function closeAdPopup() {
+  const popup = document.getElementById('ad-popup');
+  if (popup) {
+    popup.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scroll
+    
+    // Simpan timestamp ke localStorage
+    localStorage.setItem('adPopupLastClosed', Date.now().toString());
+    
+    // Track event ke GA4
+    if (typeof gtag === 'function') {
+      gtag('event', 'ad_popup_closed', {
+        'event_category': 'ads',
+        'event_label': 'bottom_responsive_ad'
+      });
+    }
+    
+    console.log('📊 Ad popup: ditutup user');
+  }
+}
+
+// Tutup popup jika klik di luar modal
+document.addEventListener('DOMContentLoaded', function() {
+  const popup = document.getElementById('ad-popup');
+  if (popup) {
+    popup.addEventListener('click', function(e) {
+      if (e.target === popup) {
+        closeAdPopup();
+      }
+    });
+  }
+  
+  // Jadwalkan popup muncul
+  scheduleAdPopup();
+});
+
+// Tutup popup dengan tombol ESC
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const popup = document.getElementById('ad-popup');
+    if (popup && popup.style.display === 'flex') {
+      closeAdPopup();
+    }
+  }
+});
+	
 </body>
 </html>
