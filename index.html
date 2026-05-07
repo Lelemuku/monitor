@@ -2002,8 +2002,12 @@ window.addEventListener('DOMContentLoaded',()=>{
 </div>
 
 
+
+
+
+
 <!-- ═══════════════════════════════════
-     AD POPUP MODAL
+     AD POPUP MODAL HTML
 ═══════════════════════════════════ -->
 <div id="ad-popup" class="ad-popup-overlay" style="display:none;">
   <div class="ad-popup-modal">
@@ -2029,97 +2033,25 @@ window.addEventListener('DOMContentLoaded',()=>{
   </div>
 </div>
 
-
+<!-- ═══════════════════════════════════
+     AD POPUP JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
 // ═══════════════════════════════════
 //  AD POPUP CONTROLLER
 // ═══════════════════════════════════
 
-let adPopupTimer;
-const AD_POPUP_DELAY = 20000; // 20 detik (ubah sesuai keinginan)
+const AD_POPUP_DELAY = 20000; // 20 detik
 const AD_POPUP_COOLDOWN = 24 * 60 * 60 * 1000; // 24 jam (ms)
 
 // Show popup setelah delay
 function scheduleAdPopup() {
-  // Cek apakah user sudah tutup iklan hari ini
   const lastClosed = localStorage.getItem('adPopupLastClosed');
   const now = Date.now();
   
-  if (lastClosed && (now - parseInt(lastClosed)) < AD_POPUP_COOLDOWN) {
-    console.log('📊 Ad popup: cooldown aktif, tidak ditampilkan');
-    return;
-  }
-  
-  // Jadwalkan popup muncul
-  adPopupTimer = setTimeout(() => {
-    showAdPopup();
-  }, AD_POPUP_DELAY);
-}
+  if (lastClosed && (now - parseInt(lastClosed)) < AD_POPUP_COOLDOWN
 
-// Tampilkan popup
-function showAdPopup() {
-  const popup = document.getElementById('ad-popup');
-  if (popup) {
-    popup.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; // Prevent scroll
-    
-    // Track event ke GA4 (jika ada)
-    if (typeof gtag === 'function') {
-      gtag('event', 'ad_popup_shown', {
-        'event_category': 'ads',
-        'event_label': 'bottom_responsive_ad'
-      });
-    }
-    
-    console.log('📊 Ad popup: ditampilkan');
-  }
-}
-
-// Tutup popup
-function closeAdPopup() {
-  const popup = document.getElementById('ad-popup');
-  if (popup) {
-    popup.style.display = 'none';
-    document.body.style.overflow = ''; // Restore scroll
-    
-    // Simpan timestamp ke localStorage
-    localStorage.setItem('adPopupLastClosed', Date.now().toString());
-    
-    // Track event ke GA4
-    if (typeof gtag === 'function') {
-      gtag('event', 'ad_popup_closed', {
-        'event_category': 'ads',
-        'event_label': 'bottom_responsive_ad'
-      });
-    }
-    
-    console.log('📊 Ad popup: ditutup user');
-  }
-}
-
-// Tutup popup jika klik di luar modal
-document.addEventListener('DOMContentLoaded', function() {
-  const popup = document.getElementById('ad-popup');
-  if (popup) {
-    popup.addEventListener('click', function(e) {
-      if (e.target === popup) {
-        closeAdPopup();
-      }
-    });
-  }
-  
-  // Jadwalkan popup muncul
-  scheduleAdPopup();
-});
-
-// Tutup popup dengan tombol ESC
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const popup = document.getElementById('ad-popup');
-    if (popup && popup.style.display === 'flex') {
-      closeAdPopup();
-    }
-  }
-});
+	
 	
 </body>
 </html>
