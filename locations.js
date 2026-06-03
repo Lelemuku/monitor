@@ -7,8 +7,9 @@ const LOC = {
 
     'indonesia': [-2.5489, 118.0149, 'Jakarta'],
     'nasional': [-2.5489, 118.0149, 'Jakarta'],
-    'ikn': [-0.8200, 116.7200, 'IKN Nusantara'],
-    'nusantara': [-0.8200, 116.7200, 'IKN Nusantara'],
+    'ikn': [-1.0779, 116.7001, 'IKN Nusantara'],
+    'nusantara': [-1.0779, 116.7001, 'IKN Nusantara'],
+    'ikn nusantara': [-1.0779, 116.7001, 'IKN Nusantara'],
   // Sumatra
     'aceh': [5.5483, 95.3238, 'Banda Aceh'],
     'banda aceh': [5.5483, 95.3238, 'Banda Aceh'],
