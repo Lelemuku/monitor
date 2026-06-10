@@ -2077,6 +2077,7 @@ const LOC_WORLD = {
   'vancouver':[49.2827,-123.1207, 'Kanada'],
   'kolombia': [4.7110, -74.0721, 'Kolombia'],
   'bogotá': [4.7110, -74.0721, 'Kolombia'],
+  'bogota': [4.7110, -74.0721, 'Kolombia'],
   'kosta rika': [9.7489, -83.7534, 'Kosta Rika'],
   'san josé': [9.7489, -83.7534, 'Kosta Rika'],
   'kuba': [23.1136, -82.3666, 'Kuba'],
