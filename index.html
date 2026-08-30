@@ -328,10 +328,23 @@ html, body {
   min-height: 0;
   transition: background .3s, border-color .3s;
 }
-#ad-strip:empty,
-#ad-strip.ad-strip-hidden {
+#ad-strip:empty {
   min-height: 0;
   border-top: none;
+}
+
+/* ═══════════════════════════════════
+   AD COLLAPSE UTILITY (BARU)
+   Diterapkan lewat JS (watchAdSlot) ketika iklan tidak terisi
+   atau diblokir (mis. oleh ad-blocker), supaya wadah iklan —
+   termasuk border/padding-nya — ikut hilang dan tidak
+   menyisakan ruang kosong di tampilan.
+═══════════════════════════════════ */
+.ad-collapsed {
+  display: none !important;
+}
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
 }
 
 /* ═══════════════════════════════════
@@ -956,7 +969,7 @@ body::after {
     ═══════════════════════════════════ -->
     <div id="ad-sidebar-slot">
       <div class="ad-slot-label">Iklan</div>
-      <ins class="adsbygoogle"
+      <ins id="ad-sidebar-ins" class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-3649077782201846"
            data-ad-slot="2325042365"
@@ -1030,7 +1043,7 @@ body::after {
      Statis, tinggi tetap, tidak menutupi konten.
 ═══════════════════════════════════ -->
 <div id="ad-strip">
-  <ins class="adsbygoogle"
+  <ins id="ad-strip-ins" class="adsbygoogle"
        style="display:block;width:100%"
        data-ad-client="ca-pub-3649077782201846"
        data-ad-slot="2325042365"
@@ -1761,6 +1774,45 @@ function toast(msg,type='info',dur=4000){
 }
 
 // ══════════════════════════════════════════════
+//  AD SLOT WATCHER — auto-collapse jika iklan kosong/diblokir
+//  Dipakai untuk SEMUA slot iklan (sidebar, strip, popup marker)
+//  agar tampilan selalu fleksibel: ada iklan → tampil normal,
+//  tidak ada/diblokir/ditutup → wadahnya ikut hilang, tanpa
+//  menyisakan ruang atau border kosong.
+// ══════════════════════════════════════════════
+function watchAdSlot(insEl, wrapEl, { timeout = 4500, onSettle } = {}){
+  if(!insEl || !wrapEl) return;
+  let done = false;
+
+  const finish = (visible) => {
+    if(done) return;
+    done = true;
+    wrapEl.classList.toggle('ad-collapsed', !visible);
+    if(typeof onSettle === 'function') onSettle(visible);
+  };
+
+  const check = () => {
+    const status = insEl.getAttribute('data-ad-status');
+    if(status === 'unfilled'){ finish(false); return true; }
+    if(status === 'filled'){ finish(true); return true; }
+    if(insEl.querySelector('iframe')){ finish(true); return true; }
+    return false;
+  };
+
+  if(check()) return;
+
+  const obs = new MutationObserver(()=>{ if(check()) obs.disconnect(); });
+  obs.observe(insEl, { attributes:true, attributeFilter:['data-ad-status'], childList:true, subtree:true });
+
+  // Jaga-jaga: kalau AdSense diblokir total (ad-blocker) atau lambat,
+  // data-ad-status tidak akan pernah muncul. Setelah timeout, anggap
+  // gagal dan sembunyikan wadahnya supaya layout kembali normal.
+  setTimeout(()=>{
+    if(!done){ finish(false); obs.disconnect(); }
+  }, timeout);
+}
+
+// ══════════════════════════════════════════════
 //  THEME TOGGLE
 // ══════════════════════════════════════════════
 
@@ -1931,26 +1983,20 @@ window.addEventListener('DOMContentLoaded',()=>{
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       }
 
-      const checkStatus = () => {
-        const status = adEl.getAttribute('data-ad-status');
-        if (status === 'unfilled') {
-          adWrap.style.display = 'none';
-          e.popup.update();
-          return true;
-        }
-        return status === 'filled';
-      };
-
-      if (!checkStatus()) {
-        const obs = new MutationObserver(() => { if (checkStatus()) obs.disconnect(); });
-        obs.observe(adEl, { attributes: true, attributeFilter: ['data-ad-status'] });
-        // Jaga-jaga: hentikan observer setelah 6 detik agar tidak menggantung
-        setTimeout(() => obs.disconnect(), 6000);
-      }
+      watchAdSlot(adEl, adWrap, {
+        timeout: 4500,
+        onSettle: () => e.popup.update() // resize popup, isi atau kosong
+      });
     } catch (err) {
       console.warn('Ad slot popup gagal dimuat:', err.message);
     }
   });
+
+  // Pantau slot iklan statis (sidebar & strip atas ticker) juga,
+  // supaya kalau iklan tidak terisi/diblokir, wadahnya ikut
+  // menyusut dan layout kembali seperti tanpa iklan sama sekali.
+  watchAdSlot(document.getElementById('ad-sidebar-ins'), document.getElementById('ad-sidebar-slot'));
+  watchAdSlot(document.getElementById('ad-strip-ins'), document.getElementById('ad-strip'));
 });
 </script>
 
