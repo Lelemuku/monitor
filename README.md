@@ -1,11 +1,11 @@
 # 🗺️ Lelemuku Monitor
 
-**Peta Berita Indonesia Real-Time dari Lelemuku.com**
+**Peta Berita Indonesia Real-Time Pertama yang dibuat oleh Lelemuku.com pada Januari 2026**
 
-Web : [monitor.lelemuku.com](https://monitor.lelemuku.com)
-
----
+Web : [www.lelemuku.com](https://www.lelemuku.com)
 
 ---
 
-*Dibuat untuk [Lelemuku.com](https://lelemuku.com) — Portal Berita Papua & Maluku*
+---
+
+*Dibuat untuk PT Batlax Dot Com*
