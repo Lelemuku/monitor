@@ -9,7 +9,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Lelemuku.com — Peta Berita Indonesia</title>
 <meta name="description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia">
-<link rel="icon" type="image/x-icon" href="https://berita.lelemuku.com/favicon.ico">
+<link rel="icon" type="image/x-icon" href="https://kabar.lelemuku.com/favicon.ico">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,19 +18,19 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link rel="canonical" href="https://monitor.lelemuku.com/">
+<link rel="canonical" href="https://www.lelemuku.com/">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://monitor.lelemuku.com/">
+<meta property="og:url" content="https://www.lelemuku.com/">
 <meta property="og:title" content="Lelemuku.com — Peta Berita Indonesia">
 <meta property="og:description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia.">
-<meta property="og:image" content="https://monitor.lelemuku.com/og-image.jpg">
+<meta property="og:image" content="https://www.lelemuku.com/og-image.jpg">
 <meta property="og:site_name" content="Lelemuku.com">
 <meta property="og:locale" content="id_ID">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://monitor.lelemuku.com/">
+<meta name="twitter:url" content="https://www.lelemuku.com/">
 <meta name="twitter:title" content="Lelemuku.com — Peta Berita Indonesia">
 <meta name="twitter:description" content="Pantau berita terkini Lelemuku.com secara real-time pada peta interaktif Indonesia.">
-<meta name="twitter:image" content="https://monitor.lelemuku.com/og-image.jpg">
+<meta name="twitter:image" content="https://www.lelemuku.com/og-image.jpg">
 <meta name="twitter:image:alt" content="Peta berita interaktif Lelemuku.com untuk Indonesia">
 <meta property="og:image:alt" content="Peta berita interaktif Lelemuku.com untuk Indonesia">
 <meta property="og:image:width" content="1200">
@@ -871,7 +871,7 @@ body::after {
 <!-- HEADER -->
 <div id="header" role="banner">
   <a id="logo-wrap" href="https://www.lelemuku.com" target="_blank" rel="noopener" aria-label="Buka situs utama Lelemuku.com">
-    <img id="logo-img" src="https://berita.lelemuku.com/favicon.ico" alt="L"
+    <img id="logo-img" src="https://kabar.lelemuku.com/favicon.ico" alt="L"
       onerror="this.style.background='#f0b429';this.textContent='L';this.style.color='#000';this.style.fontWeight='700';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';">
     <div>
       <div id="logo-name">Lelemuku.com</div>
@@ -1066,7 +1066,7 @@ body::after {
 //  KONFIGURASI
 const CFG = {
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbybY32nXiUKVh3zwytuB264rxJ4OM5Ewx6lKMfDDxicPCNlz39yYmEJyEtvsoPcKCJU/exec',   
-  feeds: ['https://berita.lelemuku.com/feeds/posts/default?alt=rss&max-results=150'],
+  feeds: ['https://kabar.lelemuku.com/feeds/posts/default?alt=rss&max-results=150'],
   refreshMs: 5 * 60 * 1000,
 };
 
@@ -1351,7 +1351,7 @@ function parseJson(text){
 
     return {
       id: idx, title: title,
-      link: item.link || 'https://berita.lelemuku.com',
+      link: item.link || 'https://kabar.lelemuku.com',
       date: item.pubDate || '', desc,
       image: item.thumbnail || item.enclosure?.link || getImg(item.description),
       cat: detectCat(title, desc), 
@@ -1366,7 +1366,7 @@ function parseXml(text){
   if(doc.querySelector('parsererror')) throw new Error('XML invalid');
   return Array.from(doc.querySelectorAll('item')).map((item, idx) => {
     const title = item.querySelector('title')?.textContent?.trim() || '(tanpa judul)';
-    const link = item.querySelector('link')?.textContent?.trim() || 'https://berita.lelemuku.com';
+    const link = item.querySelector('link')?.textContent?.trim() || 'https://kabar.lelemuku.com';
     const date = item.querySelector('pubDate')?.textContent || '';
     const descRaw = item.querySelector('description')?.textContent || '';
     const contentRaw = item.getElementsByTagNameNS('*','encoded')[0]?.textContent || descRaw;
