@@ -36,6 +36,12 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
+<!-- ══════════════════════════════════════
+     GOOGLE ADSENSE LOADER
+     (wajib dipasang di <head> agar semua unit iklan berfungsi)
+═══════════════════════════════════════ -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3649077782201846" crossorigin="anonymous"></script>
+
 <style>
 /* ═══════════════════════════════════
    AD POPUP STYLING
@@ -390,6 +396,57 @@ html, body {
 .leg-label { font-family:var(--font-mono); font-size:9px; letter-spacing:2px; color:var(--text3); text-transform:uppercase; margin-bottom:7px; }
 .leg-row { display:flex; align-items:center; gap:6px; margin:4px 0; font-size:11px; color:var(--text2); }
 .leg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* ═══════════════════════════════════
+   SLOT IKLAN — SIDEBAR (BARU)
+═══════════════════════════════════ */
+#ad-sidebar-slot {
+  margin: 10px 12px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  transition: background .3s, border-color .3s;
+}
+.ad-slot-label {
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 2px;
+  color: var(--text3); text-transform: uppercase; text-align: center;
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════
+   SLOT IKLAN — DALAM POPUP PETA (BARU)
+═══════════════════════════════════ */
+.pu-ad-slot {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+.pu-ad-label {
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 2px;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════
+   SLOT IKLAN — STRIP ATAS TICKER (BARU, opsional)
+═══════════════════════════════════ */
+#ad-strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  min-height: 0;
+  transition: background .3s, border-color .3s;
+}
+#ad-strip:empty,
+#ad-strip.ad-strip-hidden {
+  min-height: 0;
+  border-top: none;
+}
 
 /* ═══════════════════════════════════
    MAP
@@ -1007,6 +1064,21 @@ body::after {
       </div>
     </div>
 
+    <!-- ══════════════════════════════════
+         SLOT IKLAN #1 — SIDEBAR (BARU)
+         Statis, tidak mengganggu peta/filter.
+    ═══════════════════════════════════ -->
+    <div id="ad-sidebar-slot">
+      <div class="ad-slot-label">Iklan</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3649077782201846"
+           data-ad-slot="2325042365"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
     <div id="legend">
       <div class="leg-label">Keterangan</div>
       <div class="leg-row"><div class="leg-dot" style="background:var(--red);box-shadow:0 0 5px var(--red)"></div>Peristiwa Besar</div>
@@ -1066,6 +1138,20 @@ body::after {
   </div>
 
 </main>
+
+<!-- ══════════════════════════════════
+     SLOT IKLAN #3 — STRIP ATAS TICKER (BARU, opsional)
+     Statis, tinggi tetap, tidak menutupi konten.
+═══════════════════════════════════ -->
+<div id="ad-strip">
+  <ins class="adsbygoogle"
+       style="display:block;width:100%"
+       data-ad-client="ca-pub-3649077782201846"
+       data-ad-slot="2325042365"
+       data-ad-format="horizontal"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
 
 <!-- TICKER -->
 <div id="ticker">
@@ -1542,6 +1628,22 @@ function buildPopup(n) {
     </a>
   `).join('');
 
+  // ══════════════════════════════════
+  // SLOT IKLAN #2 — DALAM POPUP MARKER PETA (BARU)
+  // Ditampilkan hanya ketika pengguna membuka popup (klik marker),
+  // bukan otomatis, sehingga lebih sesuai kebijakan iklan.
+  // ══════════════════════════════════
+  const adSlotHtml = `
+    <div class="pu-ad-slot">
+      <div class="pu-ad-label">Iklan</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3649077782201846"
+           data-ad-slot="2325042365"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>`;
+
   return `
     <div>
       ${imgH}
@@ -1563,9 +1665,14 @@ function buildPopup(n) {
             ${socialButtons}
           </div>
         </div>
+        ${adSlotHtml}
       </div>
     </div>`;
 }
+
+// Catatan: unit iklan di dalam popup peta diisi lewat listener 'popupopen'
+// yang didaftarkan setelah initMap() dipanggil (lihat blok INIT di bawah),
+// karena elemen .adsbygoogle baru ada di DOM setelah Leaflet membuka popup.
 
 // ══════════════════════════════════════════════
 //  PANEL KABAR
@@ -1917,6 +2024,22 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadData();
   setInterval(tick,1000); tick();
   if(CFG.refreshMs>0) setInterval(loadData,CFG.refreshMs);
+
+  // ══════════════════════════════════
+  // Isi unit iklan di dalam popup peta setiap kali popup dibuka
+  // (elemen .adsbygoogle baru muncul di DOM saat Leaflet membuka popup,
+  // jadi push() harus dipanggil ulang setiap event 'popupopen')
+  // ══════════════════════════════════
+  mapObj.on('popupopen', (e) => {
+    try {
+      const adEl = e.popup.getElement()?.querySelector('.pu-ad-slot .adsbygoogle');
+      if (adEl && !adEl.getAttribute('data-adsbygoogle-status')) {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      }
+    } catch (err) {
+      console.warn('Ad slot popup gagal dimuat:', err.message);
+    }
+  });
 });
 </script>
 
@@ -2008,6 +2131,9 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 <!-- ═══════════════════════════════════
      AD POPUP MODAL HTML
+     (dibiarkan seperti aslinya — TIDAK diaktifkan/dijalankan otomatis,
+     karena format iklan interstitial buatan sendiri berisiko melanggar
+     kebijakan AdSense. Lihat catatan implementasi.)
 ═══════════════════════════════════ -->
 <div id="ad-popup" class="ad-popup-overlay" style="display:none;">
   <div class="ad-popup-modal">
@@ -2035,6 +2161,9 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 <!-- ═══════════════════════════════════
      AD POPUP JAVASCRIPT
+     (dibiarkan seperti file asli — fungsi ini memang belum lengkap
+     di kode sumber sehingga popup ini tidak pernah terpicu otomatis.
+     Ini konsisten dengan permintaan untuk tidak mengubah inti sistem.)
 ═══════════════════════════════════ -->
 <script>
 // ═══════════════════════════════════
@@ -2048,10 +2177,25 @@ const AD_POPUP_COOLDOWN = 24 * 60 * 60 * 1000; // 24 jam (ms)
 function scheduleAdPopup() {
   const lastClosed = localStorage.getItem('adPopupLastClosed');
   const now = Date.now();
-  
-  if (lastClosed && (now - parseInt(lastClosed)) < AD_POPUP_COOLDOWN
 
-	
-	
+  if (lastClosed && (now - parseInt(lastClosed)) < AD_POPUP_COOLDOWN) {
+    return; // masih dalam masa cooldown, jangan tampilkan
+  }
+  // Catatan: pemicu tampilan (setTimeout + showAdPopup) sengaja tidak
+  // diaktifkan di sini agar tidak menimbulkan popup otomatis yang
+  // berisiko melanggar kebijakan Google AdSense. Tiga slot iklan baru
+  // (sidebar, popup peta, strip ticker) sudah cukup untuk monetisasi
+  // tanpa risiko tersebut.
+}
+
+function closeAdPopup(){
+  const modal = document.getElementById('ad-popup');
+  if(modal){
+    modal.style.display = 'none';
+    localStorage.setItem('adPopupLastClosed', Date.now().toString());
+  }
+}
+</script>
+
 </body>
 </html>
