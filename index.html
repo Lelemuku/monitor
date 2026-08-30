@@ -324,6 +324,7 @@ html, body {
    leaderboard 728x90).
 ═══════════════════════════════════ */
 #ad-strip {
+  position: relative; /* agar tombol close bisa absolute */
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
@@ -338,6 +339,9 @@ html, body {
   min-height: 0;
   border-top: none;
 }
+#ad-strip.ad-hidden {
+  display: none !important;
+}
 #ad-strip .ad-strip-unit {
   width: 320px;
   height: 50px;
@@ -347,6 +351,32 @@ html, body {
 }
 @media (min-width: 800px) {
   #ad-strip .ad-strip-unit { width: 728px; height: 90px; }
+}
+
+/* Tombol close pada AD STRIP */
+#ad-strip-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  line-height: 1;
+  padding: 0;
+}
+#ad-strip-close:hover {
+  background: rgba(200,40,40,0.8);
+  transform: scale(1.1);
 }
 
 /* ═══════════════════════════════════
@@ -1059,6 +1089,8 @@ body::after {
      Statis, tinggi tetap, tidak menutupi konten.
 ═══════════════════════════════════ -->
 <div id="ad-strip">
+  <!-- Tombol close (disisipkan di sini) -->
+  <button id="ad-strip-close" onclick="closeAdStrip()" aria-label="Tutup iklan" title="Tutup iklan">✕</button>
   <ins id="ad-strip-ins" class="adsbygoogle ad-strip-unit"
        style="display:inline-block"
        data-ad-client="ca-pub-3649077782201846"
@@ -1955,12 +1987,38 @@ function tick(){
 }
 
 // ══════════════════════════════════════════════
+//  FUNGSI CLOSE AD STRIP & AUTO-CLOSE
+// ══════════════════════════════════════════════
+function closeAdStrip() {
+  const strip = document.getElementById('ad-strip');
+  if (strip) {
+    strip.classList.add('ad-hidden');
+    localStorage.setItem('lm-ad-strip-closed', 'true');
+  }
+}
+
+// Auto-close saat klik di luar strip
+function handleOutsideClick(e) {
+  const strip = document.getElementById('ad-strip');
+  if (!strip || strip.classList.contains('ad-hidden')) return;
+  if (!e.target.closest('#ad-strip')) {
+    closeAdStrip();
+  }
+}
+
+// ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded',()=>{
   // Restore tema tersimpan
   const saved=localStorage.getItem('lm-theme');
   if(saved==='light'){ isDark=false; document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-toggle').textContent='☀️'; }
+
+  // Restore status AD STRIP
+  if (localStorage.getItem('lm-ad-strip-closed') === 'true') {
+    const strip = document.getElementById('ad-strip');
+    if (strip) strip.classList.add('ad-hidden');
+  }
 
   initMap();
   // Setelah initMap, terapkan label sesuai tema yang di-restore
@@ -1977,6 +2035,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadData();
   setInterval(tick,1000); tick();
   if(CFG.refreshMs>0) setInterval(loadData,CFG.refreshMs);
+
+  // Pasang event listener auto-close untuk AD STRIP
+  document.addEventListener('click', handleOutsideClick);
 
   // ══════════════════════════════════
   // Isi unit iklan di dalam popup peta setiap kali popup dibuka
