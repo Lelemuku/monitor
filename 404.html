@@ -1,17 +1,39 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Halaman Tidak Ditemukan - Lelemuku.com</title>
-    <meta http-equiv="refresh" content="0; URL='https://www.lelemuku.com/'" />
-    
-    <script type="text/javascript">
-      // Redirect menggunakan JavaScript sebagai cadangan
-      window.location.href = "https://www.lelemuku.com/";
-    </script>
-  </head>
-  <body>
-    <p>Halaman tidak ditemukan. Mengalihkan ke halaman utama...</p>
-    <a href="https://www.lelemuku.com/">Klik di sini jika tidak teralihkan otomatis.</a>
-  </body>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Mengalihkan ke kabar.lelemuku.com</title>
+  <!-- Redirect cepat dengan meta refresh (fallback) -->
+  <meta http-equiv="refresh" content="0; url=https://kabar.lelemuku.com/">
+  
+  <script>
+    (function() {
+      // Ambil path lengkap + query string + hash
+      var path = window.location.pathname + window.location.search + window.location.hash;
+      
+      // Jika path hanya "/" atau kosong, biarkan ke root kabar.lelemuku.com
+      if (path === '/' || path === '') {
+        path = '/';
+      }
+      
+      // Bangun URL baru di subdomain kabar.lelemuku.com
+      var newUrl = 'https://kabar.lelemuku.com' + path;
+      
+      // Redirect permanen (tidak bisa kembali)
+      window.location.replace(newUrl);
+    })();
+  </script>
+</head>
+<body>
+  <p>Mengalihkan ke <a id="redirect-link" href="https://kabar.lelemuku.com/">kabar.lelemuku.com</a>...</p>
+  <p>Jika tidak otomatis, <a href="https://kabar.lelemuku.com/">klik di sini</a>.</p>
+  
+  <script>
+    // Tampilkan tujuan redirect di tautan
+    var link = document.getElementById('redirect-link');
+    var target = 'https://kabar.lelemuku.com' + window.location.pathname + window.location.search + window.location.hash;
+    link.href = target;
+    link.textContent = target;
+  </script>
+</body>
 </html>
