@@ -1,3 +1,66 @@
-User-agent: *
+# ================================================================
+# LELEMUKU.COM ROBOTS.TXT 
+# ================================================================
+
+# 1. PERLINDUNGAN KONTEN DARI BOT GENERATIVE AI
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+# 2. AKSES KHUSUS MESIN PENCARI
+User-agent: Googlebot
 Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# 3. AKSES MEDIA SOSIAL
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# 4. PETA SITUS (SITEMAPS)
 Sitemap: https://www.lelemuku.com/sitemap.xml
